@@ -2,7 +2,7 @@ var start_date = '20220901' // 开始日期
 var date = new Date();
 var end_date = '' + date.getFullYear() + (date.getMonth() > 8 ? (date.getMonth() + 1) : ("0" + (date.getMonth() + 1))) + (date.getDate() > 9 ? date.getDate() : ("0" + date.getDate())); // 结束日期
 
-var access_token = '121.79bd1ca3d39ef9aad4a997d8e1d0b797.YQsg85hr24oHRzoiKl75_uV2RusUMD0DUVAnetO.Vv8qLw' // 121.39fd8d69a3a4933d2e6e706aa2d2a0cc.YBNyN6EehJbgeKOqfMGER7RzFQRRkajz94ZpgtS.l0QFdQ
+var access_token = '121.38e0695ce52481802acd2c22d284f19a.YaylKGGtlOSwRJVAyfx0karHtflEnpHd0T1Bd-w.MQmsGA' // 121.39fd8d69a3a4933d2e6e706aa2d2a0cc.YBNyN6EehJbgeKOqfMGER7RzFQRRkajz94ZpgtS.l0QFdQ
 var site_id = '19394166' // 网址 id
 var dataUrl = 'https://baiduapi.hatsusakuramiku.cn/api?access_token=' + access_token + '&site_id=' + site_id
 // var dataUrl = 'https://baidu-tongji.fomal.cc/api?site_id=' + site_id
