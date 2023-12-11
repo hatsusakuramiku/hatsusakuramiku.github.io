@@ -33,9 +33,9 @@
     <category term="数学物理方程" scheme="https://hsmk.mikufans.date/categories/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E7%A8%8B/"/>
     
     
-    <category term="拉普拉斯方程" scheme="https://hsmk.mikufans.date/tags/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E6%96%B9%E7%A8%8B/"/>
-    
     <category term="数学物理方程" scheme="https://hsmk.mikufans.date/tags/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E7%A8%8B/"/>
+    
+    <category term="拉普拉斯方程" scheme="https://hsmk.mikufans.date/tags/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E6%96%B9%E7%A8%8B/"/>
     
   </entry>
   
@@ -79,9 +79,9 @@
     <category term="数学物理方程" scheme="https://hsmk.mikufans.date/categories/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E7%A8%8B/"/>
     
     
-    <category term="数学物理方程" scheme="https://hsmk.mikufans.date/tags/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E7%A8%8B/"/>
-    
     <category term="波动方程" scheme="https://hsmk.mikufans.date/tags/%E6%B3%A2%E5%8A%A8%E6%96%B9%E7%A8%8B/"/>
+    
+    <category term="数学物理方程" scheme="https://hsmk.mikufans.date/tags/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E7%A8%8B/"/>
     
   </entry>
   
@@ -102,11 +102,11 @@
     <category term="学习" scheme="https://hsmk.mikufans.date/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="拉普拉斯方程" scheme="https://hsmk.mikufans.date/tags/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E6%96%B9%E7%A8%8B/"/>
+    <category term="波动方程" scheme="https://hsmk.mikufans.date/tags/%E6%B3%A2%E5%8A%A8%E6%96%B9%E7%A8%8B/"/>
     
     <category term="数学物理方程" scheme="https://hsmk.mikufans.date/tags/%E6%95%B0%E5%AD%A6%E7%89%A9%E7%90%86%E6%96%B9%E7%A8%8B/"/>
     
-    <category term="波动方程" scheme="https://hsmk.mikufans.date/tags/%E6%B3%A2%E5%8A%A8%E6%96%B9%E7%A8%8B/"/>
+    <category term="拉普拉斯方程" scheme="https://hsmk.mikufans.date/tags/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E6%96%B9%E7%A8%8B/"/>
     
     <category term="热传导方程" scheme="https://hsmk.mikufans.date/tags/%E7%83%AD%E4%BC%A0%E5%AF%BC%E6%96%B9%E7%A8%8B/"/>
     
