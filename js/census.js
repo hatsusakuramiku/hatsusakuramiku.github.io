@@ -2,9 +2,9 @@ var start_date = '20220901' // 开始日期
 var date = new Date();
 var end_date = '' + date.getFullYear() + (date.getMonth() > 8 ? (date.getMonth() + 1) : ("0" + (date.getMonth() + 1))) + (date.getDate() > 9 ? date.getDate() : ("0" + date.getDate())); // 结束日期
 
-var access_token = '' // accessToken
-var site_id = '' // 网址 id
-var dataUrl = '' + access_token + '&site_id=' + site_id
+var access_token = '122.4ffed00542171d258422fd4f36451794.YsIhmTwa-aiolsxJ0MRvoajxmvSUpogHPNjMUhT.AU9wwA' // 121.39fd8d69a3a4933d2e6e706aa2d2a0cc.YBNyN6EehJbgeKOqfMGER7RzFQRRkajz94ZpgtS.l0QFdQ
+var site_id = '19394166' // 网址 id
+var dataUrl = 'https://baiduapi.hatsusakuramiku.cn/api?access_token=' + access_token + '&site_id=' + site_id
 // var dataUrl = 'https://baidu-tongji.fomal.cc/api?site_id=' + site_id
 var metrics = 'pv_count' // 统计访问次数 PV 填写 'pv_count'，统计访客数 UV 填写 'visitor_count'，二选一
 var metricsName = (metrics === 'pv_count' ? '访问次数' : (metrics === 'visitor_count' ? '访客数' : ''))
