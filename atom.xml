@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>初桜未来の小站</title>
+  <title>初樱小站</title>
   
-  
+  <subtitle>初桜未来の小站</subtitle>
   <link href="https://hsmk.mikufans.date/atom.xml" rel="self"/>
   
   <link href="https://hsmk.mikufans.date/"/>
