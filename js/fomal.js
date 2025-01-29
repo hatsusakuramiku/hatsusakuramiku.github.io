@@ -934,14 +934,24 @@ function popupMenu() {
         window.open(el.href);
         // window.location.reload();
       }
+      // rmf.copyLink = function () {
+      //   let url = el.href
+      //   let txa = document.createElement("textarea");
+      //   txa.value = url;
+      //   document.body.appendChild(txa)
+      //   txa.select();
+      //   document.execCommand("Copy");
+      //   document.body.removeChild(txa);
+      // }
       rmf.copyLink = function () {
         let url = el.href
-        let txa = document.createElement("textarea");
-        txa.value = url;
-        document.body.appendChild(txa)
-        txa.select();
-        document.execCommand("Copy");
-        document.body.removeChild(txa);
+        navigator.clipboard.writeText(url)
+          .then(() => {
+            console.log('Text copied to clipboard')
+          })
+          .catch(err => {
+            console.error('Error copying text to clipboard:', err)
+          })
       }
     } else if (el.tagName == 'IMG') {
       $('#menu-img').show()
@@ -1123,16 +1133,16 @@ function createtime1() {
     `Future is now 🍭🍭🍭`,
 
     `
-    ██    ██   ████   ████████ ████████ ██    ██ ████████   ████   ██    ██ ██    ██ ██████     ████     ██  ██   ████████ ██    ██ ██    ██
-    ██    ██ ██    ██    ██    ██       ██    ██ ██       ██    ██ ██  ██   ██    ██ ██    ██ ██    ██ ██  ██  ██    ██    ██  ██   ██    ██
-    ████████ ████████    ██    ████████ ██    ██ ████████ ████████ ████     ██    ██ ██████   ████████ ██  ██  ██    ██    ████     ██    ██
-    ██    ██ ██    ██    ██          ██ ██    ██       ██ ██    ██ ██  ██   ██    ██ ██    ██ ██    ██ ██  ██  ██    ██    ██  ██   ██    ██
-    ██    ██ ██    ██    ██    ████████   ████   ████████ ██    ██ ██    ██   ████   ██    ██ ██    ██ ██  ██  ██ ████████ ██    ██   ████  
+    ██    ██ ████████   ██  ██   ██    ██
+    ██    ██ ██       ██  ██  ██ ██  ██  
+    ████████ ████████ ██  ██  ██ ████    
+    ██    ██       ██ ██  ██  ██ ██  ██  
+    ██    ██ ████████ ██  ██  ██ ██    ██
     `,
     "小站已经苟活",
     dnum,
     "天啦!",
-    "©2022 By 初桜未来 🌸",                                          
+    "©2022 By 初桜未来 🌸",
   ];
 
   setTimeout(
@@ -2594,12 +2604,12 @@ if ((lunar["IMonthCn"] == "九月" && lunar["IDayCn"] == "初九")) {
 }
 
 // 切换主题提醒
- if ((m >= 12 || m <= 3) && (dd >= 18 && dd <= 20)) {
-     if (sessionStorage.getItem("isPopupWindow") != "1") {
-         Swal.fire("网站换成冬日限定主题啦⛄");
-         sessionStorage.setItem("isPopupWindow", "1");
-     }
- }
+if ((m >= 12 || m <= 3) && (dd >= 18 && dd <= 20)) {
+  if (sessionStorage.getItem("isPopupWindow") != "1") {
+    Swal.fire("网站换成冬日限定主题啦⛄");
+    sessionStorage.setItem("isPopupWindow", "1");
+  }
+}
 
 
 /* 节日弹窗 end */
@@ -2803,8 +2813,8 @@ function createtime() {
   let currentTimeHtml = "";
   (currentTimeHtml =
     hnum < 18 && hnum >= 9
-    ? `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E4%B8%8A%E8%AF%BE%E6%91%B8%E9%B1%BCing-39C5BB.svg' title='今天也是在被数学欺负呢~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`
-    : `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E7%A2%8E%E8%A7%89ing-39C5BB.svg' title='唔...被床封印啦~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`),
+      ? `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E4%B8%8A%E8%AF%BE%E6%91%B8%E9%B1%BCing-39C5BB.svg' title='今天也是在被数学欺负呢~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`
+      : `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E7%A2%8E%E8%A7%89ing-39C5BB.svg' title='唔...被床封印啦~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`),
     document.getElementById("workboard") &&
     (document.getElementById("workboard").innerHTML = currentTimeHtml);
 }
@@ -3533,7 +3543,7 @@ function toggleWinbox() {
 /* 美化模块 end */
 
 /* chart模块明暗适配 */
-function switchPostChart () {
+function switchPostChart() {
   // 这里为了统一颜色选取的是“明暗模式”下的两种字体颜色，也可以自己定义
   let color = document.documentElement.getAttribute('data-theme') === 'light' ? '#4C4948' : 'rgba(255,255,255,0.7)'
   if (document.getElementById('posts-chart') && postsOption) {
