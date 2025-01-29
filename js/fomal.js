@@ -73,7 +73,7 @@ $.ajax({
   type: 'get',
   url: 'https://apis.map.qq.com/ws/location/v1/ip',
   data: {
-    key: 'OK6BZ-I6Q66-C4YSA-MLOXE-2FMCK-TABQQ',  // 这里要写你的KEY!!!
+    key: 'OK6BZ-I6Q66-C4YSA-MLOXE-2FMCK-TABQQ', // 这里要写你的KEY!!!
     output: 'jsonp',
   },
   dataType: 'jsonp',
@@ -81,13 +81,24 @@ $.ajax({
     ipLoacation = res;
   }
 })
+
 function getDistance(e1, n1, e2, n2) {
   const R = 6371
-  const { sin, cos, asin, PI, hypot } = Math
+  const {
+    sin,
+    cos,
+    asin,
+    PI,
+    hypot
+  } = Math
   let getPoint = (e, n) => {
     e *= PI / 180
     n *= PI / 180
-    return { x: cos(n) * cos(e), y: cos(n) * sin(e), z: sin(n) }
+    return {
+      x: cos(n) * cos(e),
+      y: cos(n) * sin(e),
+      z: sin(n)
+    }
   }
 
   let a = getPoint(e1, n1)
@@ -303,7 +314,7 @@ document.addEventListener('pjax:complete', getWeibo);
 document.addEventListener('DOMContentLoaded', getWeibo);
 
 function getWeibo() {
-  fetch('').then(data => data.json()).then(data => {  // 这里要写上你的API!!!
+  fetch('').then(data => data.json()).then(data => { // 这里要写上你的API!!!
     let html = '<style>.weibo-new{background:#ff3852}.weibo-hot{background:#ff9406}.weibo-jyzy{background:#ffc000}.weibo-recommend{background:#00b7ee}.weibo-adrecommend{background:#febd22}.weibo-friend{background:#8fc21e}.weibo-boom{background:#bd0000}.weibo-topic{background:#ff6f49}.weibo-topic-ad{background:#4dadff}.weibo-boil{background:#f86400}#weibo-container{overflow-y:auto;-ms-overflow-style:none;scrollbar-width:none}#weibo-container::-webkit-scrollbar{display:none}.weibo-list-item{display:flex;flex-direction:row;justify-content:space-between;flex-wrap:nowrap}.weibo-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:auto}.weibo-num{float:right}.weibo-hotness{display:inline-block;padding:0 6px;transform:scale(.8) translateX(-3px);color:#fff;border-radius:8px}</style>'
     html += '<div class="weibo-list">'
     let hotness = {
@@ -318,9 +329,9 @@ function getWeibo() {
       '综': 'weibo-jyzy'
     }
     for (let item of data) {
-      html += '<div class="weibo-list-item"><div class="weibo-hotness ' + hotness[(item.hot || '荐')] + '">' + (item.hot || '荐') + '</div>'
-        + '<span class="weibo-title"><a title="' + item.title + '"href="' + item.url + '" target="_blank" rel="external nofollow noreferrer" style="color:#a08ed5">' + item.title + '</a></span>'
-        + '<div class="weibo-num"><span>' + item.num + '</span></div></div>'
+      html += '<div class="weibo-list-item"><div class="weibo-hotness ' + hotness[(item.hot || '荐')] + '">' + (item.hot || '荐') + '</div>' +
+        '<span class="weibo-title"><a title="' + item.title + '"href="' + item.url + '" target="_blank" rel="external nofollow noreferrer" style="color:#a08ed5">' + item.title + '</a></span>' +
+        '<div class="weibo-num"><span>' + item.num + '</span></div></div>'
     }
     html += '</div>'
     document.getElementById('weibo-container').innerHTML = html
@@ -335,7 +346,7 @@ function getWeibo() {
 
 /* 禁用f12与按键防抖 start */
 // 防抖全局计时器
-let TT = null;    //time用来控制事件的触发
+let TT = null; //time用来控制事件的触发
 // 防抖函数:fn->逻辑 time->防抖时间
 function debounce(fn, time) {
   if (TT !== null) clearTimeout(TT);
@@ -395,17 +406,16 @@ if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobi
   window && (() => {
     let e = {
       flakeCount: 50, // 雪花数目
-      minDist: 150,   // 最小距离
+      minDist: 150, // 最小距离
       color: "255, 255, 255", // 雪花颜色
-      size: 1.5,  // 雪花大小
-      speed: .5,  // 雪花速度
-      opacity: .7,    // 雪花透明度
-      stepsize: .5    // 步距
+      size: 1.5, // 雪花大小
+      speed: .5, // 雪花速度
+      opacity: .7, // 雪花透明度
+      stepsize: .5 // 步距
     };
     const t = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function (e) {
       window.setTimeout(e, 1e3 / 60)
-    }
-      ;
+    };
     window.requestAnimationFrame = t;
     const i = document.getElementById("snow"),
       n = i.getContext("2d"),
@@ -416,37 +426,37 @@ if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobi
     i.width = window.innerWidth,
       i.height = window.innerHeight;
     const h = () => {
-      n.clearRect(0, 0, i.width, i.height);
-      const r = e.minDist;
-      for (let t = 0; t < o; t++) {
-        let o = s[t];
-        const h = a,
-          w = d,
-          m = o.x,
-          c = o.y,
-          p = Math.sqrt((h - m) * (h - m) + (w - c) * (w - c));
-        if (p < r) {
-          const e = (h - m) / p,
-            t = (w - c) / p,
-            i = r / (p * p) / 2;
-          o.velX -= i * e,
-            o.velY -= i * t
-        } else
-          o.velX *= .98,
+        n.clearRect(0, 0, i.width, i.height);
+        const r = e.minDist;
+        for (let t = 0; t < o; t++) {
+          let o = s[t];
+          const h = a,
+            w = d,
+            m = o.x,
+            c = o.y,
+            p = Math.sqrt((h - m) * (h - m) + (w - c) * (w - c));
+          if (p < r) {
+            const e = (h - m) / p,
+              t = (w - c) / p,
+              i = r / (p * p) / 2;
+            o.velX -= i * e,
+              o.velY -= i * t
+          } else
+            o.velX *= .98,
             o.velY < o.speed && o.speed - o.velY > .01 && (o.velY += .01 * (o.speed - o.velY)),
             o.velX += Math.cos(o.step += .05) * o.stepSize;
-        n.fillStyle = "rgba(" + e.color + ", " + o.opacity + ")",
-          o.y += o.velY,
-          o.x += o.velX,
-          (o.y >= i.height || o.y <= 0) && l(o),
-          (o.x >= i.width || o.x <= 0) && l(o),
-          n.beginPath(),
-          n.arc(o.x, o.y, o.size, 0, 2 * Math.PI),
-          n.fill()
-      }
-      t(h)
-    }
-      , l = e => {
+          n.fillStyle = "rgba(" + e.color + ", " + o.opacity + ")",
+            o.y += o.velY,
+            o.x += o.velX,
+            (o.y >= i.height || o.y <= 0) && l(o),
+            (o.x >= i.width || o.x <= 0) && l(o),
+            n.beginPath(),
+            n.arc(o.x, o.y, o.size, 0, 2 * Math.PI),
+            n.fill()
+        }
+        t(h)
+      },
+      l = e => {
         e.x = Math.floor(Math.random() * i.width),
           e.y = 0,
           e.size = 3 * Math.random() + 2,
@@ -454,25 +464,22 @@ if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobi
           e.velY = e.speed,
           e.velX = 0,
           e.opacity = .5 * Math.random() + .3
-      }
-      ;
+      };
     document.addEventListener("mousemove", (e => {
-      a = e.clientX,
-        d = e.clientY
-    }
-    )),
+        a = e.clientX,
+          d = e.clientY
+      })),
       window.addEventListener("resize", (() => {
         i.width = window.innerWidth,
           i.height = window.innerHeight
-      }
-      )),
+      })),
       (() => {
         for (let t = 0; t < o; t++) {
-          const t = Math.floor(Math.random() * i.width)
-            , n = Math.floor(Math.random() * i.height)
-            , o = 3 * Math.random() + e.size
-            , a = 1 * Math.random() + e.speed
-            , d = .5 * Math.random() + e.opacity;
+          const t = Math.floor(Math.random() * i.width),
+            n = Math.floor(Math.random() * i.height),
+            o = 3 * Math.random() + e.size,
+            a = 1 * Math.random() + e.speed,
+            d = .5 * Math.random() + e.opacity;
           s.push({
             speed: a,
             velX: 0,
@@ -487,10 +494,8 @@ if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobi
           })
         }
         h()
-      }
-      )()
-  }
-  )();
+      })()
+  })();
 }
 
 /* 雪花特效 end */
@@ -511,6 +516,7 @@ function dark() {
   function f() {
     n = window.innerWidth, e = window.innerHeight, i = .216 * n, s.setAttribute("width", n), s.setAttribute("height", e)
   }
+
   function u() {
     h.clearRect(0, 0, n, e);
     for (var t = c.length, i = 0; i < t; i++) {
@@ -518,6 +524,7 @@ function dark() {
       s.move(), s.fadeIn(), s.fadeOut(), s.draw()
     }
   }
+
   function y() {
     this.reset = function () {
       this.giant = m(3), this.comet = !this.giant && !o && m(10), this.x = l(0, n - 10), this.y = l(0, e), this.r = l(1.1, 2.6), this.dx = l(t, 6 * t) + (this.comet + 1 - 1) * t * l(50, 120) + 2 * t, this.dy = -l(t, 6 * t) - (this.comet + 1 - 1) * t * l(50, 120), this.fadingOut = null, this.fadingIn = !0, this.opacity = 0, this.opacityTresh = l(.2, 1 - .4 * (this.comet + 1 - 1)), this.do = l(5e-4, .002) + .001 * (this.comet + 1 - 1)
@@ -526,8 +533,10 @@ function dark() {
     }, this.fadeOut = function () {
       this.fadingOut && (this.fadingOut = !(this.opacity < 0), this.opacity -= this.do / 2, (this.x > n || this.y < 0) && (this.fadingOut = !1, this.reset()))
     }, this.draw = function () {
-      if (h.beginPath(), this.giant) h.fillStyle = "rgba(" + a + "," + this.opacity + ")", h.arc(this.x, this.y, 2, 0, 2 * Math.PI, !1); else if (this.comet) {
-        h.fillStyle = "rgba(" + d + "," + this.opacity + ")", h.arc(this.x, this.y, 1.5, 0, 2 * Math.PI, !1); for (var t = 0; t < 30; t++)h.fillStyle = "rgba(" + d + "," + (this.opacity - this.opacity / 20 * t) + ")", h.rect(this.x - this.dx / 4 * t, this.y - this.dy / 4 * t - 2, 2, 2), h.fill()
+      if (h.beginPath(), this.giant) h.fillStyle = "rgba(" + a + "," + this.opacity + ")", h.arc(this.x, this.y, 2, 0, 2 * Math.PI, !1);
+      else if (this.comet) {
+        h.fillStyle = "rgba(" + d + "," + this.opacity + ")", h.arc(this.x, this.y, 1.5, 0, 2 * Math.PI, !1);
+        for (var t = 0; t < 30; t++) h.fillStyle = "rgba(" + d + "," + (this.opacity - this.opacity / 20 * t) + ")", h.rect(this.x - this.dx / 4 * t, this.y - this.dy / 4 * t - 2, 2, 2), h.fill()
       } else h.fillStyle = "rgba(" + r + "," + this.opacity + ")", h.rect(this.x, this.y, this.r, this.r);
       h.closePath(), h.fill()
     }, this.move = function () {
@@ -536,19 +545,23 @@ function dark() {
       o = !1
     }, 50)
   }
+
   function m(t) {
     return Math.floor(1e3 * Math.random()) + 1 < 10 * t
   }
+
   function l(t, i) {
     return Math.random() * (i - t) + t
   }
-  f(), window.addEventListener("resize", f, !1), function () {
-    h = s.getContext("2d");
-    for (var t = 0; t < i; t++) c[t] = new y, c[t].reset();
-    u()
-  }(), function t() {
-    document.getElementsByTagName('html')[0].getAttribute('data-theme') == 'dark' && u(), window.requestAnimationFrame(t)
-  }()
+  f(), window.addEventListener("resize", f, !1),
+    function () {
+      h = s.getContext("2d");
+      for (var t = 0; t < i; t++) c[t] = new y, c[t].reset();
+      u()
+    }(),
+    function t() {
+      document.getElementsByTagName('html')[0].getAttribute('data-theme') == 'dark' && u(), window.requestAnimationFrame(t)
+    }()
 };
 dark()
 /* 星空特效 end */
@@ -610,11 +623,16 @@ function owoBig() {
         }
       };
       // 鼠标移出隐藏盒子
-      owo_body.onmouseout = () => { div.style.display = 'none', flag = 1, clearTimeout(owo_time); }
+      owo_body.onmouseout = () => {
+        div.style.display = 'none', flag = 1, clearTimeout(owo_time);
+      }
     }
 
   })
-  observer.observe(document.getElementById('post-comment'), { subtree: true, childList: true })
+  observer.observe(document.getElementById('post-comment'), {
+    subtree: true,
+    childList: true
+  })
 }
 /* 表情放大 end */
 
@@ -658,6 +676,7 @@ if (document.body.clientWidth > 992) {
       S_V: S_V
     }
   };
+
   function show(basicInfo) {
     if (basicInfo.ScrollTop > 0.001) {
       $(".neko").css('display', 'block');
@@ -698,7 +717,8 @@ if (document.body.clientWidth > 992) {
           "border-radius": setting.borderRadius,
           'right': setting.right,
           'background-image': 'url(' + setting.scImg + ')',
-          'background-image': '-webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent)', 'border-radius': '2em',
+          'background-image': '-webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent)',
+          'border-radius': '2em',
           'background-size': 'contain'
         });
       $("#" + setting.nekoname)
@@ -725,7 +745,8 @@ if (document.body.clientWidth > 992) {
               "border-radius": setting.borderRadius,
               'right': setting.right,
               'background-image': 'url(' + setting.scImg + ')',
-              'background-image': '-webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent)', 'border-radius': '2em',
+              'background-image': '-webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent)',
+              'border-radius': '2em',
               'background-size': 'contain'
             });
           $("#" + setting.nekoname)
@@ -763,8 +784,7 @@ if (document.body.clientWidth > 992) {
       bgcolor: 'rgb(0 0 0 / .5)', //背景颜色，没有绳子背景图片时有效
       borderRadius: '2em',
       zoom: 0.9
-    }
-    );
+    });
     //自定义（去掉以下注释，并注释掉其他的查看效果）
     /*
     $("#myscoll").nekoScroll({
@@ -894,7 +914,9 @@ rmf.scrollToTop = function () {
 
 document.body.addEventListener('touchmove', function () {
 
-}, { passive: false });
+}, {
+  passive: false
+});
 
 function popupMenu() {
   window.oncontextmenu = function (event) {
@@ -925,8 +947,7 @@ function popupMenu() {
       rmf.open = function () {
         if (el.href.indexOf("http://") == -1 && el.href.indexOf("https://") == -1 || el.href.indexOf("yisous.xyz") != -1) {
           pjax.loadUrl(el.href)
-        }
-        else {
+        } else {
           location.href = el.href
         }
       }
@@ -1076,6 +1097,7 @@ if (localStorage.getItem("mouse") == undefined) {
   localStorage.setItem("mouse", "on");
 }
 var mouseMode = localStorage.getItem("mouse");
+
 function changeMouseMode() {
   if (localStorage.getItem("mouse") == "on") {
     mouseMode = "off";
@@ -1120,10 +1142,11 @@ function changeMouseMode() {
 //----------------------------------------------------------------
 
 /* 控制台输出字符画 start */
-var now1 = new Date();
+// var now1 = new Date();
 
 function createtime1() {
-  var grt = new Date("08/09/2022 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  var grt = new Date("08/09/2022 00:00:00"); // 你的建站时间
+  var now1 = new Date();
   now1.setTime(now1.getTime() + 250);
   var days = (now1 - grt) / 1000 / 60 / 60 / 24;
   var dnum = Math.floor(days);
@@ -1131,14 +1154,6 @@ function createtime1() {
   var ascll = [
     `欢迎来到初桜未来のBlog! 🌸`,
     `Future is now 🍭🍭🍭`,
-
-    `
-    ██    ██ ████████   ██  ██   ██    ██
-    ██    ██ ██       ██  ██  ██ ██  ██  
-    ████████ ████████ ██  ██  ██ ████    
-    ██    ██       ██ ██  ██  ██ ██  ██  
-    ██    ██ ████████ ██  ██  ██ ██    ██
-    `,
     "小站已经苟活",
     dnum,
     "天啦!",
@@ -1148,10 +1163,9 @@ function createtime1() {
   setTimeout(
     console.log.bind(
       console,
-      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c${ascll[2]}%c ${ascll[3]}%c ${ascll[4]}\n\n%c ${ascll[5]}\n`,
       "color:#39c5bb",
       "",
-      "color:#39c5bb",
       "color:#39c5bb",
       "",
       "color:#39c5bb",
@@ -1195,9 +1209,9 @@ function createtime2() {
 createtime2();
 
 // 重写console方法
-console.log = function () { };
-console.error = function () { };
-console.warn = function () { };
+console.log = function () {};
+console.error = function () {};
+console.warn = function () {};
 
 /* 控制台输出字符画 end */
 
@@ -1413,7 +1427,8 @@ var lunarInfo = [0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 
 
   0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a2d0, 0x0d150, 0x0f252, // 2090-2099
 
-  0x0d520] // 2100
+  0x0d520
+] // 2100
 
 
 
@@ -1625,7 +1640,8 @@ var sTermInfo = ['9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc92
 
   '7f07e7f0e47f531b0723b0b6fb0721', '7f0e26665b66a449801e9808297c35', '665f67f0e37f1489801eb072297c35',
 
-  '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722']
+  '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722'
+]
 
 
 
@@ -1695,7 +1711,9 @@ function lYearDays(y) {
 
   var sum = 348
 
-  for (i = 0x8000; i > 0x8; i >>= 1) { sum += (lunarInfo[y - 1900] & i) ? 1 : 0 }
+  for (i = 0x8000; i > 0x8; i >>= 1) {
+    sum += (lunarInfo[y - 1900] & i) ? 1 : 0
+  }
 
   return (sum + leapDays(y))
 
@@ -1763,7 +1781,9 @@ function leapDays(y) {
 
 function monthDays(y, m) {
 
-  if (m > 12 || m < 1) { return -1 }// 月份参数从1至12，参数错误返回-1
+  if (m > 12 || m < 1) {
+    return -1
+  } // 月份参数从1至12，参数错误返回-1
 
   return ((lunarInfo[y - 1900] & (0x10000 >> m)) ? 30 : 29)
 
@@ -1785,7 +1805,9 @@ function monthDays(y, m) {
 
 function solarDays(y, m) {
 
-  if (m > 12 || m < 1) { return -1 } // 若参数错误 返回-1
+  if (m > 12 || m < 1) {
+    return -1
+  } // 若参数错误 返回-1
 
   var ms = m - 1
 
@@ -1885,9 +1907,13 @@ function toGanZhi(offset) {
 
 function getTerm(y, n) {
 
-  if (y < 1900 || y > 2100) { return -1 }
+  if (y < 1900 || y > 2100) {
+    return -1
+  }
 
-  if (n < 1 || n > 24) { return -1 }
+  if (n < 1 || n > 24) {
+    return -1
+  }
 
   var _table = sTermInfo[y - 1900]
 
@@ -1989,7 +2015,9 @@ function getTerm(y, n) {
 
 function toChinaMonth(m) { // 月 => \u6708
 
-  if (m > 12 || m < 1) { return -1 } // 若参数错误 返回-1
+  if (m > 12 || m < 1) {
+    return -1
+  } // 若参数错误 返回-1
 
   var s = nStr3[m - 1]
 
@@ -2145,7 +2173,8 @@ function solar2lunar(y, m, d) { // 参数区间1900.1.31~2100.12.31
 
   if (offset < 0) {
 
-    offset += temp; i--
+    offset += temp;
+    i--
 
   }
 
@@ -2197,17 +2226,20 @@ function solar2lunar(y, m, d) { // 参数区间1900.1.31~2100.12.31
 
       --i
 
-      isLeap = true; temp = leapDays(year) // 计算农历闰月天数
+      isLeap = true;
+      temp = leapDays(year) // 计算农历闰月天数
 
     } else {
 
-      temp = monthDays(year, i)// 计算农历普通月天数
+      temp = monthDays(year, i) // 计算农历普通月天数
 
     }
 
     // 解除闰月
 
-    if (isLeap === true && i === (leap + 1)) { isLeap = false }
+    if (isLeap === true && i === (leap + 1)) {
+      isLeap = false
+    }
 
     offset -= temp
 
@@ -2223,7 +2255,8 @@ function solar2lunar(y, m, d) { // 参数区间1900.1.31~2100.12.31
 
     } else {
 
-      isLeap = true; --i
+      isLeap = true;
+      --i
 
     }
 
@@ -2231,7 +2264,8 @@ function solar2lunar(y, m, d) { // 参数区间1900.1.31~2100.12.31
 
   if (offset < 0) {
 
-    offset += temp; --i
+    offset += temp;
+    --i
 
   }
 
@@ -2303,7 +2337,27 @@ function solar2lunar(y, m, d) { // 参数区间1900.1.31~2100.12.31
 
   var astro = toAstro(m, d)
 
-  return { 'lYear': year, 'lMonth': month, 'lDay': day, 'Animal': getAnimal(year), 'IMonthCn': (isLeap ? '\u95f0' : '') + toChinaMonth(month), 'IDayCn': toChinaDay(day), 'cYear': y, 'cMonth': m, 'cDay': d, 'gzYear': gzY, 'gzMonth': gzM, 'gzDay': gzD, 'isToday': isToday, 'isLeap': isLeap, 'nWeek': nWeek, 'ncWeek': '\u661f\u671f' + cWeek, 'isTerm': isTerm, 'Term': Term, 'astro': astro }
+  return {
+    'lYear': year,
+    'lMonth': month,
+    'lDay': day,
+    'Animal': getAnimal(year),
+    'IMonthCn': (isLeap ? '\u95f0' : '') + toChinaMonth(month),
+    'IDayCn': toChinaDay(day),
+    'cYear': y,
+    'cMonth': m,
+    'cDay': d,
+    'gzYear': gzY,
+    'gzMonth': gzM,
+    'gzDay': gzD,
+    'isToday': isToday,
+    'isLeap': isLeap,
+    'nWeek': nWeek,
+    'ncWeek': '\u661f\u671f' + cWeek,
+    'isTerm': isTerm,
+    'Term': Term,
+    'astro': astro
+  }
 
 }
 
@@ -2343,9 +2397,13 @@ var calendarFormatter = {
 
     isLeapMonth = !!isLeapMonth
 
-    if (isLeapMonth && (leapMonth !== m)) { return -1 }// 传参要求计算该闰月公历 但该年得出的闰月与传参的月份并不同
+    if (isLeapMonth && (leapMonth !== m)) {
+      return -1
+    } // 传参要求计算该闰月公历 但该年得出的闰月与传参的月份并不同
 
-    if (y === 2100 && m === 12 && d > 1 || y === 1900 && m === 1 && d < 31) { return -1 } // 超出了最大极限值
+    if (y === 2100 && m === 12 && d > 1 || y === 1900 && m === 1 && d < 31) {
+      return -1
+    } // 超出了最大极限值
 
     var day = monthDays(y, m)
 
@@ -2361,7 +2419,9 @@ var calendarFormatter = {
 
     }
 
-    if (y < 1900 || y > 2100 || d > _day) { return -1 }// 参数合法性效验
+    if (y < 1900 || y > 2100 || d > _day) {
+      return -1
+    } // 参数合法性效验
 
 
 
@@ -2387,7 +2447,8 @@ var calendarFormatter = {
 
         if (leap <= i && leap > 0) {
 
-          offset += leapDays(y); isAdd = true
+          offset += leapDays(y);
+          isAdd = true
 
         }
 
@@ -2399,7 +2460,9 @@ var calendarFormatter = {
 
     // 转换闰月农历 需补充该年闰月的前一个月的时差
 
-    if (isLeapMonth) { offset += day }
+    if (isLeapMonth) {
+      offset += day
+    }
 
     // 1900年农历正月一日的公历时间为1900年1月30日0时0分0秒(该时间也是本农历的最开始起始点)
 
@@ -2461,80 +2524,80 @@ if (m == 8 && dd == 14) {
 
 
 // 节假日
-if (m == 10 && dd <= 3) {//国庆节
+if (m == 10 && dd <= 3) { //国庆节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("祝祖国" + (y - 1949).toString() + "岁生日快乐！");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 8 && dd == 15) {//搞来玩的，小日子投降
+if (m == 8 && dd == 15) { //搞来玩的，小日子投降
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("小日子已经投降" + (y - 1945).toString() + "年了😃");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 1 && dd == 1) {//元旦节
+if (m == 1 && dd == 1) { //元旦节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire(y.toString() + "年元旦快乐！🎉");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 3 && dd == 8) {//妇女节
+if (m == 3 && dd == 8) { //妇女节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("各位女神们，妇女节快乐！👩");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
 l = ["非常抱歉，因为不可控原因，博客将于明天停止运营！", "好消息，日本没了！", "美国垮了，原因竟然是川普！", "微软垮了！", "你的电脑已经过载，建议立即关机！", "你知道吗？站长很喜欢你哦！", "一分钟有61秒哦", "你喜欢的人跟别人跑了！"]
-if (m == 4 && dd == 1) {//愚人节，随机谎话
+if (m == 4 && dd == 1) { //愚人节，随机谎话
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire(l[Math.floor(Math.random() * l.length)]);
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 5 && dd == 1) {//劳动节
+if (m == 5 && dd == 1) { //劳动节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("劳动节快乐\n为各行各业辛勤工作的人们致敬！");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 5 && dd == 4) {//青年节
+if (m == 5 && dd == 4) { //青年节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("青年节快乐\n青春不是回忆逝去,而是把握现在！");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 5 && dd == 20) {//520
+if (m == 5 && dd == 20) { //520
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("今年是520情人节\n快和你喜欢的人一起过吧！💑");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 7 && dd == 1) {//建党节
+if (m == 7 && dd == 1) { //建党节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("祝中国共产党" + (y - 1921).toString() + "岁生日快乐！");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 9 && dd == 10) {//教师节
+if (m == 9 && dd == 10) { //教师节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("各位老师们教师节快乐！👩‍🏫");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 12 && dd == 25) {//圣诞节
+if (m == 12 && dd == 25) { //圣诞节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("圣诞节快乐！🎄");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 9 && dd == 15) {//站长生日
+if (m == 9 && dd == 15) { //站长生日
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("祝站长" + (y - 2003).toString() + "岁生日快乐！🌸");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if (m == 6 && dd == 30) {//小猫咪生日
+if (m == 6 && dd == 30) { //小猫咪生日
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("祝小猫咪" + (y - 1999).toString() + "岁生日快乐！🐱");
     sessionStorage.setItem("isPopupWindow", "1");
@@ -2543,13 +2606,13 @@ if (m == 6 && dd == 30) {//小猫咪生日
 
 //传统节日部分
 
-if ((y == 2023 && m == 4 && dd == 5) || (y == 2024 && m == 4 && dd == 4) || (y == 2025 && m == 4 && dd == 4)) {//清明节
+if ((y == 2023 && m == 4 && dd == 5) || (y == 2024 && m == 4 && dd == 4) || (y == 2025 && m == 4 && dd == 4)) { //清明节
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("清明时节雨纷纷,一束鲜花祭故人💐");
     sessionStorage.setItem("isPopupWindow", "1");
   }
 }
-if ((y == 2023 && m == 12 && dd == 22) || (y == 2024 && m == 12 && dd == 21) || (y == 2025 && m == 12 && dd == 21)) {//冬至
+if ((y == 2023 && m == 12 && dd == 22) || (y == 2024 && m == 12 && dd == 21) || (y == 2025 && m == 12 && dd == 21)) { //冬至
   if (sessionStorage.getItem("isPopupWindow") != "1") {
     Swal.fire("冬至快乐\n快吃上一碗热热的汤圆和饺子吧🧆");
     sessionStorage.setItem("isPopupWindow", "1");
@@ -2623,10 +2686,10 @@ Math.lerp = (a, b, n) => (1 - n) * a + n * b;
 
 const getStyle2 = (el, attr) => {
   try {
-    return window.getComputedStyle
-      ? window.getComputedStyle(el)[attr]
-      : el.currentStyle[attr];
-  } catch (e) { }
+    return window.getComputedStyle ?
+      window.getComputedStyle(el)[attr] :
+      el.currentStyle[attr];
+  } catch (e) {}
   return "";
 };
 
@@ -2647,7 +2710,10 @@ map.set('heoblue', "rgb(66, 90, 239)");
 
 class Cursor {
   constructor() {
-    this.pos = { curr: null, prev: null };
+    this.pos = {
+      curr: null,
+      prev: null
+    };
     this.pt = [];
     this.create();
     this.init();
@@ -2679,7 +2745,10 @@ class Cursor {
     this.scr.remove();
     this.cursor.classList.remove("hover");
     this.cursor.classList.remove("active");
-    this.pos = { curr: null, prev: null };
+    this.pos = {
+      curr: null,
+      prev: null
+    };
     this.pt = [];
 
     this.create();
@@ -2690,7 +2759,14 @@ class Cursor {
   init() {
     document.onmouseover = e => this.pt.includes(e.target.outerHTML) && this.cursor.classList.add("hover");
     document.onmouseout = e => this.pt.includes(e.target.outerHTML) && this.cursor.classList.remove("hover");
-    document.onmousemove = e => { (this.pos.curr == null) && this.move(e.clientX - 8, e.clientY - 8); this.pos.curr = { x: e.clientX - 8, y: e.clientY - 8 }; this.cursor.classList.remove("hidden"); };
+    document.onmousemove = e => {
+      (this.pos.curr == null) && this.move(e.clientX - 8, e.clientY - 8);
+      this.pos.curr = {
+        x: e.clientX - 8,
+        y: e.clientY - 8
+      };
+      this.cursor.classList.remove("hidden");
+    };
     document.onmouseenter = e => this.cursor.classList.remove("hidden");
     document.onmouseleave = e => this.cursor.classList.add("hidden");
     document.onmousedown = e => this.cursor.classList.add("active");
@@ -2791,12 +2867,13 @@ class Cursor {
 
 /* 页脚计时器 start */
 var now = new Date();
+
 function createtime() {
   // 当前时间
   now.setTime(now.getTime() + 1000);
   var start = new Date("9/05/1977 20:56:00"); // 旅行者1号开始计算的时间
   var dis = Math.trunc(23400000000 + ((now - start) / 1000) * 17); // 距离=秒数*速度 记住转换毫秒
-  var unit = (dis / 149600000).toFixed(6);  // 天文单位
+  var unit = (dis / 149600000).toFixed(6); // 天文单位
   // 网站诞生时间
   var grt = new Date("08/09/2022 00:00:00");
   var days = (now - grt) / 1e3 / 60 / 60 / 24,
@@ -2812,10 +2889,10 @@ function createtime() {
   1 == String(snum).length && (snum = "0" + snum);
   let currentTimeHtml = "";
   (currentTimeHtml =
-    hnum < 18 && hnum >= 9
-      ? `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E4%B8%8A%E8%AF%BE%E6%91%B8%E9%B1%BCing-39C5BB.svg' title='今天也是在被数学欺负呢~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`
-      : `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E7%A2%8E%E8%A7%89ing-39C5BB.svg' title='唔...被床封印啦~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`),
-    document.getElementById("workboard") &&
+    hnum < 18 && hnum >= 9 ?
+    `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E4%B8%8A%E8%AF%BE%E6%91%B8%E9%B1%BCing-39C5BB.svg' title='今天也是在被数学欺负呢~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>` :
+    `<img class='boardsign' src='https://d1wrd97t08mf0f.cloudfront.net/hexo/badge/%E5%88%9D%E6%A8%B1%E6%9C%AA%E6%9D%A5-%E7%A2%8E%E8%A7%89ing-39C5BB.svg' title='唔...被床封印啦~'><br> <div style="font-size:13px;font-weight:bold">本站居然运行了 ${dnum} 天 ${hnum} 小时 ${mnum} 分 ${snum} 秒 <i id="heartbeat" class='fas fa-heartbeat'></i> <br> 旅行者 1 号当前距离地球 ${dis} 千米，约为 ${unit} 个天文单位 🚀</div>`),
+  document.getElementById("workboard") &&
     (document.getElementById("workboard").innerHTML = currentTimeHtml);
 }
 // 设置重复执行函数，周期1000ms
@@ -2933,17 +3010,19 @@ if (localStorage.getItem("font") == undefined) {
   localStorage.setItem("font", "LXGW");
 }
 setFont(localStorage.getItem("font"));
+
 function setFont(n) {
   localStorage.setItem("font", n)
   if (n == "default") {
     document.documentElement.style.setProperty('--global-font', '-apple-system');
     document.body.style.fontFamily = "-apple-system, Consolas_1, BlinkMacSystemFont, 'Segoe UI' , 'Helvetica Neue' , Lato, Roboto, 'PingFang SC' , 'Microsoft JhengHei' , 'Microsoft YaHei' , sans-serif , XK , HANAA , HANAB";
-  }
-  else {
+  } else {
     document.documentElement.style.setProperty('--global-font', n);
     document.body.style.fontFamily = "var(--global-font),-apple-system, IBM Plex Mono ,monosapce,'微软雅黑', sans-serif , XK , HANAA , HANAB";
   }
-  try { setFontBorder(); } catch (err) { };
+  try {
+    setFontBorder();
+  } catch (err) {};
 }
 
 // 设置字体选择框边界
@@ -2962,6 +3041,7 @@ if (localStorage.getItem("themeColor") == undefined) {
   localStorage.setItem("themeColor", "green");
 }
 setColor(localStorage.getItem("themeColor"));
+
 function setColor(c) {
   document.getElementById("themeColor").innerText = `:root{--theme-color:` + map.get(c) + ` !important}`;
   localStorage.setItem("themeColor", c);
@@ -2981,10 +3061,12 @@ if (localStorage.getItem("universe") == undefined) {
   localStorage.setItem("universe", "block");
 }
 setUniverse2(localStorage.getItem("universe"));
+
 function setUniverse2(c) {
   document.getElementById("universe").style.display = c;
   localStorage.setItem("universe", c);
 }
+
 function setUniverse() {
   if (document.getElementById("universeSet").checked) {
     setUniverse2("block");
@@ -2998,6 +3080,7 @@ if (localStorage.getItem("snow") == undefined) {
   localStorage.setItem("snow", "none");
 }
 document.getElementById("snow").style.display = localStorage.getItem("snow");
+
 function setSnow() {
   if (document.getElementById("snowSet").checked) {
     document.getElementById("snow").style.display = "block";
@@ -3013,6 +3096,7 @@ function setSnow() {
 if (localStorage.getItem("fpson") == undefined) {
   localStorage.setItem("fpson", "1");
 }
+
 function fpssw() {
   if (document.getElementById("fpson").checked) {
     localStorage.setItem("fpson", "1");
@@ -3036,6 +3120,7 @@ if (localStorage.getItem("rs") == "block") {
 } else {
   document.getElementById("rightSide").innerText = `:root{--rightside-display: none}`;
 }
+
 function toggleRightside() {
   // 先设置localStorage变量
   if (document.getElementById("rightSideSet").checked) {
@@ -3055,6 +3140,7 @@ if (localStorage.getItem("transNum") == undefined) {
 var curTransNum = localStorage.getItem("transNum");
 var curTransMini = curTransNum * 0.95;
 document.getElementById("transPercent").innerText = `:root{--trans-light: rgba(253, 253, 253, ${curTransNum}%) !important; --trans-dark: rgba(25, 25, 25, ${curTransNum}%) !important} `;
+
 function setTrans() {
   var elem = document.getElementById("transSet");
   var newTransNum = elem.value;
@@ -3062,7 +3148,7 @@ function setTrans() {
   target.innerHTML = "透明度 (0%-100%): " + newTransNum + "%";
   localStorage.setItem("transNum", newTransNum);
   curTransMini = newTransNum * 0.95;
-  curTransNum = newTransNum;  // 更新当前透明度
+  curTransNum = newTransNum; // 更新当前透明度
   document.querySelector('#rang_trans').style.width = curTransMini + "%";
   document.getElementById("transPercent").innerText = `:root{--trans-light: rgba(253, 253, 253, ${newTransNum}%) !important; --trans-dark: rgba(25, 25, 25, ${newTransNum}%) !important} `;
 };
@@ -3075,6 +3161,7 @@ if (localStorage.getItem("blurRad") == undefined) {
 var curBlur = localStorage.getItem("blurRad"); // 当前模糊半径
 var miniBlur = curBlur * 0.95;
 document.getElementById("blurNum").innerText = `:root{--blur-num: blur(${curBlur}px) saturate(120%) !important`;
+
 function setBlurNum() {
   var elem = document.getElementById("blurSet");
   var newBlur = elem.value;
@@ -3098,6 +3185,7 @@ if (localStorage.getItem("blur") == 0) {
 } else {
   document.getElementById("settingStyle").innerText = `:root{--backdrop-filter: var(--blur-num)}`;
 }
+
 function setBlur() {
   if (document.getElementById("blur").checked) {
     localStorage.setItem("blur", 1);
@@ -3152,6 +3240,7 @@ function setBlur() {
 
 // 切换自定义颜色
 var defineColor = localStorage.getItem("blogbg") && localStorage.getItem("blogbg").charAt(0) == '#' ? localStorage.getItem("blogbg") : '#F4D88A';
+
 function changeBgColor() {
   changeBg(document.querySelector("#define_colors").value);
 }
@@ -3272,6 +3361,7 @@ document.addEventListener('pjax:complete', function () {
 document.addEventListener('DOMContentLoaded', function () {
   changeLight(localStorage.getItem("light") == "true" ? true : false)
 });
+
 function setLight() {
   if (document.getElementById("lightSet").checked) {
     changeLight(true);
@@ -3583,14 +3673,17 @@ function switchPostChart() {
       let categoriesOptionNew = categoriesOption
       categoriesOptionNew.title.textStyle.color = color
       categoriesOptionNew.legend.textStyle.color = color
-      if (!categoryParentFlag) { categoriesOptionNew.series[0].label.color = color }
+      if (!categoryParentFlag) {
+        categoriesOptionNew.series[0].label.color = color
+      }
       categoriesChart.setOption(categoriesOptionNew)
     } catch (error) {
       console.log(error)
     }
   }
 }
-$(document.getElementById("mode-button")).ready(addEventListener("click", function () { setTimeout(switchPostChart, 100) }))
+$(document.getElementById("mode-button")).ready(addEventListener("click", function () {
+  setTimeout(switchPostChart, 100)
+}))
 //document.getElementById("mode-button").addEventListener("click", function () { setTimeout(switchPostChart, 100) })
 /* chart模块明暗适配 end */
-
