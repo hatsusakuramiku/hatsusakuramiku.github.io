@@ -2,15 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://hsmk.mikufans.date/baidu_verify_codeva-9SNvWQqexq.html</loc>
-    
-    <lastmod>2025-01-29</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://hsmk.mikufans.date/posts/61cbfabc.html</loc>
     
     <lastmod>2025-01-28</lastmod>
@@ -146,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/charts/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/echarts/index.html</loc>
     
     <lastmod>2022-09-10</lastmod>
     
@@ -155,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/echarts/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/charts/index.html</loc>
     
     <lastmod>2022-09-10</lastmod>
     
@@ -196,13 +187,6 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
-    <lastmod>2025-01-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://hsmk.mikufans.date/categories/HSMK-TOOL/</loc>
     <lastmod>2025-01-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -211,6 +195,13 @@
   
   <url>
     <loc>https://hsmk.mikufans.date/categories/zhenxun-bot/</loc>
+    <lastmod>2025-01-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
     <lastmod>2025-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
