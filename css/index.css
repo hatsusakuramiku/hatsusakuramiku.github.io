@@ -6584,7 +6584,7 @@ blockquote.pullquote.right {
 
 @font-face {
   font-family: MiSans;
-  src: url(https://data-static.netdun.net/Fomalhaut/fonts/MiSans.woff2);
+  src: url(https://hsmkhexo.s3.ap-northeast-1.amazonaws.com/hexo/font/MiSans-Normal.woff2);
   font-display: swap;
 }
 
