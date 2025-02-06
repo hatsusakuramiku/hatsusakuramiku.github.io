@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/echarts/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/charts/index.html</loc>
     
     <lastmod>2022-09-10</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/charts/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/echarts/index.html</loc>
     
     <lastmod>2022-09-10</lastmod>
     
@@ -187,14 +187,14 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
     <lastmod>2025-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
     <lastmod>2025-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
