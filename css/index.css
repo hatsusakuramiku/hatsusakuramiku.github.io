@@ -6578,13 +6578,13 @@ blockquote.pullquote.right {
 /* 字体引入 */
 @font-face {
   font-family: YSHST;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/优设好身体.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/优设好身体.woff2);
   font-display: swap;
 }
 
 @font-face {
   font-family: MiSans;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/MiSans-Normal.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/MiSans-Normal.woff2);
   font-display: swap;
 }
 
@@ -6596,7 +6596,7 @@ blockquote.pullquote.right {
 
 @font-face {
   font-family: LXGW;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/霞鹜文楷.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/霞鹜文楷.woff2);
   font-display: swap;
 }
 
@@ -6608,7 +6608,7 @@ blockquote.pullquote.right {
 
 @font-face {
   font-family: Consolas_1;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/Consolas.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/Consolas.woff2);
   font-display: swap;
 }
 
@@ -6620,19 +6620,19 @@ blockquote.pullquote.right {
 
 @font-face {
   font-family: XK;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/FANGZHENGXK.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/FANGZHENGXK.woff2);
   font-display: swap;
 }
 
 @font-face {
   font-family: HANAA;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/HanaMinA.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/HanaMinA.woff2);
   font-display: swap;
 }
 
 @font-face {
   font-family: HANAB;
-  src: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/font/HanaMinB.woff2);
+  src: url(https://aws.mikufans.date/hexo/font/HanaMinB.woff2);
   font-display: swap;
 }
 
@@ -7899,7 +7899,7 @@ input#pic-link {
 
 /* heo 加载动画头像 */
 .loading-img {
-  background: url(https://d1wrd97t08mf0f.cloudfront.net/hexo/img/gallery/post/1628397182442.webp) no-repeat center center;
+  background: url(https://aws.mikufans.date/hexo/img/gallery/post/1628397182442.webp) no-repeat center center;
   background-size: cover;
 }
 
