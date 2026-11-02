@@ -3,367 +3,41 @@
  * Only blogbg is managed here. resetBg_ / setBg remain the site's four-mode CSS contract.
  */
 var AP_BACKGROUND_CATALOG = [
-  {
-    "id": "anime-1",
-    "category": "anime",
-    "name": "二次元 01",
-    "thumb": "https://picsum.photos/seed/yuanshen1/400/225",
-    "value": "url(https://picsum.photos/seed/yuanshen1/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-2",
-    "category": "anime",
-    "name": "二次元 02",
-    "thumb": "https://picsum.photos/seed/dm15/400/225",
-    "value": "url(https://picsum.photos/seed/dm15/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-3",
-    "category": "anime",
-    "name": "二次元 03",
-    "thumb": "https://picsum.photos/seed/dm2/400/225",
-    "value": "url(https://picsum.photos/seed/dm2/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-4",
-    "category": "anime",
-    "name": "二次元 04",
-    "thumb": "https://picsum.photos/seed/dm7/400/225",
-    "value": "url(https://picsum.photos/seed/dm7/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-5",
-    "category": "anime",
-    "name": "二次元 05",
-    "thumb": "https://picsum.photos/seed/dm8/400/225",
-    "value": "url(https://picsum.photos/seed/dm8/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-6",
-    "category": "anime",
-    "name": "二次元 06",
-    "thumb": "https://picsum.photos/seed/dm3/400/225",
-    "value": "url(https://picsum.photos/seed/dm3/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-7",
-    "category": "anime",
-    "name": "二次元 07",
-    "thumb": "https://picsum.photos/seed/dm11/400/225",
-    "value": "url(https://picsum.photos/seed/dm11/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "anime-8",
-    "category": "anime",
-    "name": "二次元 08",
-    "thumb": "https://picsum.photos/seed/dm12/400/225",
-    "value": "url(https://picsum.photos/seed/dm12/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-1",
-    "category": "landscape",
-    "name": "风景 01",
-    "thumb": "https://picsum.photos/seed/fj1/400/225",
-    "value": "url(https://picsum.photos/seed/fj1/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-2",
-    "category": "landscape",
-    "name": "风景 02",
-    "thumb": "https://picsum.photos/seed/fj2/400/225",
-    "value": "url(https://picsum.photos/seed/fj2/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-3",
-    "category": "landscape",
-    "name": "风景 03",
-    "thumb": "https://picsum.photos/seed/fj3/400/225",
-    "value": "url(https://picsum.photos/seed/fj3/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-4",
-    "category": "landscape",
-    "name": "风景 04",
-    "thumb": "https://picsum.photos/seed/fj4/400/225",
-    "value": "url(https://picsum.photos/seed/fj4/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-5",
-    "category": "landscape",
-    "name": "风景 05",
-    "thumb": "https://picsum.photos/seed/fj5/400/225",
-    "value": "url(https://picsum.photos/seed/fj5/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-6",
-    "category": "landscape",
-    "name": "风景 06",
-    "thumb": "https://picsum.photos/seed/fj6/400/225",
-    "value": "url(https://picsum.photos/seed/fj6/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-7",
-    "category": "landscape",
-    "name": "风景 07",
-    "thumb": "https://picsum.photos/seed/fj7/400/225",
-    "value": "url(https://picsum.photos/seed/fj7/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "landscape-8",
-    "category": "landscape",
-    "name": "风景 08",
-    "thumb": "https://picsum.photos/seed/fj8/400/225",
-    "value": "url(https://picsum.photos/seed/fj8/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-1",
-    "category": "pets",
-    "name": "萌宠 01",
-    "thumb": "https://picsum.photos/seed/mc1/400/225",
-    "value": "url(https://picsum.photos/seed/mc1/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-2",
-    "category": "pets",
-    "name": "萌宠 02",
-    "thumb": "https://picsum.photos/seed/mc2/400/225",
-    "value": "url(https://picsum.photos/seed/mc2/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-3",
-    "category": "pets",
-    "name": "萌宠 03",
-    "thumb": "https://picsum.photos/seed/mc3/400/225",
-    "value": "url(https://picsum.photos/seed/mc3/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-4",
-    "category": "pets",
-    "name": "萌宠 04",
-    "thumb": "https://picsum.photos/seed/mc4/400/225",
-    "value": "url(https://picsum.photos/seed/mc4/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-5",
-    "category": "pets",
-    "name": "萌宠 05",
-    "thumb": "https://picsum.photos/seed/mc5/400/225",
-    "value": "url(https://picsum.photos/seed/mc5/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-6",
-    "category": "pets",
-    "name": "萌宠 06",
-    "thumb": "https://picsum.photos/seed/mc6/400/225",
-    "value": "url(https://picsum.photos/seed/mc6/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-7",
-    "category": "pets",
-    "name": "萌宠 07",
-    "thumb": "https://picsum.photos/seed/mc7/400/225",
-    "value": "url(https://picsum.photos/seed/mc7/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "pets-8",
-    "category": "pets",
-    "name": "萌宠 08",
-    "thumb": "https://picsum.photos/seed/mc8/400/225",
-    "value": "url(https://picsum.photos/seed/mc8/1920/1080)",
-    "kind": "image"
-  },
-  {
-    "id": "gradient-1",
-    "category": "colors",
-    "name": "渐变 01",
-    "value": "linear-gradient(to right, #544a7d, #ffd452)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-2",
-    "category": "colors",
-    "name": "渐变 02",
-    "value": "linear-gradient(to bottom, #7f7fd5, #86a8e7, #91eae4)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-3",
-    "category": "colors",
-    "name": "渐变 03",
-    "value": "linear-gradient(to left, #654ea3, #eaafc8)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-4",
-    "category": "colors",
-    "name": "渐变 04",
-    "value": "linear-gradient(to top, #feac5e, #c779d0, #4bc0c8)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-5",
-    "category": "colors",
-    "name": "渐变 05",
-    "value": "linear-gradient(to top, #d3959b, #bfe6ba)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-6",
-    "category": "colors",
-    "name": "渐变 06",
-    "value": "linear-gradient(to top, #8360c3, #2ebf91)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-7",
-    "category": "colors",
-    "name": "渐变 07",
-    "value": "linear-gradient(to top, #108dc7, #ef8e38)",
-    "kind": "gradient"
-  },
-  {
-    "id": "gradient-8",
-    "category": "colors",
-    "name": "渐变 08",
-    "value": "linear-gradient(to top, #355c7d, #6c5b7b, #c06c84)",
-    "kind": "gradient"
-  },
-  {
-    "id": "solid-1",
-    "category": "colors",
-    "name": "纯色 01",
-    "value": "#ecb1b1",
-    "kind": "solid"
-  },
-  {
-    "id": "solid-2",
-    "category": "colors",
-    "name": "纯色 02",
-    "value": "#d3ebac",
-    "kind": "solid"
-  },
-  {
-    "id": "solid-3",
-    "category": "colors",
-    "name": "纯色 03",
-    "value": "#ace9ce",
-    "kind": "solid"
-  },
-  {
-    "id": "solid-4",
-    "category": "colors",
-    "name": "纯色 04",
-    "value": "#c1ebea",
-    "kind": "solid"
-  },
-  {
-    "id": "solid-5",
-    "category": "colors",
-    "name": "纯色 05",
-    "value": "#dee7f1",
-    "kind": "solid"
-  },
-  {
-    "id": "solid-6",
-    "category": "colors",
-    "name": "纯色 06",
-    "value": "#e9e3f2",
-    "kind": "solid"
-  },
-  {
-    "id": "solid-7",
-    "category": "colors",
-    "name": "纯色 07",
-    "value": "#f7eff5",
-    "kind": "solid"
-  },
-  {
-    "id": "mobile-1",
-    "category": "mobile",
-    "name": "手机 01",
-    "thumb": "https://picsum.photos/seed/mb4/400/225",
-    "value": "url(https://picsum.photos/seed/mb4/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-2",
-    "category": "mobile",
-    "name": "手机 02",
-    "thumb": "https://picsum.photos/seed/mb5/400/225",
-    "value": "url(https://picsum.photos/seed/mb5/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-3",
-    "category": "mobile",
-    "name": "手机 03",
-    "thumb": "https://picsum.photos/seed/mb6/400/225",
-    "value": "url(https://picsum.photos/seed/mb6/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-4",
-    "category": "mobile",
-    "name": "手机 04",
-    "thumb": "https://picsum.photos/seed/mb7/400/225",
-    "value": "url(https://picsum.photos/seed/mb7/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-5",
-    "category": "mobile",
-    "name": "手机 05",
-    "thumb": "https://picsum.photos/seed/mb8/400/225",
-    "value": "url(https://picsum.photos/seed/mb8/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-6",
-    "category": "mobile",
-    "name": "手机 06",
-    "thumb": "https://picsum.photos/seed/mb9/400/225",
-    "value": "url(https://picsum.photos/seed/mb9/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-7",
-    "category": "mobile",
-    "name": "手机 07",
-    "thumb": "https://picsum.photos/seed/mb16/400/225",
-    "value": "url(https://picsum.photos/seed/mb16/1080/1920)",
-    "kind": "image"
-  },
-  {
-    "id": "mobile-8",
-    "category": "mobile",
-    "name": "手机 08",
-    "thumb": "https://picsum.photos/seed/mb19/400/225",
-    "value": "url(https://picsum.photos/seed/mb19/1080/1920)",
-    "kind": "image"
-  }
+  {"id": "anime-1", "category": "anime", "name": "PID:100513742_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/100513742_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/100513742_p0.webp)", "kind": "image"},
+  {"id": "anime-2", "category": "anime", "name": "PID:100723659_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/100723659_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/100723659_p0.webp)", "kind": "image"},
+  {"id": "anime-3", "category": "anime", "name": "PID:100886812_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/100886812_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/100886812_p0.webp)", "kind": "image"},
+  {"id": "anime-4", "category": "anime", "name": "PID:100891310_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/100891310_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/100891310_p0.webp)", "kind": "image"},
+  {"id": "anime-5", "category": "anime", "name": "PID:102673006_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/102673006_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/102673006_p0.webp)", "kind": "image"},
+  {"id": "anime-6", "category": "anime", "name": "PID:102673006_p1", "thumb": "https://aws.mikufans.date/hexo/img/background/102673006_p1.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/102673006_p1.webp)", "kind": "image"},
+  {"id": "anime-7", "category": "anime", "name": "PID:102673006_p2", "thumb": "https://aws.mikufans.date/hexo/img/background/102673006_p2.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/102673006_p2.webp)", "kind": "image"},
+  {"id": "anime-8", "category": "anime", "name": "PID:102879503_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/102879503_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/102879503_p0.webp)", "kind": "image"},
+  {"id": "anime-9", "category": "anime", "name": "PID:104627387_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/104627387_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/104627387_p0.webp)", "kind": "image"},
+  {"id": "anime-10", "category": "anime", "name": "PID:105903003_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/105903003_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/105903003_p0.webp)", "kind": "image"},
+  {"id": "mobile-1", "category": "mobile", "name": "PID:105475620_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/105475620_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/105475620_p0.webp)", "kind": "image"},
+  {"id": "mobile-2", "category": "mobile", "name": "PID:105596080_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/105596080_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/105596080_p0.webp)", "kind": "image"},
+  {"id": "mobile-3", "category": "mobile", "name": "PID:106047122_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/106047122_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/106047122_p0.webp)", "kind": "image"},
+  {"id": "mobile-4", "category": "mobile", "name": "PID:32740714_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/32740714_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/32740714_p0.webp)", "kind": "image"},
+  {"id": "mobile-5", "category": "mobile", "name": "PID:57877623_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/57877623_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/57877623_p0.webp)", "kind": "image"},
+  {"id": "mobile-6", "category": "mobile", "name": "PID:60223956_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/60223956_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/60223956_p0.webp)", "kind": "image"},
+  {"id": "mobile-7", "category": "mobile", "name": "PID:63709645_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/63709645_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/63709645_p0.webp)", "kind": "image"},
+  {"id": "mobile-8", "category": "mobile", "name": "PID:65582627_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/65582627_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/65582627_p0.webp)", "kind": "image"},
+  {"id": "mobile-9", "category": "mobile", "name": "PID:66965508_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/66965508_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/66965508_p0.webp)", "kind": "image"},
+  {"id": "mobile-10", "category": "mobile", "name": "PID:67394923_p0", "thumb": "https://aws.mikufans.date/hexo/img/background/phone/67394923_p0.webp", "value": "url(https://aws.mikufans.date/hexo/img/background/phone/67394923_p0.webp)", "kind": "image"},
+  {"id": "gradient-1", "category": "gradient", "name": "渐变 01", "thumb": "linear-gradient(to right, #544a7d, #ffd452)", "value": "linear-gradient(to right, #544a7d, #ffd452)", "kind": "gradient"},
+  {"id": "gradient-2", "category": "gradient", "name": "渐变 02", "thumb": "linear-gradient(to bottom, #7f7fd5, #86a8e7, #91eae4)", "value": "linear-gradient(to bottom, #7f7fd5, #86a8e7, #91eae4)", "kind": "gradient"},
+  {"id": "gradient-3", "category": "gradient", "name": "渐变 03", "thumb": "linear-gradient(to left, #654ea3, #eaafc8)", "value": "linear-gradient(to left, #654ea3, #eaafc8)", "kind": "gradient"},
+  {"id": "gradient-4", "category": "gradient", "name": "渐变 04", "thumb": "linear-gradient(to top, #feac5e, #c779d0, #4bc0c8)", "value": "linear-gradient(to top, #feac5e, #c779d0, #4bc0c8)", "kind": "gradient"},
+  {"id": "gradient-5", "category": "gradient", "name": "渐变 05", "thumb": "linear-gradient(to top, #d3959b, #bfe6ba)", "value": "linear-gradient(to top, #d3959b, #bfe6ba)", "kind": "gradient"},
+  {"id": "gradient-6", "category": "gradient", "name": "渐变 06", "thumb": "linear-gradient(to top, #8360c3, #2ebf91)", "value": "linear-gradient(to top, #8360c3, #2ebf91)", "kind": "gradient"},
+  {"id": "gradient-7", "category": "gradient", "name": "渐变 07", "thumb": "linear-gradient(to top, #108dc7, #ef8e38)", "value": "linear-gradient(to top, #108dc7, #ef8e38)", "kind": "gradient"},
+  {"id": "gradient-8", "category": "gradient", "name": "渐变 08", "thumb": "linear-gradient(to top, #355c7d, #6c5b7b, #c06c84)", "value": "linear-gradient(to top, #355c7d, #6c5b7b, #c06c84)", "kind": "gradient"},
+  {"id": "color-1", "category": "color", "name": "#ecb1b1", "thumb": "#ecb1b1", "value": "#ecb1b1", "kind": "solid"},
+  {"id": "color-2", "category": "color", "name": "#d3ebac", "thumb": "#d3ebac", "value": "#d3ebac", "kind": "solid"},
+  {"id": "color-3", "category": "color", "name": "#ace9ce", "thumb": "#ace9ce", "value": "#ace9ce", "kind": "solid"},
+  {"id": "color-4", "category": "color", "name": "#c1ebea", "thumb": "#c1ebea", "value": "#c1ebea", "kind": "solid"},
+  {"id": "color-5", "category": "color", "name": "#dee7f1", "thumb": "#dee7f1", "value": "#dee7f1", "kind": "solid"},
+  {"id": "color-6", "category": "color", "name": "#e9e3f2", "thumb": "#e9e3f2", "value": "#e9e3f2", "kind": "solid"},
+  {"id": "color-7", "category": "color", "name": "#f7eff5", "thumb": "#f7eff5", "value": "#f7eff5", "kind": "solid"}
 ];
 var AP_BACKGROUND_CATEGORIES = [{id:'anime',name:'二次元'},{id:'landscape',name:'风景'},{id:'pets',name:'萌宠'},{id:'mobile',name:'手机'}];
 var AP_BACKGROUND_APIS = [
@@ -419,7 +93,8 @@ function appearanceBackgroundDefaultUrl() {
   var dark=!!(root && root.getAttribute('data-theme') === 'dark');
   var width=typeof window !== 'undefined' ? window.innerWidth : (root && root.clientWidth);
   var mobile=typeof width === 'number' && width <= 768;
-  return mobile ? (dark ? 'https://picsum.photos/id/1039/1920/1080' : 'https://picsum.photos/id/1018/1920/1080') : (dark ? 'https://picsum.photos/id/1044/1920/1080' : 'https://picsum.photos/id/1015/1920/1080');
+  var B='https://aws.mikufans.date/hexo/img/background/';
+  return mobile ? (dark ? B+'92364287.webp' : B+'100723659_p0.webp') : (dark ? B+'92364287.webp' : B+'100723659_p0.webp');
 }
 function appearanceBackgroundWatchEnvironment() {
   if(apBackgroundState.environmentListening) return;
