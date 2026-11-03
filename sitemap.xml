@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hsmk.mikufans.date/posts/fa22591e.html</loc>
+    
+    <lastmod>2026-11-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hsmk.mikufans.date/posts/6974e85a.html</loc>
+    
+    <lastmod>2026-11-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/posts/6c86318b.html</loc>
     
     <lastmod>2026-11-03</lastmod>
@@ -101,7 +119,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/life/music/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/census/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -110,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/census/index.html</loc>
+    <loc>https://hsmk.mikufans.date/life/music/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -234,6 +252,13 @@
   </url>
   
   <url>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/categories/zhenxun-bot/</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
@@ -242,13 +267,6 @@
   
   <url>
     <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
