@@ -1,0 +1,656 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><script>if ('serviceWorker' in navigator) {
+  var isLocalDev = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(location.hostname) !== -1
+  if (isLocalDev) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { r.unregister() })
+    })
+  } else {
+    navigator.serviceWorker.register('/sw.js').then(function () {
+      if (localStorage.getItem('install') !== 'true') {
+        localStorage.setItem('install', 'true')
+        location.reload()
+      }
+    })
+  }
+}
+</script><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>第 1 章 常微分初值问题（一）：Euler 法与梯形格式 | 初樱小站</title><meta name="keywords" content="数值解,Euler法,隐式Euler,梯形格式,截断误差,数值稳定性"><meta name="author" content="Hatsusakuramiku"><meta name="copyright" content="Hatsusakuramiku"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="从泰勒展开推出 Euler 法与隐式 Euler 法，几何直观与截断误差分析，梯形格式的二阶精度，以及三种格式的稳定性对比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第 1 章 常微分初值问题（一）：Euler 法与梯形格式">
+<meta property="og:url" content="https://hsmk.mikufans.date/posts/14feb38a.html">
+<meta property="og:site_name" content="初樱小站">
+<meta property="og:description" content="从泰勒展开推出 Euler 法与隐式 Euler 法，几何直观与截断误差分析，梯形格式的二阶精度，以及三种格式的稳定性对比">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp">
+<meta property="article:published_time" content="2026-11-06T16:16:45.000Z">
+<meta property="article:modified_time" content="2026-11-06T16:16:45.000Z">
+<meta property="article:author" content="Hatsusakuramiku">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://hsmk.mikufans.date/posts/14feb38a"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//events.vercount.one"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.0.0/files/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"YOUR_ALGOLIA_APP_ID","apiKey":"YOUR_ALGOLIA_SEARCH_KEY","indexName":"your_index_name","hits":{"per_page":5},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第 1 章 常微分初值问题（一）：Euler 法与梯形格式',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-07 00:16:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="preconnect" href="https://registry.npmmirror.com"><link rel="preconnect" href="https://registry.npmmirror.com" crossorigin><link rel="preconnect" href="https://npm.elemecdn.com"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="font" type="font/woff2" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-tc@5/files/lxgw-wenkai-tc-chinese-traditional-400-normal.woff2" crossorigin><link rel="preconnect" href="https://sdk.51.la"><link rel="preconnect" href="https://sdk.51.la" crossorigin><link rel="dns-prefetch" href="https://at.alicdn.com"><link rel="dns-prefetch" href="https://lib.baomitu.com"><link rel="stylesheet" href="/css/stats.css?v=20261005"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="bgFilterParam"></style><span id="fps" aria-hidden="true"></span><style id="defineBg">:root{--default-bg:url(https://aws.mikufans.date/hexo/img/background/100513742_p0.webp);--darkmode-bg:url(https://aws.mikufans.date/hexo/img/background/100723659_p0.webp);--mobileday-bg:url(https://aws.mikufans.date/hexo/img/background/100886812_p0.webp);--mobilenight-bg:url(https://aws.mikufans.date/hexo/img/background/100891310_p0.webp);}</style><style id="menu_shadow"></style><style id="nav-display"></style><style id="aside-show"></style><style id="aside-pos"></style><link rel="stylesheet" href="/css/site-inject.css?v=20261015-fps4"><link rel="stylesheet" href="/css/navigation.css?v=20261011-nav3"><link rel="stylesheet" href="/css/mobile-drawer.css?v=20261008"><link rel="stylesheet" href="/css/avatar-glow.css?v=20261004q"><link rel="stylesheet" href="/css/timeline-archive.css?v=20261011d"><script defer src="/js/timeline-archive.js?v=20261011b"></script><link rel="stylesheet" href="/css/about-page.css?v=20261006"><script src="/js/inject/ping-route-boot.js"></script><script src="/js/inject/ping-route.js"></script><script src="/js/inject/beauty-boot.js?v=20261015-solid3"></script><script src="/js/inject/right-menu-state-boot.js"></script><script>window.fomalNightConfig=window.fomalNightConfig||{enabled:true,latLng:null,themeKey:'theme'}</script><script src="/js/inject/daynight-boot.js?v=20261014-nightboot2"></script><script src="/js/inject/typewriter.js?v=20261004b"></script><link rel="stylesheet" href="/css/typewriter.css?v=20261004"><link rel="stylesheet" href="/css/paperclip.css?v=20261005-mobile1"><link rel="stylesheet" href="/css/archive-page.css?v=20261018-scrollfix"><script defer src="/js/inject/archive-page.js?v=20261018-scrollfix"></script><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="/css/gitcalendar.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="初樱小站" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">初樱小站</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-sousuo"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-huahua"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">第 1 章 常微分初值问题（一）：Euler 法与梯形格式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2026-11-06T16:16:45.000Z" title="发表于 2026-11-07 00:16:45">2026-11-07</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-06T16:16:45.000Z" title="更新于 2026-11-07 00:16:45">2026-11-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/HSMK-NUMERICAL/">HSMK-NUMERICAL</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">2822</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第 1 章 常微分初值问题（一）：Euler 法与梯形格式"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv">—</span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="note info flat"><p><strong>封面图片 PID：<a target="_blank" rel="noopener" href="https://www.pixiv.net/artworks/1628397182442">1628397182442</a></strong></p>
+</div>
+<blockquote>
+<p><strong>常微分与偏微分方程数值解 导航栏</strong></p>
+<ul>
+<li><a href="/posts/7efa69f2.html">系列总览与导航</a></li>
+<li>第 1 章 常微分初值问题
+<ul>
+<li>1.1 Euler 法与梯形格式（本篇）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr>
+<div class="note info flat"><p>前置知识：泰勒展开、中值定理、一阶常微分方程初值问题的适定性。</p>
+</div>
+<h2 id="center-p-1-1-一阶常微分方程初值问题-p-center"><center><p>1.1 一阶常微分方程初值问题</p></center></h2>
+<p>  本系列从最简单的问题开始：</p>
+<p>$$\begin{cases} y^{\prime}(t) = f(t,y), &amp; a \le t \le b \ y(a) = y_0 \end{cases} \tag{1.1.1}$$</p>
+<p>  这是<strong>一阶常微分方程（ODE）的初值问题</strong>，也叫 Cauchy 问题。</p>
+<p>  <strong>解的存在唯一性</strong>：若 $f(t,y)$ 在区域 $D = {(t,y): a\le t\le b,\ |y|&lt;\infty}$ 上连续，且关于 $y$ 满足 <strong>Lipschitz 条件</strong>——存在常数 $L$ 使</p>
+<p>$$|f(t,y_1) - f(t,y_2)| \le L|y_1-y_2| \tag{1.1.2}$$</p>
+<p>  则初值问题 (1.1.1) 在 $[a,b]$ 上有唯一解。$L$ 称为 <strong>Lipschitz 常数</strong>。</p>
+<div class="note info flat"><p><strong>为什么必须有 Lipschitz 条件</strong>？反例：$y^{\prime} = \sqrt{|y|}$，$y(0)=0$。它有两个解：$y\equiv0$ 和 $y = t^2/4$（当 $t\ge0$）。这是因为 $\sqrt{|y|}$ 在 $y=0$ 附近不满足 Lipschitz 条件。</p>
+<p><strong>几乎所有数值方法的误差估计都要用到 $L$</strong>——它衡量了&quot;解对初值扰动的敏感程度&quot;。</p>
+</div>
+<h2 id="center-p-1-2-Euler-法的推导-p-center"><center><p>1.2 Euler 法的推导</p></center></h2>
+<p>  <strong>数值解的基本思路</strong>：把连续区间 $[a,b]$ 离散化，只求有限个点上的近似值。</p>
+<p>  取<strong>步长</strong> $h = (b-a)/n$，节点 $t_k = a + kh$（$k=0,1,\dots,n$）。记 $y_k \approx y(t_k)$。</p>
+<h3 id="center-p-1-2-1-从泰勒展开出发-p-center"><center><p>1.2.1 从泰勒展开出发</p></center></h3>
+<p>  把精确解 $y(t)$ 在 $t_k$ 处做泰勒展开：</p>
+<p>$$y(t_{k+1}) = y(t_k) + h y^{\prime}(t_k) + \frac{h^2}{2}y^{\prime\prime}(\xi_k) \tag{1.2.1}$$</p>
+<p>  由方程 $y^{\prime}(t_k) = f(t_k, y(t_k))$，代入：</p>
+<p>$$y(t_{k+1}) = y(t_k) + h f(t_k, y(t_k)) + \frac{h^2}{2}y^{\prime\prime}(\xi_k)$$</p>
+<p>  <strong>丢掉二阶项</strong>，并用 $y_k$ 代替 $y(t_k)$，得到<strong>Euler 法</strong>（显式 Euler、前向 Euler）：</p>
+<p>$$y_{k+1} = y_k + h f(t_k, y_k), \qquad k = 0,1,\dots,n-1 \tag{1.2.2}$$</p>
+<div class="note info flat"><p><strong>几何意义</strong>：Euler 法用<strong>切线</strong>近似曲线。</p>
+<p>在点 $(t_k, y_k)$ 处，解曲线的切线斜率是 $f(t_k,y_k)$。沿着这条切线走一小步 $h$，到达 $y_k + hf(t_k,y_k)$——这就是 $y_{k+1}$。</p>
+<p>误差的来源很清楚：<strong>曲线是弯的，切线是直的</strong>。步长越小，弯曲的影响越小。</p>
+</div>
+<h3 id="center-p-1-2-2-局部截断误差-p-center"><center><p>1.2.2 局部截断误差</p></center></h3>
+<p>  <strong>定义</strong>：把精确解代入格式后，两边之差称为<strong>局部截断误差</strong>（LTE, local truncation error）。</p>
+<p>  对 Euler 法，设 $y(t_k)$ 精确满足到第 $k$ 步，考察第 $k+1$ 步的误差：</p>
+<p>$$T_{k+1} = y(t_{k+1}) - \left[y(t_k) + hf(t_k, y(t_k))\right] = \frac{h^2}{2}y^{\prime\prime}(\xi_k) \tag{1.2.3}$$</p>
+<p>  所以</p>
+<p>$$T_{k+1} = O(h^2)$$</p>
+<p>  <strong>注意阶数的说法</strong>：$T = O(h^{p+1})$ 时，称方法为 <strong>$p$ 阶方法</strong>。Euler 法的局部截断误差是 $O(h^2)$，所以是 <strong>1 阶</strong>方法。</p>
+<div class="note warning flat"><p><strong>&quot;局部截断误差阶&quot; 与 &quot;整体误差阶&quot; 差一阶</strong>，这是最容易混淆的地方。</p>
+<p>原因：局部误差是<strong>每步</strong>产生的 $O(h^{p+1})$，而总共走 $n = (b-a)/h$ 步，误差累积约</p>
+<p>$$E = n\cdot O(h^{p+1}) = \frac{b-a}{h}\cdot O(h^{p+1}) = O(h^p)$$</p>
+<p>所以局部 $O(h^2)$ → 整体 $O(h)$。记住这个&quot;降一阶&quot;的规律。</p>
+</div>
+<h3 id="center-p-1-2-3-另一种推导：数值积分-p-center"><center><p>1.2.3 另一种推导：数值积分</p></center></h3>
+<p>  把方程两边在 $[t_k, t_{k+1}]$ 上积分：</p>
+<p>$$y(t_{k+1}) - y(t_k) = \int_{t_k}^{t_{k+1}}f(t,y(t))dt \tag{1.2.4}$$</p>
+<p>  右边用<strong>左矩形公式</strong>近似：$\int_{t_k}^{t_{k+1}}f \approx h f(t_k, y(t_k))$，得 Euler 法。</p>
+<p>  <strong>换用其他积分公式，就得到其他方法</strong>——这是下一节&quot;线性多步法&quot;的统一出发点：</p>
+<table>
+<thead>
+<tr>
+<th>积分公式</th>
+<th>得到的方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>左矩形</td>
+<td>Euler 法（显式）</td>
+</tr>
+<tr>
+<td>右矩形</td>
+<td>隐式 Euler 法</td>
+</tr>
+<tr>
+<td>梯形</td>
+<td><strong>梯形格式</strong>（二阶）</td>
+</tr>
+<tr>
+<td>Simpson</td>
+<td>更高阶</td>
+</tr>
+</tbody>
+</table>
+<h2 id="center-p-1-3-隐式-Euler-法与梯形格式-p-center"><center><p>1.3 隐式 Euler 法与梯形格式</p></center></h2>
+<h3 id="center-p-1-3-1-隐式-Euler-法-p-center"><center><p>1.3.1 隐式 Euler 法</p></center></h3>
+<p>  用<strong>右端点</strong>的斜率：</p>
+<p>$$y_{k+1} = y_k + h f(t_{k+1}, y_{k+1}) \tag{1.3.1}$$</p>
+<p>  <strong>注意 $y_{k+1}$ 出现在两边</strong>——这是<strong>隐式格式</strong>，每步需要解一个方程。</p>
+<p>  <strong>局部截断误差</strong>：展开 $f(t_{k+1},y(t_{k+1}))$ 并利用 $y^{\prime}=f$：</p>
+<p>$$T_{k+1} = y(t_{k+1}) - y(t_k) - hf(t_{k+1}, y(t_{k+1})) = -\frac{h^2}{2}y^{\prime\prime}(\xi_k) + O(h^3)$$</p>
+<p>  同样是一阶，但<strong>符号相反</strong>。</p>
+<p>  <strong>隐式格式的代价与收益</strong>：每步需解方程 $y_{k+1} - hf(t_{k+1},y_{k+1}) = y_k$（通常用牛顿迭代）。收益在<strong>稳定性</strong>——下面会看到。</p>
+<h3 id="center-p-1-3-2-梯形格式-p-center"><center><p>1.3.2 梯形格式</p></center></h3>
+<p>  用<strong>梯形公式</strong>近似积分：</p>
+<p>$$y_{k+1} = y_k + \frac{h}{2}\left[f(t_k,y_k) + f(t_{k+1},y_{k+1})\right] \tag{1.3.2}$$</p>
+<p>  <strong>局部截断误差</strong>：梯形积分公式的误差是 $-\frac{h^3}{12}y^{\prime\prime\prime}$，所以</p>
+<p>$$T_{k+1} = O(h^3)$$</p>
+<p>  <strong>梯形格式是 2 阶方法</strong>——比 Euler 法高一阶，但代价是隐式。</p>
+<div class="note info flat"><p><strong>梯形格式还有另一种来历</strong>：它是 Euler 法（1 阶显式）和隐式 Euler（1 阶隐式）的<strong>平均</strong>。</p>
+<p>$$y_{k+1} = y_k + \frac{h}{2}\left[f(t_k,y_k)+f(t_{k+1},y_{k+1})\right]$$</p>
+<p>两个 1 阶方法的&quot;平均&quot;竟然得到 2 阶——因为两者的误差主项<strong>符号相反</strong>，平均后相消。这个现象在高阶方法构造里反复出现。</p>
+</div>
+<h2 id="center-p-1-4-稳定性：一个关键的对比-p-center"><center><p>1.4 稳定性：一个关键的对比</p></center></h2>
+<p>  <strong>为什么隐式格式值得付出求解方程的代价</strong>？用最简单的<strong>试验方程</strong>来说明：</p>
+<p>$$y^{\prime} = \lambda y, \qquad \operatorname{Re}\lambda &lt; 0 \tag{1.4.1}$$</p>
+<p>  （$\operatorname{Re}\lambda&lt;0$ 保证精确解 $y = y_0e^{\lambda t}$ 衰减。这是&quot;模型问题&quot;。）</p>
+<p>  <strong>Euler 法</strong>：</p>
+<p>$$y_{k+1} = y_k + h\lambda y_k = (1+h\lambda)y_k ;\Longrightarrow; y_k = (1+h\lambda)^k y_0$$</p>
+<p>  <strong>稳定的条件</strong>：$|1+h\lambda| \le 1$。对实数 $\lambda&lt;0$：</p>
+<p>$$-1 \le 1+h\lambda \le 1 ;\Longrightarrow; h|\lambda| \le 2$$</p>
+<p>  <strong>这是对步长的硬性限制</strong>：若 $|\lambda|$ 很大（方程&quot;刚性&quot;），$h$ 必须极小。</p>
+<p>  <strong>隐式 Euler 法</strong>：</p>
+<p>$$y_{k+1} = y_k + h\lambda y_{k+1} ;\Longrightarrow; y_{k+1} = \frac{1}{1-h\lambda}y_k$$</p>
+<p>  <strong>稳定的条件</strong>：$\left|\frac{1}{1-h\lambda}\right|\le1$，即 $|1-h\lambda|\ge1$。对 $\operatorname{Re}\lambda&lt;0$：</p>
+<p>$$|1-h\lambda|^2 = (1-h\operatorname{Re}\lambda)^2 + (h\operatorname{Im}\lambda)^2 \ge 1 \quad\text{恒成立！}$$</p>
+<p>  <strong>隐式 Euler 对任意步长都稳定。</strong> 这叫 <strong>A 稳定</strong>（绝对稳定）。</p>
+<p>  <strong>梯形格式</strong>：</p>
+<p>$$y_{k+1} = y_k + \frac{h\lambda}{2}(y_k + y_{k+1}) ;\Longrightarrow; y_{k+1} = \frac{1+h\lambda/2}{1-h\lambda/2}y_k$$</p>
+<p>  稳定性：$\left|\frac{1+h\lambda/2}{1-h\lambda/2}\right| \le 1$。对 $\operatorname{Re}\lambda&lt;0$，分子模长小于分母，比值恒小于 1。<strong>也是 A 稳定</strong>。</p>
+<div class="note info flat"><p><strong>关键对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>阶</th>
+<th>显/隐</th>
+<th>A 稳定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Euler</td>
+<td>1</td>
+<td>显式</td>
+<td>❌ 需 $h</td>
+</tr>
+<tr>
+<td>隐式 Euler</td>
+<td>1</td>
+<td>隐式</td>
+<td>✅ 无条件</td>
+</tr>
+<tr>
+<td>梯形</td>
+<td>2</td>
+<td>隐式</td>
+<td>✅ 无条件</td>
+</tr>
+</tbody>
+</table>
+<p><strong>显式方法便宜但受稳定性限制，隐式方法稳定但每步要解方程。</strong> 这个权衡贯穿整个数值 ODE 理论。</p>
+</div>
+<h2 id="center-p-1-5-代码实现-p-center"><center><p>1.5 代码实现</p></center></h2>
+<div class="tabs" id="euler_methods"><ul class="nav-tabs"><li class="tab active"><button type="button" data-href="#euler_methods-1">🐍 Python</button></li><li class="tab"><button type="button" data-href="#euler_methods-2">🔷 MATLAB</button></li></ul><div class="tab-contents"><div class="tab-item-content active" id="euler_methods-1"><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">euler</span>(<span class="params">f, y0, t0, T, n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;显式 Euler 法&quot;&quot;&quot;</span></span><br><span class="line">    h = (T - t0) / n</span><br><span class="line">    t = np.zeros(n + <span class="number">1</span>); y = np.zeros(n + <span class="number">1</span>)</span><br><span class="line">    t[<span class="number">0</span>], y[<span class="number">0</span>] = t0, y0</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        y[k+<span class="number">1</span>] = y[k] + h * f(t[k], y[k])</span><br><span class="line">        t[k+<span class="number">1</span>] = t[k] + h</span><br><span class="line">    <span class="keyword">return</span> t, y</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">implicit_euler</span>(<span class="params">f, dfdy, y0, t0, T, n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;隐式 Euler 法（牛顿迭代求解）&quot;&quot;&quot;</span></span><br><span class="line">    h = (T - t0) / n</span><br><span class="line">    t = np.zeros(n + <span class="number">1</span>); y = np.zeros(n + <span class="number">1</span>)</span><br><span class="line">    t[<span class="number">0</span>], y[<span class="number">0</span>] = t0, y0</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        t[k+<span class="number">1</span>] = t[k] + h</span><br><span class="line">        <span class="comment"># 解 y - h*f(t_new, y) = y_old</span></span><br><span class="line">        g = <span class="keyword">lambda</span> z: z - h * f(t[k+<span class="number">1</span>], z) - y[k]</span><br><span class="line">        dg = <span class="keyword">lambda</span> z: <span class="number">1.0</span> - h * dfdy(t[k+<span class="number">1</span>], z)</span><br><span class="line">        z = y[k]                      <span class="comment"># 初值用上一步</span></span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">            z_new = z - g(z) / dg(z)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">abs</span>(z_new - z) &lt; <span class="number">1e-12</span>: <span class="keyword">break</span></span><br><span class="line">            z = z_new</span><br><span class="line">        y[k+<span class="number">1</span>] = z_new</span><br><span class="line">    <span class="keyword">return</span> t, y</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">trapezoidal</span>(<span class="params">f, dfdy, y0, t0, T, n</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;梯形格式（牛顿迭代求解）&quot;&quot;&quot;</span></span><br><span class="line">    h = (T - t0) / n</span><br><span class="line">    t = np.zeros(n + <span class="number">1</span>); y = np.zeros(n + <span class="number">1</span>)</span><br><span class="line">    t[<span class="number">0</span>], y[<span class="number">0</span>] = t0, y0</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        t[k+<span class="number">1</span>] = t[k] + h</span><br><span class="line">        g = <span class="keyword">lambda</span> z: z - y[k] - <span class="number">0.5</span>*h*(f(t[k], y[k]) + f(t[k+<span class="number">1</span>], z))</span><br><span class="line">        dg = <span class="keyword">lambda</span> z: <span class="number">1.0</span> - <span class="number">0.5</span>*h*dfdy(t[k+<span class="number">1</span>], z)</span><br><span class="line">        z = y[k]</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">            z_new = z - g(z) / dg(z)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">abs</span>(z_new - z) &lt; <span class="number">1e-12</span>: <span class="keyword">break</span></span><br><span class="line">            z = z_new</span><br><span class="line">        y[k+<span class="number">1</span>] = z_new</span><br><span class="line">    <span class="keyword">return</span> t, y</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="comment"># 测试：y&#x27; = -50y, y(0)=1  （刚性，lambda = -50）</span></span><br><span class="line">    f    = <span class="keyword">lambda</span> t, y: -<span class="number">50.0</span> * y</span><br><span class="line">    dfdy = <span class="keyword">lambda</span> t, y: -<span class="number">50.0</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> [<span class="number">50</span>, <span class="number">200</span>]:</span><br><span class="line">        t, ye = euler(f, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, n)</span><br><span class="line">        t, yi = implicit_euler(f, dfdy, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, n)</span><br><span class="line">        t, yt = trapezoidal(f, dfdy, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, n)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;n=<span class="subst">&#123;n:3d&#125;</span>  Euler=<span class="subst">&#123;ye[-<span class="number">1</span>]:+<span class="number">.3</span>e&#125;</span>  ImplicitEuler=<span class="subst">&#123;yi[-<span class="number">1</span>]:<span class="number">.3</span>e&#125;</span>  Trapezoid=<span class="subst">&#123;yt[-<span class="number">1</span>]:<span class="number">.3</span>e&#125;</span>  精确=<span class="subst">&#123;np.exp(-<span class="number">50</span>):<span class="number">.3</span>e&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure><button type="button" class="tab-to-top" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div><div class="tab-item-content" id="euler_methods-2"><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[t, y]</span> = <span class="title">euler</span><span class="params">(f, y0, t0, T, n)</span></span></span><br><span class="line"><span class="comment">% 显式 Euler 法</span></span><br><span class="line">    h = (T - t0) / n;</span><br><span class="line">    t = <span class="built_in">zeros</span>(n+<span class="number">1</span>, <span class="number">1</span>);  y = <span class="built_in">zeros</span>(n+<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    t(<span class="number">1</span>) = t0;  y(<span class="number">1</span>) = y0;</span><br><span class="line">    <span class="keyword">for</span> k = <span class="number">1</span>:n</span><br><span class="line">        y(k+<span class="number">1</span>) = y(k) + h * f(t(k), y(k));</span><br><span class="line">        t(k+<span class="number">1</span>) = t(k) + h;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[t, y]</span> = <span class="title">implicit_euler</span><span class="params">(f, dfdy, y0, t0, T, n)</span></span></span><br><span class="line"><span class="comment">% 隐式 Euler 法（牛顿迭代求解）</span></span><br><span class="line">    h = (T - t0) / n;</span><br><span class="line">    t = <span class="built_in">zeros</span>(n+<span class="number">1</span>, <span class="number">1</span>);  y = <span class="built_in">zeros</span>(n+<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    t(<span class="number">1</span>) = t0;  y(<span class="number">1</span>) = y0;</span><br><span class="line">    <span class="keyword">for</span> k = <span class="number">1</span>:n</span><br><span class="line">        t(k+<span class="number">1</span>) = t(k) + h;</span><br><span class="line">        z = y(k);                       <span class="comment">% 初值用上一步</span></span><br><span class="line">        <span class="keyword">for</span> it = <span class="number">1</span>:<span class="number">50</span></span><br><span class="line">            g  = z - h * f(t(k+<span class="number">1</span>), z) - y(k);</span><br><span class="line">            dg = <span class="number">1</span> - h * dfdy(t(k+<span class="number">1</span>), z);</span><br><span class="line">            z_new = z - g / dg;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">abs</span>(z_new - z) &lt; <span class="number">1e-12</span>, <span class="keyword">break</span>; <span class="keyword">end</span></span><br><span class="line">            z = z_new;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        y(k+<span class="number">1</span>) = z_new;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[t, y]</span> = <span class="title">trapezoidal</span><span class="params">(f, dfdy, y0, t0, T, n)</span></span></span><br><span class="line"><span class="comment">% 梯形格式（牛顿迭代求解）</span></span><br><span class="line">    h = (T - t0) / n;</span><br><span class="line">    t = <span class="built_in">zeros</span>(n+<span class="number">1</span>, <span class="number">1</span>);  y = <span class="built_in">zeros</span>(n+<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    t(<span class="number">1</span>) = t0;  y(<span class="number">1</span>) = y0;</span><br><span class="line">    <span class="keyword">for</span> k = <span class="number">1</span>:n</span><br><span class="line">        t(k+<span class="number">1</span>) = t(k) + h;</span><br><span class="line">        z = y(k);</span><br><span class="line">        <span class="keyword">for</span> it = <span class="number">1</span>:<span class="number">50</span></span><br><span class="line">            g  = z - y(k) - <span class="number">0.5</span>*h*(f(t(k), y(k)) + f(t(k+<span class="number">1</span>), z));</span><br><span class="line">            dg = <span class="number">1</span> - <span class="number">0.5</span>*h*dfdy(t(k+<span class="number">1</span>), z);</span><br><span class="line">            z_new = z - g / dg;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">abs</span>(z_new - z) &lt; <span class="number">1e-12</span>, <span class="keyword">break</span>; <span class="keyword">end</span></span><br><span class="line">            z = z_new;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        y(k+<span class="number">1</span>) = z_new;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% 调用示例</span></span><br><span class="line">f    = @(t, y) <span class="number">-50</span> * y;</span><br><span class="line">dfdy = @(t, y) <span class="number">-50</span>;</span><br><span class="line"><span class="keyword">for</span> n = [<span class="number">50</span>, <span class="number">200</span>]</span><br><span class="line">    [tv, ye] = euler(f, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, n);</span><br><span class="line">    [tv, yi] = implicit_euler(f, dfdy, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, n);</span><br><span class="line">    [tv, yt] = trapezoidal(f, dfdy, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, n);</span><br><span class="line">    fprintf(<span class="string">&#x27;n=%3d  Euler=%+.3e  ImplicitEuler=%.3e  Trapezoid=%.3e  精确=%.3e\n&#x27;</span>, ...</span><br><span class="line">            n, ye(<span class="keyword">end</span>), yi(<span class="keyword">end</span>), yt(<span class="keyword">end</span>), <span class="built_in">exp</span>(<span class="number">-50</span>));</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure><button type="button" class="tab-to-top" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div></div>
+<div class="note warning flat"><p><strong>跑一下这个例子</strong>：$y^{\prime} = -50y$ 时，Euler 法的稳定条件要求 $h\le2/50=0.04$。</p>
+<ul>
+<li>$n=50$ 时 $h=0.02$，<strong>满足</strong> → 收敛</li>
+<li>$n=200$ 时 $h=0.005$ → 也满足</li>
+</ul>
+<p>试把 $n$ 改成 $20$（$h=0.05$，违反条件），你会看到 Euler 法<strong>剧烈振荡并发散</strong>，而隐式 Euler 和梯形格式仍然给出正确答案。这就是稳定性的实际意义。</p>
+</div>
+<h2 id="center-p-1-6-小结-p-center"><center><p>1.6 小结</p></center></h2>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>格式</th>
+<th>局部截断误差</th>
+<th>阶</th>
+<th>稳定性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>显式 Euler</td>
+<td>$y_{k+1}=y_k+hf(t_k,y_k)$</td>
+<td>$O(h^2)$</td>
+<td>1</td>
+<td>受 $h\vert\lambda\vert\le2$ 限制</td>
+</tr>
+<tr>
+<td>隐式 Euler</td>
+<td>$y_{k+1}=y_k+hf(t_{k+1},y_{k+1})$</td>
+<td>$O(h^2)$</td>
+<td>1</td>
+<td>A 稳定</td>
+</tr>
+<tr>
+<td>梯形</td>
+<td>$y_{k+1}=y_k+\frac{h}{2}[f_k+f_{k+1}]$</td>
+<td>$O(h^3)$</td>
+<td>2</td>
+<td>A 稳定</td>
+</tr>
+</tbody>
+</table>
+<div class="note danger flat"><p><strong>易错点</strong></p>
+<ol>
+<li><strong>局部截断误差的阶比方法阶高一阶</strong>——$O(h^{p+1})$ ↔ $p$ 阶，别写反；</li>
+<li><strong>隐含格式每步要解方程</strong>，不是迭代几次就行——牛顿迭代必须收敛到足够精度，否则&quot;解&quot;本身不准；</li>
+<li><strong>试验方程 $y^{\prime}=\lambda y$ 中的 $\lambda$ 是复数</strong>，实部为负才是衰减问题；</li>
+<li><strong>A 稳定的方法仍然有精度问题</strong>——隐式 Euler 是 A 稳定但只有 1 阶，长期积分会积累误差。</li>
+</ol>
+</div>
+<p>  下一节 1.2 会建立分析这些方法所需的工具：<strong>线性差分方程理论</strong>与 <strong>Gronwall 不等式</strong>——它们是后面所有收敛性证明的基础。</p>
+<h2 id="center-p-参考文献-p-center"><center><p>参考文献</p></center></h2>
+<p>  本节的框架与例题参考<span class="hidden-anchor" id="referto_[1]"></span><sup class="reference"><a href="#referfrom_[1]">[1]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">李荣华</span><span class="reference-title">参考资料</span></span></span>第 1 章。</p>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[1]"></span><a class="reference-anchor" href="#referto_[1]">[1]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="/%E5%88%98%E6%92%AD.%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E6%95%B0%E5%80%BC%E8%A7%A3%E6%B3%95(%E7%AC%AC%E5%9B%9B%E7%89%88)">李荣华</a></div>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>第 1 章 常微分初值问题（一）：Euler 法与梯形格式</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="/posts/14feb38a.html">/posts/14feb38a.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Hatsusakuramiku</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2026-11-07</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2026-11-07</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>学习</a></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/7efa69f2.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">常微分与偏微分方程数值解（系列总览）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/ace8fd0f.html" title="第 1 章（续）：热传导方程的建立"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100886812_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：热传导方程的建立</div></div></a></div><div><a href="/posts/3f4fb0df.html" title="第 1 章 定解问题"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2025-10-14</div><div class="title">第 1 章 定解问题</div></div></a></div><div><a href="/posts/73d29eed.html" title="第 1 章（续）：拉普拉斯方程的建立与调和函数"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：拉普拉斯方程的建立与调和函数</div></div></a></div><div><a href="/posts/87cca0a4.html" title="第 1 章（续）：定解条件的提法与适定性"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-06</div><div class="title">第 1 章（续）：定解条件的提法与适定性</div></div></a></div><div><a href="/posts/4a6c68e2.html" title="第 1 章（续）：二阶线性偏微分方程的分类与标准型"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/102673006_p1.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-06</div><div class="title">第 1 章（续）：二阶线性偏微分方程的分类与标准型</div></div></a></div><div><a href="/posts/d26fe62d.html" title="第 2 章 分离变量法：从本征值问题到弦的自由振动"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-02</div><div class="title">第 2 章 分离变量法：从本征值问题到弦的自由振动</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-1-1-%E4%B8%80%E9%98%B6%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E5%88%9D%E5%80%BC%E9%97%AE%E9%A2%98-p-center"><span class="toc-text">1.1 一阶常微分方程初值问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-1-2-Euler-%E6%B3%95%E7%9A%84%E6%8E%A8%E5%AF%BC-p-center"><span class="toc-text">1.2 Euler 法的推导</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-1-2-1-%E4%BB%8E%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80%E5%87%BA%E5%8F%91-p-center"><span class="toc-text">1.2.1 从泰勒展开出发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-1-2-2-%E5%B1%80%E9%83%A8%E6%88%AA%E6%96%AD%E8%AF%AF%E5%B7%AE-p-center"><span class="toc-text">1.2.2 局部截断误差</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-1-2-3-%E5%8F%A6%E4%B8%80%E7%A7%8D%E6%8E%A8%E5%AF%BC%EF%BC%9A%E6%95%B0%E5%80%BC%E7%A7%AF%E5%88%86-p-center"><span class="toc-text">1.2.3 另一种推导：数值积分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-1-3-%E9%9A%90%E5%BC%8F-Euler-%E6%B3%95%E4%B8%8E%E6%A2%AF%E5%BD%A2%E6%A0%BC%E5%BC%8F-p-center"><span class="toc-text">1.3 隐式 Euler 法与梯形格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-1-3-1-%E9%9A%90%E5%BC%8F-Euler-%E6%B3%95-p-center"><span class="toc-text">1.3.1 隐式 Euler 法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-1-3-2-%E6%A2%AF%E5%BD%A2%E6%A0%BC%E5%BC%8F-p-center"><span class="toc-text">1.3.2 梯形格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-1-4-%E7%A8%B3%E5%AE%9A%E6%80%A7%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%85%B3%E9%94%AE%E7%9A%84%E5%AF%B9%E6%AF%94-p-center"><span class="toc-text">1.4 稳定性：一个关键的对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-1-5-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-p-center"><span class="toc-text">1.5 代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-1-6-%E5%B0%8F%E7%BB%93-p-center"><span class="toc-text">1.6 小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE-p-center"><span class="toc-text">参考文献</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>再看看那个光点，它就在这里，这是家园，这是我们 —— 你所爱的每一个人，你认识的每一个人，你听说过的每一个人，曾经有过的每一个人，都在它上面度过他们的一生✨</div><div class="btn-xz-box"><a class="btn-xz" href="/box/astronomy/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/archives/">开源指南</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li><li><a href="/box/gallery/">我的画廊</a><a href="/site/time/">建设进程</a></li><li><a href="/site/census/">网站统计</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.com/" title="本站"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/" title="Hexo"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1036/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://butterfly.js.org/" title="Butterfly"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1039/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.org/" title="示例站点 A"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1044/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1015/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1016/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2026</b></span><span><b>&nbsp;&nbsp;By Hatsusakuramiku</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/jerryc127/hexo-theme-butterfly" style="margin-inline:5px" title="主题版本 Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/fomalhaut1998/hexo-theme-Fomalhaut" style="margin-inline:5px" title="本站主题美化基于Fomalhaut🥝的开源项目‘hexo-theme-Fomalhaut’修改"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%F0%9F%A5%9DFomalhaut-hexo--theme--Fomalhaut-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226403" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226403号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%E8%90%8CICP%E5%A4%87-20226403-ff69b4.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Source-GitHub-d021d6.svg" alt=""/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Copyright-BY--NC--SA--4.0-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，次线部署于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js?v=20261005-scroll1"></script><script src="/js/main.js?v=20261005-scroll1"></script><script src="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.umd.js"></script><script src="https://registry.npmmirror.com/instant.page/5.1.0/files/instantpage.js" type="module"></script><script src="https://registry.npmmirror.com/vanilla-lazyload/17.3.1/files/dist/lazyload.iife.min.js"></script><script>window.__SEARCH_LAZY__ = ["https://registry.npmmirror.com/algoliasearch/4.14.3/files/dist/algoliasearch-lite.umd.js","https://registry.npmmirror.com/instantsearch.js/4.49.2/files/dist/instantsearch.production.min.js","/js/search/algolia.js"]</script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://registry.npmmirror.com/mathjax/3.2.2/files/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script defer charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script><script defer src="https://sdk.51.la/perf/js-sdk-perf.min.js" crossorigin="anonymous"></script><script defer src="/js/51la.js"></script><script src="https://registry.npmmirror.com/jquery/3.6.0/files/dist/jquery.min.js"></script><script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script><script async src="https://registry.npmmirror.com/clipboard/2.0.10/files/dist/clipboard.min.js"></script><script async src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="/js/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_glcijzcpx7f.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_gkavascgf3n.js"></script><script async src="//at.alicdn.com/t/c/font_5239918_ta23cg9gek.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/notify.js"></script><script defer src="/js/lunar.js"></script><script defer src="/js/data/voyager1.js"></script><script defer src="/js/data/holidays.js"></script><script defer src="/js/modules/console-art.js"></script><script defer src="/js/modules/shell.js?v=20261011-stage3"></script><script defer src="/js/modules/snow.js?v=20261010-snow1"></script><script defer src="/js/modules/effects.js?v=20261010-snow1"></script><script defer src="/js/modules/reading.js?v=20261015-fps2"></script><script defer src="/js/modules/nav.js?v=20261005-scroll1"></script><script defer src="/js/modules/cursor.js?v=20261015-fps2"></script><script defer src="/js/modules/footer-time.js?v=20261006"></script><script defer src="/js/modules/appearance-fonts.js?v=20261010-preview1"></script><script defer src="/js/modules/appearance-backgrounds.js?v=20261011-bgflash1"></script><script defer src="/js/modules/fireflies.js?v=20261010-fireflies1"></script><script defer src="/js/modules/ripple.js?v=20261014-ripple1"></script><script defer src="/js/modules/settings.js?v=20261015-custom1"></script><script defer src="/js/fomal.js"></script><script defer src="/js/wechat-qr.js"></script><script defer src="/js/festival.js"></script><script defer src="/js/author-status.js"></script><script defer src="/js/stats.js?v=20261005"></script><script defer src="/js/footer-music.js?v=20261005"></script><script defer src="/js/pjax-guard.js?v=20261005"></script><script defer src="/js/inject/search-lazy.js?v=20261011b"></script><script src="/js/inject/scroll-gap-fix.js?v=20261011"></script><script src="/js/inject/webinfo-card.js"></script><script src="/js/inject/ft-ad-extra.js"></script><script src="/js/inject/pc-local-link.js"></script><script defer src="/js/inject/about-route-probe.js?v=20261006"></script><link rel="stylesheet" href="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js"></script><script src="https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  ;['tocScrollFn', 'scrollCollect'].forEach(name => {
+    const handler = window[name]
+    if (!handler) return
+    window.removeEventListener('scroll', handler)
+    if (typeof handler.cancel === 'function') handler.cancel()
+    window[name] = null
+  })
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//events.vercount.one/js"></script></div><!-- hexo injector body_end start --><script id="swiper-lazyload-fix">
+(function () {
+  if (window.__swiperLazyFix) return;
+  window.__swiperLazyFix = true;
+
+  function sync () {
+    try {
+      var inst = window.lazyLoadInstance;
+      if (inst && typeof inst.update === 'function') inst.update();
+    } catch (e) {}
+  }
+
+  function burst () {
+    [0, 120, 300, 700, 1500, 2600].forEach(function (d) { setTimeout(sync, d); });
+  }
+
+  // 1) 首次加载 + 站内 pjax 返回后：等异步的 data-pjax 脚本（swiper_init.js）跑完再补登记
+  document.addEventListener('pjax:complete', burst);
+  window.addEventListener('load', burst);
+  if (document.readyState !== 'loading') burst();
+  else document.addEventListener('DOMContentLoaded', burst);
+
+  // 2) Swiper 重建循环克隆时会增删 .blog-slider__wrp 的子节点（pjax 换页后容器会被替换，故持续重挂）
+  setTimeout(function watchWrp () {
+    var wrp = document.querySelector('.blog-slider__wrp');
+    if (wrp && wrp !== window.__swiperLazyWrp) {
+      try { if (window.__swiperLazyMo) window.__swiperLazyMo.disconnect(); } catch (e) {}
+      window.__swiperLazyWrp = wrp;
+      try {
+        window.__swiperLazyMo = new MutationObserver(function () {
+          clearTimeout(window.__swiperLazyTimer);
+          window.__swiperLazyTimer = setTimeout(sync, 100);
+        });
+        window.__swiperLazyMo.observe(wrp, { childList: true });
+      } catch (e) {}
+    }
+    setTimeout(watchWrp, 800);
+  }, 800);
+})();
+</script><script id="wow-pjax-rehook">
+(function () {
+  if (window.__wowPjaxRehook) return;
+  window.__wowPjaxRehook = true;
+
+  // 插件生成的加类脚本特征：调 classList.add 又写 data-wow-duration 的，就是它
+  function isWowInjector(code) {
+    return !!code && code.indexOf('classList.add') > -1 && code.indexOf('data-wow-duration') > -1;
+  }
+
+  // 把 .js-pjax 里哑火的加类脚本重放一遍（照抄 pjax.pug 的重放手法：换新节点才会执行）
+  function replayInjectors() {
+    var scripts = document.querySelectorAll('.js-pjax script');
+    for (var i = 0; i < scripts.length; i++) {
+      var old = scripts[i];
+      if (old.getAttribute('data-pjax') !== null) continue; // 主题自己会重放，别跑两遍
+      var code = old.text || old.textContent || old.innerHTML || '';
+      if (!isWowInjector(code)) continue;
+      var neu = document.createElement('script');
+      neu.setAttribute('data-wow-pjax-replay', '');
+      neu.appendChild(document.createTextNode(code));
+      old.parentNode.replaceChild(neu, old);
+    }
+  }
+
+  // wow 实例兜底 + 清理被 pjax 换掉的旧节点（否则 wow.boxes 会一直 accumulate）
+  function resyncBoxes() {
+    var wow = window.wow;
+    if (!wow && typeof window.WOW === 'function') {
+      // 等价于 node_modules/hexo-butterfly-wowjs/lib/wow_init.js
+      window.wow = new window.WOW({
+        boxClass: 'wow',
+        animateClass: 'animate__animated',
+        offset: 0,
+        mobile: false,
+        live: true
+      });
+      window.wow.init();
+      return;
+    }
+    if (!wow) return;
+    try {
+      if (wow.boxes && wow.boxes.length) {
+        wow.boxes = wow.boxes.filter(function (el) { return el && document.contains(el); });
+      }
+      // 关键一步：让 wow 自己把新插入的 .wow 卡片登记进 boxes（会顺手隐藏 + 置 scrolled）
+      if (typeof wow.doSync === 'function') {
+        wow.doSync(document.body);
+      } else if (wow.boxes && wow.applyStyle) {
+        // 老版本 wow.js 没有 doSync，手动补：从没被 wow 摸过的块（没有 inline visibility）收进来
+        var nodes = document.querySelectorAll('.wow');
+        for (var i = 0; i < nodes.length; i++) {
+          var el = nodes[i];
+          if (el.style.visibility) continue;
+          if (wow.all && wow.all.indexOf(el) > -1) continue;
+          wow.boxes.push(el);
+          if (wow.all) wow.all.push(el);
+          wow.applyStyle(el, true);
+        }
+        wow.scrolled = true;
+      }
+      // 再补一次 scroll 事件，保证 50ms 轮询这一拍立刻跑
+      window.dispatchEvent(new Event('scroll'));
+    } catch (e) {}
+  }
+
+  function run() {
+    try { replayInjectors(); } catch (e) {}
+    try { resyncBoxes(); } catch (e) {}
+  }
+
+  document.addEventListener('pjax:complete', function () {
+    // 主题的 pjax:complete 监听器（pjax.pug）先重放 script[data-pjax]（轮播/磁贴注入脚本在里面），
+    // 所以这里延后一拍，保证重放顺序在它之后；300ms 那次兜底给异步补内容的场景。
+    setTimeout(run, 0);
+    setTimeout(run, 300);
+  });
+
+  // 调试用：控制台里 window.__wowPjaxRehookNow() 可手动触发一次
+  window.__wowPjaxRehookNow = run;
+})();
+</script> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><a class="magnet_link_more"  href="/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="/js/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<container><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></container>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://cdn.jsdelivr.net/gh/yourname/gitcalendar-data@main/data.json",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'yourname')
+    }
+  </script><!-- hexo injector body_end end --></body></html>
