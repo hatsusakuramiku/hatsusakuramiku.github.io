@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hsmk.mikufans.date/posts/83c88864.html</loc>
+    
+    <lastmod>2026-11-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/posts/72985116.html</loc>
     
     <lastmod>2026-11-09</lastmod>
@@ -466,14 +475,14 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
     <lastmod>2026-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
     <lastmod>2026-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
