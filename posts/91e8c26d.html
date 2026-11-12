@@ -1,0 +1,686 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><script>if ('serviceWorker' in navigator) {
+  var isLocalDev = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(location.hostname) !== -1
+  if (isLocalDev) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { r.unregister() })
+    })
+  } else {
+    navigator.serviceWorker.register('/sw.js').then(function () {
+      if (localStorage.getItem('install') !== 'true') {
+        localStorage.setItem('install', 'true')
+        location.reload()
+      }
+    })
+  }
+}
+</script><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>第 5 章 变分方法与有限元（六）：一维有限元的完整实现 | 初樱小站</title><meta name="keywords" content="学习"><meta name="author" content="Hatsusakuramiku"><meta name="copyright" content="Hatsusakuramiku"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="从基函数构造到单元刚度矩阵组装的全流程，局部坐标与数值积分，边界条件施加，一维有限元的双代码实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第 5 章 变分方法与有限元（六）：一维有限元的完整实现">
+<meta property="og:url" content="https://hsmk.mikufans.date/posts/91e8c26d.html">
+<meta property="og:site_name" content="初樱小站">
+<meta property="og:description" content="从基函数构造到单元刚度矩阵组装的全流程，局部坐标与数值积分，边界条件施加，一维有限元的双代码实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp">
+<meta property="article:published_time" content="2026-11-12T16:21:10.000Z">
+<meta property="article:modified_time" content="2026-11-12T16:21:10.000Z">
+<meta property="article:author" content="Hatsusakuramiku">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://hsmk.mikufans.date/posts/91e8c26d"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//events.vercount.one"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.0.0/files/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"YOUR_ALGOLIA_APP_ID","apiKey":"YOUR_ALGOLIA_SEARCH_KEY","indexName":"your_index_name","hits":{"per_page":5},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第 5 章 变分方法与有限元（六）：一维有限元的完整实现',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-13 00:21:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="preconnect" href="https://registry.npmmirror.com"><link rel="preconnect" href="https://registry.npmmirror.com" crossorigin><link rel="preconnect" href="https://npm.elemecdn.com"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="font" type="font/woff2" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-tc@5/files/lxgw-wenkai-tc-chinese-traditional-400-normal.woff2" crossorigin><link rel="preconnect" href="https://sdk.51.la"><link rel="preconnect" href="https://sdk.51.la" crossorigin><link rel="dns-prefetch" href="https://at.alicdn.com"><link rel="dns-prefetch" href="https://lib.baomitu.com"><link rel="stylesheet" href="/css/stats.css?v=20261005"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="bgFilterParam"></style><span id="fps" aria-hidden="true"></span><style id="defineBg">:root{--default-bg:url(https://aws.mikufans.date/hexo/img/background/100513742_p0.webp);--darkmode-bg:url(https://aws.mikufans.date/hexo/img/background/100723659_p0.webp);--mobileday-bg:url(https://aws.mikufans.date/hexo/img/background/100886812_p0.webp);--mobilenight-bg:url(https://aws.mikufans.date/hexo/img/background/100891310_p0.webp);}</style><style id="menu_shadow"></style><style id="nav-display"></style><style id="aside-show"></style><style id="aside-pos"></style><link rel="stylesheet" href="/css/site-inject.css?v=20261015-fps4"><link rel="stylesheet" href="/css/navigation.css?v=20261011-nav3"><link rel="stylesheet" href="/css/mobile-drawer.css?v=20261008"><link rel="stylesheet" href="/css/avatar-glow.css?v=20261004q"><link rel="stylesheet" href="/css/timeline-archive.css?v=20261011d"><script defer src="/js/timeline-archive.js?v=20261011b"></script><link rel="stylesheet" href="/css/about-page.css?v=20261006"><script src="/js/inject/ping-route-boot.js"></script><script src="/js/inject/ping-route.js"></script><script src="/js/inject/beauty-boot.js?v=20261015-solid3"></script><script src="/js/inject/right-menu-state-boot.js"></script><script>window.fomalNightConfig=window.fomalNightConfig||{enabled:true,latLng:null,themeKey:'theme'}</script><script src="/js/inject/daynight-boot.js?v=20261014-nightboot2"></script><script src="/js/inject/typewriter.js?v=20261004b"></script><link rel="stylesheet" href="/css/typewriter.css?v=20261004"><link rel="stylesheet" href="/css/paperclip.css?v=20261005-mobile1"><link rel="stylesheet" href="/css/archive-page.css?v=20261018-scrollfix"><script defer src="/js/inject/archive-page.js?v=20261018-scrollfix"></script><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="/css/gitcalendar.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="初樱小站" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">初樱小站</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-sousuo"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-huahua"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">第 5 章 变分方法与有限元（六）：一维有限元的完整实现</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2026-11-12T16:21:10.000Z" title="发表于 2026-11-13 00:21:10">2026-11-13</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-12T16:21:10.000Z" title="更新于 2026-11-13 00:21:10">2026-11-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/HSMK-NUMERICAL/">HSMK-NUMERICAL</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">3227</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第 5 章 变分方法与有限元（六）：一维有限元的完整实现"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv">—</span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="note info flat"><p><strong>封面图片 PID：<a target="_blank" rel="noopener" href="https://www.pixiv.net/artworks/1628397182442">1628397182442</a></strong></p>
+</div>
+<blockquote>
+<blockquote>
+<p><strong>常微分与偏微分方程数值解 导航栏</strong></p>
+</blockquote>
+<ul>
+<li><a href="/posts/7efa69f2.html">系列总览与导航</a><br>
+第 1 章 常微分方程初值问题
+<ul>
+<li><a href="/posts/14feb38a.html">1.1 Euler 法与梯形格式</a></li>
+<li><a href="/posts/cbc69438.html">1.2 线性差分方程与 Gronwall 不等式</a></li>
+<li><a href="/posts/82dd98e6.html">1.3 线性多步法·数值积分法</a></li>
+<li><a href="/posts/c75acb8f.html">1.4 待定系数法与预估-校正</a></li>
+<li><a href="/posts/4ad11730.html">1.5 相容性、稳定性与收敛性</a></li>
+<li><a href="/posts/78335a04.html">1.6 Runge-Kutta 法与绝对稳定域</a></li>
+<li><a href="/posts/33531fc2.html">1.7 刚性方程、A 稳定性与外推法</a><br>
+第 2 章 椭圆型方程有限差分</li>
+<li><a href="/posts/47d47346.html">2.1 差分逼近与截断误差</a></li>
+<li><a href="/posts/350b9519.html">2.2 一维格式的三种推导</a></li>
+<li><a href="/posts/8ad7109.html">2.3 二维五点格式与边界处理</a></li>
+<li><a href="/posts/72985116.html">2.4 极值定理与敛速估计</a></li>
+<li><a href="/posts/83c88864.html">2.5 迭代解法</a><br>
+第 3 章 抛物型方程有限差分</li>
+<li><a href="/posts/8025a61e.html">3.1 显隐格式与 Crank-Nicolson</a></li>
+<li><a href="/posts/ed87735.html">3.2 稳定性分析方法</a></li>
+<li><a href="/posts/2d011ca1.html">3.3 von Neumann 稳定性分析</a></li>
+<li><a href="/posts/20e31cca.html">3.4 变系数与分数步长法</a><br>
+第 4 章 双曲型方程有限差分</li>
+<li><a href="/posts/16f0f3a1.html">4.1 波动方程与 CFL 条件</a></li>
+<li><a href="/posts/98ba6ef4.html">4.2 隐格式与数值耗散</a></li>
+<li><a href="/posts/342abe6d.html">4.3 一阶双曲组与多波速</a></li>
+<li><a href="/posts/650c5483.html">4.4 迎风格式与守恒格式</a><br>
+第 5 章 变分方法与有限元</li>
+<li><a href="/posts/95e3eb71.html">5.1 变分原理</a></li>
+<li><a href="/posts/7534df31.html">5.2 一维 Sobolev 空间</a></li>
+<li><a href="/posts/1d9c706b.html">5.3 二维 Sobolev 空间</a></li>
+<li><a href="/posts/c8faeb8a.html">5.4 Ritz 法与 Galerkin 法</a></li>
+<li><a href="/posts/1aa83694.html">5.5 谱方法</a></li>
+<li>5.6 一维有限元的实现（本篇）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr>
+<div class="note info flat"><p>前置知识：5.4 节（Ritz/Galerkin 法）。5.2 节可选读。</p>
+</div>
+<h2 id="center-p-这一节做什么-p-center"><center><p>这一节做什么</p></center></h2>
+<p>  5.4 节说&quot;选基函数 $\phi_j$，算矩阵 $A_{ij}$，解方程&quot;。听起来简单，但实际写代码时会撞上三件事：</p>
+<ol>
+<li><strong>基函数怎么选</strong>才方便算？</li>
+<li><strong>积分怎么算</strong>？$\int\phi_i^{\prime}\phi_j^{\prime}$ 这种复合函数，手算不现实。</li>
+<li><strong>边界条件怎么加</strong>？Dirichlet 和 Neumann 处理方式完全不同。</li>
+</ol>
+<p>  这一节把一维有限元<strong>从头到尾走一遍</strong>，最后能直接跑出结果。</p>
+<h2 id="center-p-5-13-基函数：为什么用-帐篷-p-center"><center><p>5.13 基函数：为什么用&quot;帐篷&quot;</p></center></h2>
+<h3 id="center-p-直观：每个点一把-小伞-p-center"><center><p>直观：每个点一把&quot;小伞&quot;</p></center></h3>
+<p>  把 $[a,b]$ 分成 $N$ 段，节点 $x_0&lt;x_1&lt;\dots&lt;x_N$。</p>
+<p>  在第 $j$ 个节点上放一个<strong>帐篷函数</strong>（hat function）：</p>
+<ul>
+<li>在 $x_j$ 处等于 1</li>
+<li>在 $x_{j\pm1}$ 处等于 0</li>
+<li>在两个相邻单元内<strong>线性</strong>变化，其余地方为 0</li>
+</ul>
+<p>$$\phi_j(x) = \begin{cases}<br>
+\dfrac{x-x_{j-1}}{h}, &amp; x_{j-1}\le x\le x_j \[6pt]<br>
+\dfrac{x_{j+1}-x}{h}, &amp; x_j\le x\le x_{j+1} \[6pt]<br>
+0, &amp; \text{其他}<br>
+\end{cases} \tag{5.13.1}$$</p>
+<h3 id="center-p-为什么选它-p-center"><center><p>为什么选它</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>性质</th>
+<th>好处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\phi_j(x_i)=\delta_{ij}$</td>
+<td><strong>系数 $c_j$ 直接就是节点值</strong>——物理意义清楚</td>
+</tr>
+<tr>
+<td>支集只有两个单元宽</td>
+<td><strong>矩阵稀疏</strong>（只有三对角）</td>
+</tr>
+<tr>
+<td>分片线性、连续</td>
+<td>属于 $H^1$（5.2 节），合法</td>
+</tr>
+<tr>
+<td>局部构造</td>
+<td><strong>单元刚度矩阵可以复用</strong>——这是有限元效率的核心</td>
+</tr>
+</tbody>
+</table>
+<div class="note info flat"><p><strong>&quot;系数就是节点值&quot;这一条特别重要</strong>：</p>
+<p>$$u_h(x_i) = \sum_j c_j\phi_j(x_i) = c_i$$</p>
+<p>所以解出来的向量 $\mathbf{c}$ 就是<strong>各节点上的函数值</strong>——不需要额外插值。</p>
+<p><strong>这解释了为什么有限元的结果可以直接画成折线图</strong>：向量 $\mathbf{c}$ 就是折线图的顶点。</p>
+<p><strong>对比谱方法</strong>：Fourier 系数 $\hat u_k$ 没有直接的物理意义，要合成回来才知道函数长什么样。</p>
+</div>
+<h2 id="center-p-5-14-单元刚度矩阵：可复用的最小积木-p-center"><center><p>5.14 单元刚度矩阵：可复用的最小积木</p></center></h2>
+<h3 id="center-p-核心思想：把大问题拆成小积木-p-center"><center><p>核心思想：把大问题拆成小积木</p></center></h3>
+<p>  <strong>关键观察</strong>：$\phi_j$ 只在 $[x_{j-1},x_j]$ 与 $[x_j,x_{j+1}]$ 上非零。所以</p>
+<p>$$A_{ij} = \int_a^b(\phi_j^{\prime}\phi_i^{\prime}+q\phi_j\phi_i)dx$$</p>
+<p>  <strong>只有当 $|i-j|\le1$ 时非零</strong>——这就是三对角矩阵的由来。</p>
+<p>  而且，<strong>每个单元上的积分长得都一样</strong>（只要单元长度相同）：</p>
+<p><strong>单元刚度矩阵</strong>（在单元 $[x_{e},x_{e+1}]$ 上，长度 $h$）：</p>
+<p>$$K^e = \frac1h\begin{pmatrix}1&amp;-1\-1&amp;1\end{pmatrix} \qquad\text{（来自 }\int\phi^{\prime}\phi^{\prime}\text{）} \tag{5.14.1}$$</p>
+<p><strong>单元质量矩阵</strong>（来自 $\int\phi\phi$，当 $q$ 为常数时）：</p>
+<p>$$M^e = \frac h6\begin{pmatrix}2&amp;1\1&amp;2\end{pmatrix} \tag{5.14.2}$$</p>
+<p>  <strong>整个大矩阵就是把这两块积木拼起来</strong>：</p>
+<p>$$A = \frac1h\begin{pmatrix}<br>
+2&amp;-1&amp;&amp;\-1&amp;2&amp;-1&amp;\&amp;-1&amp;2&amp;-1\&amp;&amp;&amp;\ddots\end{pmatrix} + \frac{qh}{6}\begin{pmatrix}<br>
+4&amp;1&amp;&amp;\1&amp;4&amp;1&amp;\&amp;1&amp;4&amp;1\&amp;&amp;&amp;\ddots\end{pmatrix}$$</p>
+<details class="folding-tag" cyan><summary> 单元刚度矩阵的推导（可选读） </summary>
+              <div class='content'>
+              <p><strong>单元 $[0,h]$ 上的两个基函数</strong>：</p><p>$$\phi_1(x) = 1-\frac xh, \qquad \phi_2(x) = \frac xh$$</p><p><strong>导数</strong>：$\phi_1^{\prime}=-1/h$，$\phi_2^{\prime}=1/h$（都是常数）。</p><p><strong>刚度矩阵</strong>：</p><p>$$K^e_{ij} = \int_0^h\phi_j^{\prime}\phi_i^{\prime}\quad dx = \left(\pm\frac1h\right)\left(\pm\frac1h\right)\cdot h$$</p><p>逐项算：</p><p>$$K^e_{11} = \frac1{h^2}\cdot h = \frac1h,\quad<br>K^e_{12} = -\frac1{h^2}\cdot h = -\frac1h$$</p><p>$$K^e_{21} = -\frac1h,\quad K^e_{22} = \frac1h$$</p><p><strong>质量矩阵</strong>：</p><p>$$M^e_{11} = \int_0^h\left(1-\frac xh\right)^2dx = \frac h3,\quad<br>M^e_{12} = \int_0^h\left(1-\frac xh\right)\frac xh\quad dx = \frac h6$$</p><p>$$M^e_{21} = \frac h6,\quad M^e_{22} = \frac h3$$</p><p><strong>注意 $M^e$ 的行和 $=h$</strong>——这保证常数函数的积分 $=h$（正确的物理量）。</p><p><strong>验证 $M^e$ 与 (5.14.2) 一致</strong>：$\frac h3 = \frac{2h}{6}$，对。$\blacksquare$</p>
+              </div>
+            </details>
+<h2 id="center-p-5-15-组装：把积木拼成大厦-p-center"><center><p>5.15 组装：把积木拼成大厦</p></center></h2>
+<p>  设单元 $e$ 连接节点 $e$ 与 $e+1$。把它贡献的项<strong>加到全局矩阵的对应位置</strong>：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">单元 e 的局部矩阵      全局矩阵中的位置</span><br><span class="line">  <span class="selector-attr">[K00 K01]</span>      →      <span class="selector-attr">[A[e]</span><span class="selector-attr">[e]</span>   <span class="selector-tag">A</span><span class="selector-attr">[e]</span><span class="selector-attr">[e+1]</span>]</span><br><span class="line">  <span class="selector-attr">[K10 K11]</span>             <span class="selector-attr">[A[e+1]</span><span class="selector-attr">[e]</span> <span class="selector-tag">A</span><span class="selector-attr">[e+1]</span><span class="selector-attr">[e+1]</span>]</span><br></pre></td></tr></table></figure>
+<p>  <strong>伪代码</strong>（这是所有有限元程序的核心）：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for e in 0..N-1:</span><br><span class="line">    A[e][e]     += K[0][0]</span><br><span class="line">    A[e][e+1]   += K[0][1]</span><br><span class="line">    A[e+1][e]   += K[1][0]</span><br><span class="line">    A[e+1][e+1] += K[1][1]</span><br></pre></td></tr></table></figure>
+<p>  <strong>注意是 <code>+=</code> 不是 <code>=</code></strong>——节点 $e$ 同时属于单元 $e-1$ 与 $e$，它的贡献要被<strong>累加两次</strong>。</p>
+<div class="note warning flat"><p><strong>这是新手最常犯的错误：写成 <code>=</code> 而不是 <code>+=</code></strong></p>
+<p><strong>症状</strong>：结果看起来&quot;差不多对&quot;但精度只有一半，或者随着网格加密反而不收敛。</p>
+<p><strong>原因</strong>：每个节点被两个单元共享，只赋值会丢掉一半贡献。</p>
+<p><strong>自检方法</strong>：<strong>常数函数必须被精确表示</strong>。若取 $u\equiv1$（即所有系数为 1），则刚度矩阵乘以全 1 向量应得零（因为 $u^{\prime}=0$）：<br>
+  $A\cdot\mathbf{1} = 0$</p>
+<p>这是一个<strong>不用真解就能做的检查</strong>。</p>
+</div>
+<h2 id="center-p-5-16-边界条件：两类的处理完全不同-p-center"><center><p>5.16 边界条件：两类的处理完全不同</p></center></h2>
+<h3 id="center-p-Dirichlet（第一类）：改矩阵-p-center"><center><p>Dirichlet（第一类）：改矩阵</p></center></h3>
+<p>  $u(a)=\alpha$。<strong>做法：把对应行清空，对角置 1，右端改为 $\alpha$</strong>：</p>
+<p>$$A_{00}=1,\quad A_{0j}=0\ (j\ne0),\quad b_0=\alpha \tag{5.16.1}$$</p>
+<p>  <strong>注意</strong>：其他行的右端也要减掉 $A_{i0}\alpha$（因为 $u_0$ 已知）：</p>
+<p>$$b_i \leftarrow b_i - A_{i0}\alpha,\qquad i\ne0 \tag{5.16.2}$$</p>
+<h3 id="center-p-Neumann（第二类）：什么都不用做-p-center"><center><p>Neumann（第二类）：什么都不用做</p></center></h3>
+<p>  $u^{\prime}(b)=\gamma$。<strong>5.1 节说过这是自然边界条件</strong>——它已经被弱形式包含了：</p>
+<p>$$b_N \leftarrow b_N + \gamma \tag{5.16.3}$$</p>
+<p>  <strong>只改右端，不动矩阵。</strong> 这就是&quot;自然&quot;的意思。</p>
+<div class="note info flat"><p><strong>这两者的对比是有限元最优雅的地方</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Dirichlet</th>
+<th>Neumann</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本质</td>
+<td>强制约束</td>
+<td>自动满足</td>
+</tr>
+<tr>
+<td>改哪里</td>
+<td><strong>矩阵 + 右端</strong></td>
+<td><strong>只改右端</strong></td>
+</tr>
+<tr>
+<td>物理类比</td>
+<td>把端点钉死</td>
+<td>端点受到给定力的作用</td>
+</tr>
+</tbody>
+</table>
+<p><strong>对工程的意义</strong>：结构力学里大量边界是&quot;自由的&quot;（Neumann），有限元处理起来几乎是零成本。<strong>这就是有限元在结构分析中碾压差分法的原因</strong>（2.2 节差分法要做虚拟点）。</p>
+</div>
+<h2 id="center-p-5-17-代码：完整的一维有限元-p-center"><center><p>5.17 代码：完整的一维有限元</p></center></h2>
+<div class="tabs" id="fem1d"><ul class="nav-tabs"><li class="tab active"><button type="button" data-href="#fem1d-1">🐍 Python</button></li><li class="tab"><button type="button" data-href="#fem1d-2">🔷 MATLAB</button></li></ul><div class="tab-contents"><div class="tab-item-content active" id="fem1d-1"><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fem1d_poisson</span>(<span class="params">f, a, b, N, alpha, beta, q=<span class="number">0.0</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    解 -(u&#x27;&#x27;) + q u = f 在 (a,b) 上, u(a)=alpha, u(b)=beta</span></span><br><span class="line"><span class="string">    分片线性有限元, 均匀网格</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    h = (b - a) / N</span><br><span class="line">    n = N + <span class="number">1</span>                      <span class="comment"># 节点数</span></span><br><span class="line">    A = np.zeros((n, n))</span><br><span class="line">    F = np.zeros(n)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># ---- 单元刚度/质量矩阵 ----</span></span><br><span class="line">    Ke = np.array([[<span class="number">1.0</span>, -<span class="number">1.0</span>], [-<span class="number">1.0</span>, <span class="number">1.0</span>]]) / h</span><br><span class="line">    Me = np.array([[<span class="number">2.0</span>, <span class="number">1.0</span>], [<span class="number">1.0</span>, <span class="number">2.0</span>]]) * h / <span class="number">6.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># ---- 组装 ----</span></span><br><span class="line">    <span class="keyword">for</span> e <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">                A[e+i, e+j] += Ke[i, j] + q * Me[i, j]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># ---- 右端：f 用单元上的中点公式 ----</span></span><br><span class="line">    x = np.linspace(a, b, n)</span><br><span class="line">    <span class="keyword">for</span> e <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        xm = <span class="number">0.5</span> * (x[e] + x[e+<span class="number">1</span>])</span><br><span class="line">        F[e]     += f(xm) * h / <span class="number">2</span></span><br><span class="line">        F[e+<span class="number">1</span>]   += f(xm) * h / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># ---- Dirichlet 边界 ----</span></span><br><span class="line">    <span class="comment"># 左端</span></span><br><span class="line">    F[<span class="number">1</span>:] -= A[<span class="number">1</span>:, <span class="number">0</span>] * alpha</span><br><span class="line">    A[<span class="number">0</span>, :] = <span class="number">0.0</span>; A[:, <span class="number">0</span>] = <span class="number">0.0</span></span><br><span class="line">    A[<span class="number">0</span>, <span class="number">0</span>] = <span class="number">1.0</span>; F[<span class="number">0</span>] = alpha</span><br><span class="line">    <span class="comment"># 右端</span></span><br><span class="line">    F[:-<span class="number">1</span>] -= A[:-<span class="number">1</span>, -<span class="number">1</span>] * beta</span><br><span class="line">    A[-<span class="number">1</span>, :] = <span class="number">0.0</span>; A[:, -<span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">    A[-<span class="number">1</span>, -<span class="number">1</span>] = <span class="number">1.0</span>; F[-<span class="number">1</span>] = beta</span><br><span class="line"></span><br><span class="line">    u = np.linalg.solve(A, F)</span><br><span class="line">    <span class="keyword">return</span> x, u</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">assembly_selftest</span>(<span class="params">N=<span class="number">10</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;不用真解的自检：常数函数应被精确表示&quot;&quot;&quot;</span></span><br><span class="line">    h = <span class="number">1.0</span>/N</span><br><span class="line">    n = N + <span class="number">1</span></span><br><span class="line">    A = np.zeros((n, n))</span><br><span class="line">    Ke = np.array([[<span class="number">1.0</span>,-<span class="number">1.0</span>],[-<span class="number">1.0</span>,<span class="number">1.0</span>]])/h</span><br><span class="line">    <span class="keyword">for</span> e <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">                A[e+i, e+j] += Ke[i,j]</span><br><span class="line">    <span class="comment"># 内部节点：(A @ ones) 应全为零</span></span><br><span class="line">    inner = A[<span class="number">1</span>:-<span class="number">1</span>, :] @ np.ones(n)</span><br><span class="line">    <span class="keyword">return</span> np.<span class="built_in">max</span>(np.<span class="built_in">abs</span>(inner))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    a, b = <span class="number">0.0</span>, <span class="number">1.0</span></span><br><span class="line">    <span class="comment"># 真解 u = sin(pi x)，f = pi^2 sin(pi x)</span></span><br><span class="line">    f = <span class="keyword">lambda</span> x: np.pi**<span class="number">2</span> * np.sin(np.pi*x)</span><br><span class="line">    exact = <span class="keyword">lambda</span> x: np.sin(np.pi*x)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;一维有限元: -(u&#x27;&#x27;) = f, u(0)=u(1)=0&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;%5s %6s %14s %8s&quot;</span> % (<span class="string">&quot;N&quot;</span>, <span class="string">&quot;n&quot;</span>, <span class="string">&quot;max error&quot;</span>, <span class="string">&quot;order&quot;</span>))</span><br><span class="line">    prev = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> N <span class="keyword">in</span> [<span class="number">8</span>, <span class="number">16</span>, <span class="number">32</span>, <span class="number">64</span>, <span class="number">128</span>]:</span><br><span class="line">        x, u = fem1d_poisson(f, a, b, N, <span class="number">0.0</span>, <span class="number">0.0</span>)</span><br><span class="line">        err = np.<span class="built_in">max</span>(np.<span class="built_in">abs</span>(u - exact(x)))</span><br><span class="line">        order = np.log2(prev/err) <span class="keyword">if</span> prev <span class="keyword">else</span> <span class="built_in">float</span>(<span class="string">&#x27;nan&#x27;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%5d %6d %14.3e %8s&quot;</span> % (N, N+<span class="number">1</span>, err, <span class="string">&quot;%.2f&quot;</span> % order <span class="keyword">if</span> prev <span class="keyword">else</span> <span class="string">&quot;-&quot;</span>))</span><br><span class="line">        prev = err</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\n自检：常数向量应被刚度矩阵精确零化&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> N <span class="keyword">in</span> [<span class="number">10</span>, <span class="number">20</span>, <span class="number">40</span>]:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;  N=%3d  max|A·1| 内部 = %.2e&quot;</span> % (N, assembly_selftest(N)))</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\n说明: 分片线性在 L∞ 意义下的误差是 O(h^2)&quot;</span>)</span><br></pre></td></tr></table></figure><button type="button" class="tab-to-top" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div><div class="tab-item-content" id="fem1d-2"><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[x, u]</span> = <span class="title">fem1d_poisson</span><span class="params">(f, a, b, N, alpha, beta, q)</span></span></span><br><span class="line">    <span class="keyword">if</span> nargin &lt; <span class="number">7</span>, q = <span class="number">0</span>; <span class="keyword">end</span></span><br><span class="line">    h = (b - a) / N;</span><br><span class="line">    n = N + <span class="number">1</span>;</span><br><span class="line">    A = <span class="built_in">zeros</span>(n, n);</span><br><span class="line">    F = <span class="built_in">zeros</span>(n, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    Ke = [<span class="number">1</span>, <span class="number">-1</span>; <span class="number">-1</span>, <span class="number">1</span>] / h;</span><br><span class="line">    Me = [<span class="number">2</span>, <span class="number">1</span>; <span class="number">1</span>, <span class="number">2</span>] * h / <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">% ---- 组装 ----</span></span><br><span class="line">    <span class="keyword">for</span> e = <span class="number">1</span>:N</span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">2</span></span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="number">2</span></span><br><span class="line">                A(e+<span class="built_in">i</span><span class="number">-1</span>, e+<span class="built_in">j</span><span class="number">-1</span>) = A(e+<span class="built_in">i</span><span class="number">-1</span>, e+<span class="built_in">j</span><span class="number">-1</span>) + Ke(<span class="built_in">i</span>,<span class="built_in">j</span>) + q*Me(<span class="built_in">i</span>,<span class="built_in">j</span>);</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">% ---- 右端 ----</span></span><br><span class="line">    x = <span class="built_in">linspace</span>(a, b, n).&#x27;;</span><br><span class="line">    <span class="keyword">for</span> e = <span class="number">1</span>:N</span><br><span class="line">        xm = <span class="number">0.5</span>*(x(e) + x(e+<span class="number">1</span>));</span><br><span class="line">        F(e)   = F(e)   + f(xm)*h/<span class="number">2</span>;</span><br><span class="line">        F(e+<span class="number">1</span>) = F(e+<span class="number">1</span>) + f(xm)*h/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">% ---- Dirichlet 左端 ----</span></span><br><span class="line">    F(<span class="number">2</span>:<span class="keyword">end</span>) = F(<span class="number">2</span>:<span class="keyword">end</span>) - A(<span class="number">2</span>:<span class="keyword">end</span>, <span class="number">1</span>)*alpha;</span><br><span class="line">    A(<span class="number">1</span>, :) = <span class="number">0</span>;  A(:, <span class="number">1</span>) = <span class="number">0</span>;</span><br><span class="line">    A(<span class="number">1</span>,<span class="number">1</span>) = <span class="number">1</span>;   F(<span class="number">1</span>) = alpha;</span><br><span class="line"></span><br><span class="line">    <span class="comment">% ---- Dirichlet 右端 ----</span></span><br><span class="line">    F(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-1</span>) = F(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-1</span>) - A(<span class="number">1</span>:<span class="keyword">end</span><span class="number">-1</span>, <span class="keyword">end</span>)*<span class="built_in">beta</span>;</span><br><span class="line">    A(<span class="keyword">end</span>, :) = <span class="number">0</span>;  A(:, <span class="keyword">end</span>) = <span class="number">0</span>;</span><br><span class="line">    A(<span class="keyword">end</span>,<span class="keyword">end</span>) = <span class="number">1</span>; F(<span class="keyword">end</span>) = <span class="built_in">beta</span>;</span><br><span class="line"></span><br><span class="line">    u = A \ F;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">m</span> = <span class="title">assembly_selftest</span><span class="params">(N)</span></span></span><br><span class="line"><span class="comment">% 不用真解的自检：常数函数应被刚度矩阵精确零化</span></span><br><span class="line">    h = <span class="number">1.0</span>/N;  n = N + <span class="number">1</span>;</span><br><span class="line">    A = <span class="built_in">zeros</span>(n, n);</span><br><span class="line">    Ke = [<span class="number">1</span>, <span class="number">-1</span>; <span class="number">-1</span>, <span class="number">1</span>]/h;</span><br><span class="line">    <span class="keyword">for</span> e = <span class="number">1</span>:N</span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">2</span></span><br><span class="line">            <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="number">2</span></span><br><span class="line">                A(e+<span class="built_in">i</span><span class="number">-1</span>, e+<span class="built_in">j</span><span class="number">-1</span>) = A(e+<span class="built_in">i</span><span class="number">-1</span>, e+<span class="built_in">j</span><span class="number">-1</span>) + Ke(<span class="built_in">i</span>,<span class="built_in">j</span>);</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    inner = A(<span class="number">2</span>:<span class="keyword">end</span><span class="number">-1</span>, :) * <span class="built_in">ones</span>(n,<span class="number">1</span>);</span><br><span class="line">    m = <span class="built_in">max</span>(<span class="built_in">abs</span>(inner));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% Calling example</span></span><br><span class="line">a = <span class="number">0</span>; b = <span class="number">1</span>;</span><br><span class="line">f     = @(x) <span class="built_in">pi</span>^<span class="number">2</span>*<span class="built_in">sin</span>(<span class="built_in">pi</span>*x);</span><br><span class="line">exact = @(x) <span class="built_in">sin</span>(<span class="built_in">pi</span>*x);</span><br><span class="line"></span><br><span class="line">fprintf(<span class="string">&#x27;一维有限元: -(u&#x27;&#x27;) = f, u(0)=u(1)=0\n&#x27;</span>);</span><br><span class="line">fprintf(<span class="string">&#x27;%5s %6s %14s %8s\n&#x27;</span>, <span class="string">&#x27;N&#x27;</span>, <span class="string">&#x27;n&#x27;</span>, <span class="string">&#x27;max error&#x27;</span>, <span class="string">&#x27;order&#x27;</span>);</span><br><span class="line">prev = NaN;</span><br><span class="line"><span class="keyword">for</span> N = [<span class="number">8</span> <span class="number">16</span> <span class="number">32</span> <span class="number">64</span> <span class="number">128</span>]</span><br><span class="line">    [x, u] = fem1d_poisson(f, a, b, N, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    err = <span class="built_in">max</span>(<span class="built_in">abs</span>(u - exact(x)));</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isnan</span>(prev)</span><br><span class="line">        os = <span class="string">&#x27;-&#x27;</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        os = sprintf(<span class="string">&#x27;%.2f&#x27;</span>, <span class="built_in">log2</span>(prev/err));</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    fprintf(<span class="string">&#x27;%5d %6d %14.3e %8s\n&#x27;</span>, N, N+<span class="number">1</span>, err, os);</span><br><span class="line">    prev = err;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">fprintf(<span class="string">&#x27;\n自检：常数向量应被刚度矩阵精确零化\n&#x27;</span>);</span><br><span class="line"><span class="keyword">for</span> N = [<span class="number">10</span> <span class="number">20</span> <span class="number">40</span>]</span><br><span class="line">    fprintf(<span class="string">&#x27;  N=%3d  max|A·1| 内部 = %.2e\n&#x27;</span>, N, assembly_selftest(N));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">fprintf(<span class="string">&#x27;\n说明: 分片线性在 L∞ 意义下的误差是 O(h^2)\n&#x27;</span>);</span><br></pre></td></tr></table></figure><button type="button" class="tab-to-top" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div></div>
+<div class="note warning flat"><p><strong>运行后会看到</strong>：</p>
+<ol>
+<li><strong>收敛阶稳定在 2.00</strong>——分片线性是二阶收敛（$L^\infty$ 范数下）</li>
+<li><strong>自检 <code>max|A·1|</code> 在 $10^{-16}$ 量级</strong>——常数函数被精确表示，说明组装正确</li>
+</ol>
+<p><strong>第 2 点是调试有限元代码的第一道关</strong>。如果你的代码自检不通过，<strong>一定</strong>是组装或边界处理写错了，不用去查别的地方。</p>
+<p><strong>这个自检的通用性</strong>：任何&quot;无源、常数边界&quot;的问题，解都应该是常数。所以这个检查对<strong>任意</strong>椭圆型有限元都适用，不限一维。</p>
+</div>
+<h2 id="center-p-5-18-小结-p-center"><center><p>5.18 小结</p></center></h2>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>内容</th>
+<th>关键点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 选基函数</td>
+<td>帐篷函数</td>
+<td>系数 = 节点值</td>
+</tr>
+<tr>
+<td>2. 单元矩阵</td>
+<td>$K^e$、$M^e$</td>
+<td>可复用，与位置无关</td>
+</tr>
+<tr>
+<td>3. 组装</td>
+<td><code>+=</code> 累加</td>
+<td><strong>不能写成 <code>=</code></strong></td>
+</tr>
+<tr>
+<td>4. 右端</td>
+<td>数值积分</td>
+<td>$\int f\phi_i$</td>
+</tr>
+<tr>
+<td>5. 边界</td>
+<td>Dirichlet 改矩阵、Neumann 只改右端</td>
+<td>自然 vs 本质</td>
+</tr>
+<tr>
+<td>6. 求解</td>
+<td>解三对角方程组</td>
+<td>$O(N)$</td>
+</tr>
+</tbody>
+</table>
+<div class="note danger flat"><p><strong>易错点</strong></p>
+<ol>
+<li><strong>组装必须 <code>+=</code></strong>——节点被两个单元共享；</li>
+<li><strong>Dirichlet 边界要同时改矩阵和右端</strong>，漏掉右端修正会导致边界不精确；</li>
+<li><strong>Neumann 边界不碰矩阵</strong>——碰了就说明搞错了；</li>
+<li><strong>自检用 $A\cdot\mathbf{1}=0$</strong>——这是最有效的调试手段；</li>
+<li><strong>$f$ 的积分用中点公式时误差是 $O(h^2)$</strong>——与基函数同阶，不会拖后腿。</li>
+</ol>
+</div>
+<p>  下一节 5.7 讲<strong>二维有限元</strong>——三角形单元、等参变换、以及大规模问题的多重网格。</p>
+<h2 id="center-p-参考文献-p-center"><center><p>参考文献</p></center></h2>
+<p>  一维有限元的实现参考<span class="hidden-anchor" id="referto_[1]"></span><sup class="reference"><a href="#referfrom_[1]">[1]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">李荣华</span><span class="reference-title">参考资料</span></span></span>第 5 章第 6 节。</p>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[1]"></span><a class="reference-anchor" href="#referto_[1]">[1]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="/%E5%88%98%E6%92%AD.%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E6%95%B0%E5%80%BC%E8%A7%A3%E6%B3%95(%E7%AC%AC%E5%9B%9B%E7%89%88)">李荣华</a></div>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>第 5 章 变分方法与有限元（六）：一维有限元的完整实现</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="/posts/91e8c26d.html">/posts/91e8c26d.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Hatsusakuramiku</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2026-11-13</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2026-11-13</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>学习</a></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/1aa83694.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第 5 章 变分方法与有限元（五）：谱方法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/3f4fb0df.html" title="第 1 章 定解问题"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2025-10-14</div><div class="title">第 1 章 定解问题</div></div></a></div><div><a href="/posts/ace8fd0f.html" title="第 1 章（续）：热传导方程的建立"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100886812_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：热传导方程的建立</div></div></a></div><div><a href="/posts/73d29eed.html" title="第 1 章（续）：拉普拉斯方程的建立与调和函数"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：拉普拉斯方程的建立与调和函数</div></div></a></div><div><a href="/posts/87cca0a4.html" title="第 1 章（续）：定解条件的提法与适定性"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-06</div><div class="title">第 1 章（续）：定解条件的提法与适定性</div></div></a></div><div><a href="/posts/4a6c68e2.html" title="第 1 章（续）：二阶线性偏微分方程的分类与标准型"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/102673006_p1.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-06</div><div class="title">第 1 章（续）：二阶线性偏微分方程的分类与标准型</div></div></a></div><div><a href="/posts/d26fe62d.html" title="第 2 章 分离变量法：从本征值问题到弦的自由振动"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-02</div><div class="title">第 2 章 分离变量法：从本征值问题到弦的自由振动</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E8%BF%99%E4%B8%80%E8%8A%82%E5%81%9A%E4%BB%80%E4%B9%88-p-center"><span class="toc-text">这一节做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-5-13-%E5%9F%BA%E5%87%BD%E6%95%B0%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-%E5%B8%90%E7%AF%B7-p-center"><span class="toc-text">5.13 基函数：为什么用&quot;帐篷&quot;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E7%9B%B4%E8%A7%82%EF%BC%9A%E6%AF%8F%E4%B8%AA%E7%82%B9%E4%B8%80%E6%8A%8A-%E5%B0%8F%E4%BC%9E-p-center"><span class="toc-text">直观：每个点一把&quot;小伞&quot;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E5%AE%83-p-center"><span class="toc-text">为什么选它</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-5-14-%E5%8D%95%E5%85%83%E5%88%9A%E5%BA%A6%E7%9F%A9%E9%98%B5%EF%BC%9A%E5%8F%AF%E5%A4%8D%E7%94%A8%E7%9A%84%E6%9C%80%E5%B0%8F%E7%A7%AF%E6%9C%A8-p-center"><span class="toc-text">5.14 单元刚度矩阵：可复用的最小积木</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A%E6%8A%8A%E5%A4%A7%E9%97%AE%E9%A2%98%E6%8B%86%E6%88%90%E5%B0%8F%E7%A7%AF%E6%9C%A8-p-center"><span class="toc-text">核心思想：把大问题拆成小积木</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-5-15-%E7%BB%84%E8%A3%85%EF%BC%9A%E6%8A%8A%E7%A7%AF%E6%9C%A8%E6%8B%BC%E6%88%90%E5%A4%A7%E5%8E%A6-p-center"><span class="toc-text">5.15 组装：把积木拼成大厦</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-5-16-%E8%BE%B9%E7%95%8C%E6%9D%A1%E4%BB%B6%EF%BC%9A%E4%B8%A4%E7%B1%BB%E7%9A%84%E5%A4%84%E7%90%86%E5%AE%8C%E5%85%A8%E4%B8%8D%E5%90%8C-p-center"><span class="toc-text">5.16 边界条件：两类的处理完全不同</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-Dirichlet%EF%BC%88%E7%AC%AC%E4%B8%80%E7%B1%BB%EF%BC%89%EF%BC%9A%E6%94%B9%E7%9F%A9%E9%98%B5-p-center"><span class="toc-text">Dirichlet（第一类）：改矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-Neumann%EF%BC%88%E7%AC%AC%E4%BA%8C%E7%B1%BB%EF%BC%89%EF%BC%9A%E4%BB%80%E4%B9%88%E9%83%BD%E4%B8%8D%E7%94%A8%E5%81%9A-p-center"><span class="toc-text">Neumann（第二类）：什么都不用做</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-5-17-%E4%BB%A3%E7%A0%81%EF%BC%9A%E5%AE%8C%E6%95%B4%E7%9A%84%E4%B8%80%E7%BB%B4%E6%9C%89%E9%99%90%E5%85%83-p-center"><span class="toc-text">5.17 代码：完整的一维有限元</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-5-18-%E5%B0%8F%E7%BB%93-p-center"><span class="toc-text">5.18 小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE-p-center"><span class="toc-text">参考文献</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>再看看那个光点，它就在这里，这是家园，这是我们 —— 你所爱的每一个人，你认识的每一个人，你听说过的每一个人，曾经有过的每一个人，都在它上面度过他们的一生✨</div><div class="btn-xz-box"><a class="btn-xz" href="/box/astronomy/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/archives/">开源指南</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li><li><a href="/box/gallery/">我的画廊</a><a href="/site/time/">建设进程</a></li><li><a href="/site/census/">网站统计</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.com/" title="本站"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/" title="Hexo"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1036/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://butterfly.js.org/" title="Butterfly"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1039/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.org/" title="示例站点 A"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1044/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1015/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1016/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2026</b></span><span><b>&nbsp;&nbsp;By Hatsusakuramiku</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/jerryc127/hexo-theme-butterfly" style="margin-inline:5px" title="主题版本 Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/fomalhaut1998/hexo-theme-Fomalhaut" style="margin-inline:5px" title="本站主题美化基于Fomalhaut🥝的开源项目‘hexo-theme-Fomalhaut’修改"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%F0%9F%A5%9DFomalhaut-hexo--theme--Fomalhaut-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226403" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226403号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%E8%90%8CICP%E5%A4%87-20226403-ff69b4.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Source-GitHub-d021d6.svg" alt=""/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Copyright-BY--NC--SA--4.0-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，次线部署于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js?v=20261005-scroll1"></script><script src="/js/main.js?v=20261005-scroll1"></script><script src="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.umd.js"></script><script src="https://registry.npmmirror.com/instant.page/5.1.0/files/instantpage.js" type="module"></script><script src="https://registry.npmmirror.com/vanilla-lazyload/17.3.1/files/dist/lazyload.iife.min.js"></script><script>window.__SEARCH_LAZY__ = ["https://registry.npmmirror.com/algoliasearch/4.14.3/files/dist/algoliasearch-lite.umd.js","https://registry.npmmirror.com/instantsearch.js/4.49.2/files/dist/instantsearch.production.min.js","/js/search/algolia.js"]</script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://registry.npmmirror.com/mathjax/3.2.2/files/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script defer charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script><script defer src="https://sdk.51.la/perf/js-sdk-perf.min.js" crossorigin="anonymous"></script><script defer src="/js/51la.js"></script><script src="https://registry.npmmirror.com/jquery/3.6.0/files/dist/jquery.min.js"></script><script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script><script async src="https://registry.npmmirror.com/clipboard/2.0.10/files/dist/clipboard.min.js"></script><script async src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="/js/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_glcijzcpx7f.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_gkavascgf3n.js"></script><script async src="//at.alicdn.com/t/c/font_5239918_ta23cg9gek.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/notify.js"></script><script defer src="/js/lunar.js"></script><script defer src="/js/data/voyager1.js"></script><script defer src="/js/data/holidays.js"></script><script defer src="/js/modules/console-art.js"></script><script defer src="/js/modules/shell.js?v=20261011-stage3"></script><script defer src="/js/modules/snow.js?v=20261010-snow1"></script><script defer src="/js/modules/effects.js?v=20261010-snow1"></script><script defer src="/js/modules/reading.js?v=20261015-fps2"></script><script defer src="/js/modules/nav.js?v=20261005-scroll1"></script><script defer src="/js/modules/cursor.js?v=20261015-fps2"></script><script defer src="/js/modules/footer-time.js?v=20261006"></script><script defer src="/js/modules/appearance-fonts.js?v=20261010-preview1"></script><script defer src="/js/modules/appearance-backgrounds.js?v=20261011-bgflash1"></script><script defer src="/js/modules/fireflies.js?v=20261010-fireflies1"></script><script defer src="/js/modules/ripple.js?v=20261014-ripple1"></script><script defer src="/js/modules/settings.js?v=20261015-custom1"></script><script defer src="/js/fomal.js"></script><script defer src="/js/wechat-qr.js"></script><script defer src="/js/festival.js"></script><script defer src="/js/author-status.js"></script><script defer src="/js/stats.js?v=20261005"></script><script defer src="/js/footer-music.js?v=20261005"></script><script defer src="/js/pjax-guard.js?v=20261005"></script><script defer src="/js/inject/search-lazy.js?v=20261011b"></script><script src="/js/inject/scroll-gap-fix.js?v=20261011"></script><script src="/js/inject/webinfo-card.js"></script><script src="/js/inject/ft-ad-extra.js"></script><script src="/js/inject/pc-local-link.js"></script><script defer src="/js/inject/about-route-probe.js?v=20261006"></script><link rel="stylesheet" href="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js"></script><script src="https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  ;['tocScrollFn', 'scrollCollect'].forEach(name => {
+    const handler = window[name]
+    if (!handler) return
+    window.removeEventListener('scroll', handler)
+    if (typeof handler.cancel === 'function') handler.cancel()
+    window[name] = null
+  })
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//events.vercount.one/js"></script></div><!-- hexo injector body_end start --><script id="swiper-lazyload-fix">
+(function () {
+  if (window.__swiperLazyFix) return;
+  window.__swiperLazyFix = true;
+
+  function sync () {
+    try {
+      var inst = window.lazyLoadInstance;
+      if (inst && typeof inst.update === 'function') inst.update();
+    } catch (e) {}
+  }
+
+  function burst () {
+    [0, 120, 300, 700, 1500, 2600].forEach(function (d) { setTimeout(sync, d); });
+  }
+
+  // 1) 首次加载 + 站内 pjax 返回后：等异步的 data-pjax 脚本（swiper_init.js）跑完再补登记
+  document.addEventListener('pjax:complete', burst);
+  window.addEventListener('load', burst);
+  if (document.readyState !== 'loading') burst();
+  else document.addEventListener('DOMContentLoaded', burst);
+
+  // 2) Swiper 重建循环克隆时会增删 .blog-slider__wrp 的子节点（pjax 换页后容器会被替换，故持续重挂）
+  setTimeout(function watchWrp () {
+    var wrp = document.querySelector('.blog-slider__wrp');
+    if (wrp && wrp !== window.__swiperLazyWrp) {
+      try { if (window.__swiperLazyMo) window.__swiperLazyMo.disconnect(); } catch (e) {}
+      window.__swiperLazyWrp = wrp;
+      try {
+        window.__swiperLazyMo = new MutationObserver(function () {
+          clearTimeout(window.__swiperLazyTimer);
+          window.__swiperLazyTimer = setTimeout(sync, 100);
+        });
+        window.__swiperLazyMo.observe(wrp, { childList: true });
+      } catch (e) {}
+    }
+    setTimeout(watchWrp, 800);
+  }, 800);
+})();
+</script><script id="wow-pjax-rehook">
+(function () {
+  if (window.__wowPjaxRehook) return;
+  window.__wowPjaxRehook = true;
+
+  // 插件生成的加类脚本特征：调 classList.add 又写 data-wow-duration 的，就是它
+  function isWowInjector(code) {
+    return !!code && code.indexOf('classList.add') > -1 && code.indexOf('data-wow-duration') > -1;
+  }
+
+  // 把 .js-pjax 里哑火的加类脚本重放一遍（照抄 pjax.pug 的重放手法：换新节点才会执行）
+  function replayInjectors() {
+    var scripts = document.querySelectorAll('.js-pjax script');
+    for (var i = 0; i < scripts.length; i++) {
+      var old = scripts[i];
+      if (old.getAttribute('data-pjax') !== null) continue; // 主题自己会重放，别跑两遍
+      var code = old.text || old.textContent || old.innerHTML || '';
+      if (!isWowInjector(code)) continue;
+      var neu = document.createElement('script');
+      neu.setAttribute('data-wow-pjax-replay', '');
+      neu.appendChild(document.createTextNode(code));
+      old.parentNode.replaceChild(neu, old);
+    }
+  }
+
+  // wow 实例兜底 + 清理被 pjax 换掉的旧节点（否则 wow.boxes 会一直 accumulate）
+  function resyncBoxes() {
+    var wow = window.wow;
+    if (!wow && typeof window.WOW === 'function') {
+      // 等价于 node_modules/hexo-butterfly-wowjs/lib/wow_init.js
+      window.wow = new window.WOW({
+        boxClass: 'wow',
+        animateClass: 'animate__animated',
+        offset: 0,
+        mobile: false,
+        live: true
+      });
+      window.wow.init();
+      return;
+    }
+    if (!wow) return;
+    try {
+      if (wow.boxes && wow.boxes.length) {
+        wow.boxes = wow.boxes.filter(function (el) { return el && document.contains(el); });
+      }
+      // 关键一步：让 wow 自己把新插入的 .wow 卡片登记进 boxes（会顺手隐藏 + 置 scrolled）
+      if (typeof wow.doSync === 'function') {
+        wow.doSync(document.body);
+      } else if (wow.boxes && wow.applyStyle) {
+        // 老版本 wow.js 没有 doSync，手动补：从没被 wow 摸过的块（没有 inline visibility）收进来
+        var nodes = document.querySelectorAll('.wow');
+        for (var i = 0; i < nodes.length; i++) {
+          var el = nodes[i];
+          if (el.style.visibility) continue;
+          if (wow.all && wow.all.indexOf(el) > -1) continue;
+          wow.boxes.push(el);
+          if (wow.all) wow.all.push(el);
+          wow.applyStyle(el, true);
+        }
+        wow.scrolled = true;
+      }
+      // 再补一次 scroll 事件，保证 50ms 轮询这一拍立刻跑
+      window.dispatchEvent(new Event('scroll'));
+    } catch (e) {}
+  }
+
+  function run() {
+    try { replayInjectors(); } catch (e) {}
+    try { resyncBoxes(); } catch (e) {}
+  }
+
+  document.addEventListener('pjax:complete', function () {
+    // 主题的 pjax:complete 监听器（pjax.pug）先重放 script[data-pjax]（轮播/磁贴注入脚本在里面），
+    // 所以这里延后一拍，保证重放顺序在它之后；300ms 那次兜底给异步补内容的场景。
+    setTimeout(run, 0);
+    setTimeout(run, 300);
+  });
+
+  // 调试用：控制台里 window.__wowPjaxRehookNow() 可手动触发一次
+  window.__wowPjaxRehookNow = run;
+})();
+</script> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><a class="magnet_link_more"  href="/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="/js/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<container><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></container>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://cdn.jsdelivr.net/gh/yourname/gitcalendar-data@main/data.json",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'yourname')
+    }
+  </script><!-- hexo injector body_end end --></body></html>
