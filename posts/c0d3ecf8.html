@@ -1,0 +1,1276 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><script>if ('serviceWorker' in navigator) {
+  var isLocalDev = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(location.hostname) !== -1
+  if (isLocalDev) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { r.unregister() })
+    })
+  } else {
+    navigator.serviceWorker.register('/sw.js').then(function () {
+      if (localStorage.getItem('install') !== 'true') {
+        localStorage.setItem('install', 'true')
+        location.reload()
+      }
+    })
+  }
+}
+</script><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>扩展一：单纯形上的质量集中单元与对称求积 | 初樱小站</title><meta name="keywords" content="有限元,质量集中,mass lumping,对称求积,cubature,单纯形,三角形,四面体"><meta name="author" content="Hatsusakuramiku"><meta name="copyright" content="Hatsusakuramiku"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="从三角形容积公式讲起，逐步构造与插值节点重合的高阶求积规则，使有限元质量矩阵自然对角；含完整节点表、权重与可视化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展一：单纯形上的质量集中单元与对称求积">
+<meta property="og:url" content="https://hsmk.mikufans.date/posts/c0d3ecf8.html">
+<meta property="og:site_name" content="初樱小站">
+<meta property="og:description" content="从三角形容积公式讲起，逐步构造与插值节点重合的高阶求积规则，使有限元质量矩阵自然对角；含完整节点表、权重与可视化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://aws.mikufans.date/hexo/img/background/104627387_p0.webp">
+<meta property="article:published_time" content="2026-11-13T02:25:00.000Z">
+<meta property="article:modified_time" content="2026-11-13T02:25:00.000Z">
+<meta property="article:author" content="Hatsusakuramiku">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aws.mikufans.date/hexo/img/background/104627387_p0.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://hsmk.mikufans.date/posts/c0d3ecf8"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//events.vercount.one"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.0.0/files/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"YOUR_ALGOLIA_APP_ID","apiKey":"YOUR_ALGOLIA_SEARCH_KEY","indexName":"your_index_name","hits":{"per_page":5},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '扩展一：单纯形上的质量集中单元与对称求积',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-13 10:25:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="preconnect" href="https://registry.npmmirror.com"><link rel="preconnect" href="https://registry.npmmirror.com" crossorigin><link rel="preconnect" href="https://npm.elemecdn.com"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="font" type="font/woff2" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-tc@5/files/lxgw-wenkai-tc-chinese-traditional-400-normal.woff2" crossorigin><link rel="preconnect" href="https://sdk.51.la"><link rel="preconnect" href="https://sdk.51.la" crossorigin><link rel="dns-prefetch" href="https://at.alicdn.com"><link rel="dns-prefetch" href="https://lib.baomitu.com"><link rel="stylesheet" href="/css/stats.css?v=20261005"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="bgFilterParam"></style><span id="fps" aria-hidden="true"></span><style id="defineBg">:root{--default-bg:url(https://aws.mikufans.date/hexo/img/background/100513742_p0.webp);--darkmode-bg:url(https://aws.mikufans.date/hexo/img/background/100723659_p0.webp);--mobileday-bg:url(https://aws.mikufans.date/hexo/img/background/100886812_p0.webp);--mobilenight-bg:url(https://aws.mikufans.date/hexo/img/background/100891310_p0.webp);}</style><style id="menu_shadow"></style><style id="nav-display"></style><style id="aside-show"></style><style id="aside-pos"></style><link rel="stylesheet" href="/css/site-inject.css?v=20261015-fps4"><link rel="stylesheet" href="/css/navigation.css?v=20261011-nav3"><link rel="stylesheet" href="/css/mobile-drawer.css?v=20261008"><link rel="stylesheet" href="/css/avatar-glow.css?v=20261004q"><link rel="stylesheet" href="/css/timeline-archive.css?v=20261011d"><script defer src="/js/timeline-archive.js?v=20261011b"></script><link rel="stylesheet" href="/css/about-page.css?v=20261006"><script src="/js/inject/ping-route-boot.js"></script><script src="/js/inject/ping-route.js"></script><script src="/js/inject/beauty-boot.js?v=20261015-solid3"></script><script src="/js/inject/right-menu-state-boot.js"></script><script>window.fomalNightConfig=window.fomalNightConfig||{enabled:true,latLng:null,themeKey:'theme'}</script><script src="/js/inject/daynight-boot.js?v=20261014-nightboot2"></script><script src="/js/inject/typewriter.js?v=20261004b"></script><link rel="stylesheet" href="/css/typewriter.css?v=20261004"><link rel="stylesheet" href="/css/paperclip.css?v=20261005-mobile1"><link rel="stylesheet" href="/css/archive-page.css?v=20261018-scrollfix"><script defer src="/js/inject/archive-page.js?v=20261018-scrollfix"></script><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="/css/gitcalendar.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="初樱小站" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">初樱小站</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-sousuo"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-huahua"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">扩展一：单纯形上的质量集中单元与对称求积</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2026-11-13T02:25:00.000Z" title="发表于 2026-11-13 10:25:00">2026-11-13</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-13T02:25:00.000Z" title="更新于 2026-11-13 10:25:00">2026-11-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/HSMK-NUMERICAL/">HSMK-NUMERICAL</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">4859</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="扩展一：单纯形上的质量集中单元与对称求积"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv">—</span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="note info flat"><p><strong>封面图片 PID：<a target="_blank" rel="noopener" href="https://www.pixiv.net/artworks/1628397182442">1628397182442</a></strong></p>
+</div>
+<blockquote>
+<blockquote>
+<p><strong>常微分与偏微分方程数值解 导航栏</strong></p>
+</blockquote>
+<ul>
+<li><a href="/posts/7efa69f2.html">系列总览与导航</a><br>
+第 1 章 常微分方程初值问题
+<ul>
+<li><a href="/posts/14feb38a.html">1.1 Euler 法与梯形格式</a></li>
+<li><a href="/posts/cbc69438.html">1.2 线性差分方程与 Gronwall 不等式</a></li>
+<li><a href="/posts/82dd98e6.html">1.3 线性多步法·数值积分法</a></li>
+<li><a href="/posts/c75acb8f.html">1.4 待定系数法与预估-校正</a></li>
+<li><a href="/posts/4ad11730.html">1.5 相容性、稳定性与收敛性</a></li>
+<li><a href="/posts/78335a04.html">1.6 Runge-Kutta 法与绝对稳定域</a></li>
+<li><a href="/posts/33531fc2.html">1.7 刚性方程、A 稳定性与外推法</a><br>
+第 2 章 椭圆型方程有限差分</li>
+<li><a href="/posts/47d47346.html">2.1 差分逼近与截断误差</a></li>
+<li><a href="/posts/350b9519.html">2.2 一维格式的三种推导</a></li>
+<li><a href="/posts/8ad7109.html">2.3 二维五点格式与边界处理</a></li>
+<li><a href="/posts/72985116.html">2.4 极值定理与敛速估计</a></li>
+<li><a href="/posts/83c88864.html">2.5 迭代解法</a><br>
+第 3 章 抛物型方程有限差分</li>
+<li><a href="/posts/8025a61e.html">3.1 显隐格式与 Crank-Nicolson</a></li>
+<li><a href="/posts/ed87735.html">3.2 稳定性分析方法</a></li>
+<li><a href="/posts/2d011ca1.html">3.3 von Neumann 稳定性分析</a></li>
+<li><a href="/posts/20e31cca.html">3.4 变系数与分数步长法</a><br>
+第 4 章 双曲型方程有限差分</li>
+<li><a href="/posts/16f0f3a1.html">4.1 波动方程与 CFL 条件</a></li>
+<li><a href="/posts/98ba6ef4.html">4.2 隐格式与数值耗散</a></li>
+<li><a href="/posts/342abe6d.html">4.3 一阶双曲组与多波速</a></li>
+<li><a href="/posts/650c5483.html">4.4 迎风格式与守恒格式</a><br>
+第 5 章 变分方法与有限元</li>
+<li><a href="/posts/95e3eb71.html">5.1 变分原理</a></li>
+<li><a href="/posts/7534df31.html">5.2 一维 Sobolev 空间</a></li>
+<li><a href="/posts/1d9c706b.html">5.3 二维 Sobolev 空间</a></li>
+<li><a href="/posts/c8faeb8a.html">5.4 Ritz 法与 Galerkin 法</a></li>
+<li><a href="/posts/1aa83694.html">5.5 谱方法</a></li>
+<li><a href="/posts/91e8c26d.html">5.6 一维有限元的实现</a></li>
+<li><a href="/posts/f8869725.html">5.7 二维有限元与多重网格</a><br>
+扩展篇（前沿文献）</li>
+<li>扩展一：质量集中单元与对称求积（本篇）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="center-p-本文要做什么-p-center"><center><p>本文要做什么</p></center></h2>
+<p>  有限元装配出两个矩阵：<strong>刚度矩阵</strong> $K$ 与<strong>质量矩阵</strong> $M$。解静态问题只用 $K$，但<strong>算波动、对流这类随时间演化的问题，每一步都要用到 $M^{-1}$</strong>。</p>
+<p>  如果 $M$ 是稀疏但非对角的矩阵，每一步都要解线性方程组，代价高到无法承受。<strong>若能设法让 $M$ 变成对角矩阵，$M^{-1}$ 就退化成逐元素取倒数</strong>——每步代价从 $O(n^{1.5})$ 降到 $O(n)$。</p>
+<p>  有一种做法可以做到这一点：<strong>让数值积分的节点与插值节点重合</strong>。插值基函数在节点上取值为 1 或 0，于是</p>
+<p>$$M_{ij}=\int\phi_i\phi_j\quad dS\approx\sum_q w_q,\phi_i\left(\mathbf{x}^{(q)}\right)\phi_j\left(\mathbf{x}^{(q)}\right)=w_i\delta_{ij}$$</p>
+<p>  矩阵自然对角，对角元就是求积权重。</p>
+<p>  <strong>但这条路并不好走</strong>：把节点钉死在插值点上，求积的自由度就没了，精度会掉；三角形与四面体上尤其如此。本文沿着<strong>从易到难</strong>的顺序，把这件事从头做一遍：</p>
+<ol>
+<li>先在最短的三角形（3 个节点）上看清问题</li>
+<li>理解对称性为什么把节点锁成&quot;轨道&quot;</li>
+<li>用 7 点规则体验一次完整的构造</li>
+<li>逐步升阶到 36 点，看结构如何演化</li>
+<li>推广到四面体，并说明为什么那里格外困难</li>
+</ol>
+<h2 id="center-p-前置知识-p-center"><center><p>前置知识</p></center></h2>
+<details class="folding-tag" cyan><summary> 单纯形、重心坐标与多项式空间（不熟可以展开） </summary>
+              <div class='content'>
+              <p><strong>单纯形（simplex）</strong> 是最简单的多面体：</p><table><thead><tr><th>维数</th><th>名称</th><th>顶点数</th><th>标准形</th></tr></thead><tbody><tr><td>1</td><td>线段</td><td>2</td><td>$[0,1]$</td></tr><tr><td>2</td><td>三角形</td><td>3</td><td>${x_i\ge0,\ \sum x_i=1}$</td></tr><tr><td>3</td><td>四面体</td><td>4</td><td>${x_i\ge0,\ \sum x_i=1}$</td></tr></tbody></table><p><strong>重心坐标（barycentric coordinates）</strong></p><p>三角形内任一点 $P$ 可以用三个数 $(\lambda_1,\lambda_2,\lambda_3)$ 表示，满足</p><p>$$\lambda_i\ge0,\qquad \lambda_1+\lambda_2+\lambda_3=1$$</p><p>几何意义：$\lambda_i$ 是 $P$ 与第 $i$ 个顶点所对边的&quot;相对距离&quot;。<strong>顶点处 $\lambda_i=1$，其余为 0</strong>；重心处三者都是 $1/3$。</p><p>四面体同理，用四个数 $(\lambda_1,\dots,\lambda_4)$，和为 1。</p><p><strong>为什么用重心坐标</strong>：三角形有各种形状和朝向，若用直角坐标 $(x,y)$ 写公式，每个三角形都得单独处理。用重心坐标，<strong>所有三角形的公式一模一样</strong>——这是有限元代码能通用的根源。</p><p><strong>多项式空间 $P_k$</strong></p><p>$P_k$ 表示次数不超过 $k$ 的多项式。在三角形上，由于 $\lambda_3=1-\lambda_1-\lambda_2$ 是冗余的，独立的单项式只有</p><p>$$\dim P_k=\frac{(k+1)(k+2)}{2}$$</p><p>四面体上是 $\dfrac{(k+1)(k+2)(k+3)}{6}$。</p><table><thead><tr><th>$k$</th><th>三角形 $\dim P_k$</th><th>四面体 $\dim P_k$</th></tr></thead><tbody><tr><td>1</td><td>3</td><td>4</td></tr><tr><td>2</td><td>6</td><td>10</td></tr><tr><td>3</td><td>10</td><td>20</td></tr><tr><td>4</td><td>15</td><td>35</td></tr><tr><td>5</td><td>21</td><td>56</td></tr><tr><td>6</td><td>28</td><td>84</td></tr><tr><td>7</td><td>36</td><td>120</td></tr></tbody></table><p><strong>这两个数字后面会反复出现</strong>——它同时是&quot;能精确积到的次数&quot;和&quot;插值需要的节点数&quot;。</p><p><strong>求积（cubature / quadrature）</strong></p><p>用有限个点的加权和近似积分：</p><p>$$\int_T f,dS\approx\sum_{i=1}^{N}w_i f(\mathbf{x}_i)$$</p><p>若上式对<strong>所有次数 $\le k$ 的多项式</strong>都精确成立，称该规则有 <strong>$k$ 次代数精度</strong>。</p>
+              </div>
+            </details>
+<details class="folding-tag" cyan><summary> 有限元的基函数与质量矩阵（不熟可以展开） </summary>
+              <div class='content'>
+              <p>把区域剖分成单元，在每个单元上取多项式基函数 $\phi_1,\dots,\phi_N$。二维时常用<strong>分片线性</strong>（每个单元上是线性函数）。</p><p><strong>质量矩阵</strong>第 $(i,j)$ 元：</p><p>$$M_{ij}=\int_\Omega \phi_i\phi_j,dS$$</p><p>对三角形线性单元，经典公式是</p><p>$$M^e=\frac{\Delta}{12}\begin{pmatrix}2&amp;1&amp;1\1&amp;2&amp;1\1&amp;1&amp;2\end{pmatrix}$$</p><p>（$\Delta$ 是三角形面积。）</p><p><strong>注意它全是非零元</strong>：因为同一个三角形上的三个基函数支集互相重叠。</p>
+              </div>
+            </details>
+<h2 id="center-p-切入点：最简单的-3-节点规则-p-center"><center><p>切入点：最简单的 3 节点规则</p></center></h2>
+<h3 id="center-p-先看它是什么-p-center"><center><p>先看它是什么</p></center></h3>
+<p>  最朴素的求积规则大概就是这样：<strong>取三角形的三个顶点，各给权重 $1/3$</strong>。</p>
+<p>  <strong>节点位置与权重</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>重心坐标 $(\lambda_1,\lambda_2,\lambda_3)$</th>
+<th>笛卡尔坐标（单位三角形）</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点 A</td>
+<td>$(0,0,1)$</td>
+<td>$(0,0)$</td>
+<td>$1/3$</td>
+</tr>
+<tr>
+<td>顶点 B</td>
+<td>$(1,0,0)$</td>
+<td>$(1,0)$</td>
+<td>$1/3$</td>
+</tr>
+<tr>
+<td>顶点 C</td>
+<td>$(0,1,0)$</td>
+<td>$(0,1)$</td>
+<td>$1/3$</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER1POINT3.svg" alt="三点顶点求积规则" style="width:52%;"/></div><span class="image-caption">三点顶点求积规则</span></div>
+<p>  <strong>验证它确实能积常数</strong>：三角形面积 $=1/2$，而 $\sum w_i=1$——所以这里是<strong>归一化约定</strong>（把面积当作 1），真实积分值要再乘 $\Delta$。下文同此约定。</p>
+<h3 id="center-p-问题来了：精度不够-p-center"><center><p>问题来了：精度不够</p></center></h3>
+<p>  这个规则精确到几次？</p>
+<p>  <strong>常数</strong>：$\sum w_i=1$ ✓</p>
+<p>  <strong>一次</strong>：取 $f=\lambda_1$。真值 $\int_T\lambda_1,dS=1/3$（归一化），而求积给出 $0\cdot\frac13+1\cdot\frac13+0\cdot\frac13=\frac13$ ✓</p>
+<p>  <strong>二次</strong>：取 $f=\lambda_1^2$。真值 $\int_T\lambda_1^2,dS=1/6$（归一化），求积给出 $0^2\cdot\frac13+1^2\cdot\frac13+0=\frac13$ ✗</p>
+<p>  <strong>所以它只有 1 次精度</strong>。而线性单元本身能表示 1 次多项式——规则恰好够用，但<strong>再也不多一分</strong>。</p>
+<div class="note info flat"><p><strong>推广一下</strong>：$N$ 个点的求积规则，一般能精确到约 $N$ 次（一维情形）。但在单纯形上，因为节点分布受限，实际远低于此。</p>
+<p><strong>这就碰到第一个坎</strong>：想要高精度，就得要更多节点；但节点一旦被&quot;钉&quot;在插值点上，可用的位置反过来又受约定结构限制。</p>
+</div>
+<h3 id="center-p-为什么这里可以用-p-center"><center><p>为什么这里可以用</p></center></h3>
+<p>  虽然只有 1 次精度，但<strong>它恰好是 3 个点</strong>，而 $\dim P_1=3$。<strong>点数与空间维数相等</strong>——这满足插值的最低要求。</p>
+<p>  用它做质量集中，得到<strong>分片线性单元的集中质量矩阵</strong>：对角元是各顶点权，矩阵是 $3I/3$ 形式。这是很多显式动力分析程序的默认做法。</p>
+<h2 id="center-p-对称性：节点被锁成-轨道-p-center"><center><p>对称性：节点被锁成&quot;轨道&quot;</p></center></h2>
+<h3 id="center-p-为什么要对称-p-center"><center><p>为什么要对称</p></center></h3>
+<p>  三角形的三个顶点<strong>没有哪个特殊</strong>。若求积规则偏向某个顶点，把三角形旋转一下，结果就变了——这不可接受。</p>
+<p>  <strong>因此规则必须在三角形的对称群下不变</strong>（3 个旋转 × 2 个反射，共 6 个元素）。</p>
+<p>  <strong>后果</strong>：节点必须成组出现，同一组内权重相同。这样的组叫<strong>轨道（orbit）</strong>。</p>
+<h3 id="center-p-三角形的四类轨道-p-center"><center><p>三角形的四类轨道</p></center></h3>
+<p>  重心坐标的三个分量<strong>随便置换</strong>，就是对称群的作用。所以<strong>一个点的轨道由&quot;三个数的无序组合&quot;决定</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>坐标形式</th>
+<th>轨道大小</th>
+<th>几何位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>顶点</strong></td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>三个顶点</td>
+</tr>
+<tr>
+<td><strong>边内点</strong></td>
+<td>$(0,a,1-a)$，$a\ne0,\tfrac12$</td>
+<td>6</td>
+<td>每条边 2 个</td>
+</tr>
+<tr>
+<td><strong>中位线</strong></td>
+<td>$(a,a,1-2a)$</td>
+<td>3</td>
+<td>三条中位线上各 1 个</td>
+</tr>
+<tr>
+<td><strong>一般位置</strong></td>
+<td>$(a,b,c)$ 互不相同</td>
+<td>6</td>
+<td>三角形内部</td>
+</tr>
+</tbody>
+</table>
+<p>  <strong>为什么&quot;边中点&quot;归到边内点但只有 3 个</strong>？因为 $a=\tfrac12$ 时 $(0,\tfrac12,\tfrac12)$ 的三种置换会两两重合——<strong>退化</strong>了。</p>
+<div class="note warning flat"><p><strong>这条约束非常硬</strong>：任何规则的节点总数，都必须是</p>
+<p>$$N=3n_V+6n_E+3n_M+6n_G$$</p>
+<p>同时又要满足 $N=\dim P_k=(k+1)(k+2)/2$。<strong>两个条件一起，能凑出来的组合少得可怜。</strong></p>
+<p>这就解释了后面要反复遇到的现象：明明有很多优秀的高阶求积规则，但<strong>点数对不上任何 $P_k$，于是只能当纯积分规则用，做不了质量集中。</strong></p>
+</div>
+<h3 id="center-p-四面体的轨道-p-center"><center><p>四面体的轨道</p></center></h3>
+<p>  四面体有 4 个顶点，对称群是 24 阶的 $S_4$，轨道更大：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>坐标形式</th>
+<th>轨道大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,0,1)$</td>
+<td>4</td>
+</tr>
+<tr>
+<td>棱内点</td>
+<td>$(0,0,a,1-a)$</td>
+<td>12</td>
+</tr>
+<tr>
+<td>面内点</td>
+<td>$(0,a,b,1-a-b)$</td>
+<td>24</td>
+</tr>
+<tr>
+<td>棱中点</td>
+<td>$(0,0,\frac12,\frac12)$</td>
+<td>6</td>
+</tr>
+<tr>
+<td>面重心</td>
+<td>$(0,\frac13,\frac13,\frac13)$</td>
+<td>4</td>
+</tr>
+<tr>
+<td>内部一般点</td>
+<td>$(a,b,c,d)$ 互异</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<p>  轨道大小是 4、6、12、24——而 $\dim P_k$ 是 4、10、20、35、56、84…。<strong>两者越来越难对上</strong>，这是四面体的困难根源。</p>
+<h2 id="center-p-构造第一步：7-点-3-阶规则-p-center"><center><p>构造第一步：7 点 / 3 阶规则</p></center></h2>
+<h3 id="center-p-它长什么样-p-center"><center><p>它长什么样</p></center></h3>
+<p>  先看一个经典的 7 点规则。它由<strong>三个轨道</strong>组成：</p>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>$0.05$</td>
+</tr>
+<tr>
+<td>边中点</td>
+<td>$(0,\tfrac12,\tfrac12)$</td>
+<td>3</td>
+<td>$0.133333$</td>
+</tr>
+<tr>
+<td>重心</td>
+<td>$(\tfrac13,\tfrac13,\tfrac13)$</td>
+<td>1</td>
+<td>$0.45$</td>
+</tr>
+</tbody>
+</table>
+<p>  合计 $3+3+1=7$ 个节点，权重和 $3(0.05)+3(0.1333)+0.45=1$ ✓</p>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER3POINT7.svg" alt="七点三阶求积规则" style="width:52%;"/></div><span class="image-caption">七点三阶求积规则</span></div>
+<h3 id="center-p-它是怎么算出来的-p-center"><center><p>它是怎么算出来的</p></center></h3>
+<p>  <strong>未知量</strong>：只有 3 个权重 $w_V,w_E,w_C$（节点位置被对称性钉死了，不需要求）。</p>
+<p>  <strong>写出矩条件</strong>。归一化约定下（面积当 1），三角形上的积分有通式：</p>
+<p>$$\int_T\lambda_1^a\lambda_2^b\lambda_3^c,dS=\frac{2,a!,b!,c!}{(a+b+c+2)!}$$</p>
+<p>  <strong>0 次</strong>（$\int 1 = 1$）：</p>
+<p>$$3w_V+3w_E+w_C=1$$</p>
+<p>  <strong>1 次</strong>（取 $\lambda_1$，真值 $=1/3$）。三个顶点里有一个 $\lambda_1=1$，两个为 0；三个边中点里 $\lambda_1$ 分别取 $0,\frac12,\frac12$；重心取 $\frac13$：</p>
+<p>$$w_V\cdot1+w_E\cdot\left(0+\tfrac12+\tfrac12\right)+w_C\cdot\tfrac13=\tfrac13$$</p>
+<p>$$\Longrightarrow\quad w_V+w_E+\tfrac{w_C}{3}=\tfrac13$$</p>
+<p>  <strong>2 次</strong>（取 $\lambda_1^2$，真值 $=\frac{2\cdot2!}{4!}=\frac16$）：</p>
+<p>$$w_V\cdot1+w_E\cdot\left(0+\tfrac14+\tfrac14\right)+w_C\cdot\tfrac19=\tfrac16$$</p>
+<p>$$\Longrightarrow\quad w_V+\tfrac{w_E}{2}+\tfrac{w_C}{9}=\tfrac16$$</p>
+<p>  <strong>解这个三元方程组</strong>：</p>
+<p>  式(1) − 3×式(2)：$(3-3)w_V+(3-3)w_E+(1-1)w_C=0$ —— 简并，需要再算一个条件。</p>
+<p>  改用 2 次的 $\lambda_1\lambda_2$（真值 $=\frac{2\cdot1!\cdot1!}{4!}=\frac1{12}$）。三个顶点中只有 B 处 $\lambda_1\lambda_2\ne0$？不对——顶点上总有一个坐标是 1、其余是 0，所以<strong>所有顶点贡献为 0</strong>；边中点 $(0,\frac12,\frac12)$ 处 $\lambda_1\lambda_2=0$；只有重心处 $\lambda_1\lambda_2=\frac19$：</p>
+<p>$$w_C\cdot\tfrac19=\tfrac1{12}\quad\Longrightarrow\quad w_C=\tfrac{9}{12}=0.75$$</p>
+<p>  这不对——和上面表格里的 $0.45$ 矛盾。<strong>说明 7 点规则不能满足所有 2 次条件。</strong></p>
+<div class="note danger flat"><p><strong>这里暴露了问题的关键难点</strong></p>
+<p>  上面算出 $w_C=0.75$，但 0 次条件要求 $3w_V+3w_E+w_C=1$，即 $3w_V+3w_E=0.25$。而 1 次条件和 2 次($\lambda_1^2$)条件又给了另两组约束。<strong>四个方程、三个未知数</strong>——超定了。</p>
+<p>  <strong>结论</strong>：顶点+边中点+重心这组节点，<strong>最多只能精确到 2 次</strong>，做不到 3 次。</p>
+<p>  所以真实的 7 点 3 阶规则<strong>必须换个节点布局</strong>。文献中的 7 点 3 阶规则用的是：顶点 3 个 + 边内点 3 个（在 $a\ne\frac12$ 处）+ 重心 1 个——<strong>边内点不是边中点</strong>，位置本身也是未知量。</p>
+<p>  <strong>这就是为什么构造需要解非线性方程组</strong>：一旦某类节点的位置也要解，方程里就出现 $a^2,a^3$ 这样的项。</p>
+</div>
+<h2 id="center-p-逐步升阶：结构如何演化-p-center"><center><p>逐步升阶：结构如何演化</p></center></h2>
+<p>  下面把几个典型规则并列出来。<strong>每一条都给出完整节点位置与权重</strong>，可以直接抄去用。</p>
+<h3 id="center-p-总览-p-center"><center><p>总览</p></center></h3>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/overview.svg" alt="七组三角形求积规则的节点分布" style="width:100%;"/></div><span class="image-caption">七组三角形求积规则的节点分布</span></div>
+<h3 id="center-p-12-点-5-阶-p-center"><center><p>12 点 / 5 阶</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>0.0148729</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.293470,\ 0.706530)$</td>
+<td>6</td>
+<td>0.0488417</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.207345,\ 0.207345,\ 0.585310)$</td>
+<td>3</td>
+<td>0.2207771</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER5POINT12.svg" alt="十二点五阶规则" style="width:52%;"/></div><span class="image-caption">十二点五阶规则</span></div>
+<h3 id="center-p-18-点-7-阶-p-center"><center><p>18 点 / 7 阶</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>0.0063492</td>
+</tr>
+<tr>
+<td>边中点</td>
+<td>$(0,\tfrac12,\tfrac12)$</td>
+<td>3</td>
+<td>0.0253968</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.211325,\ 0.788675)$</td>
+<td>6</td>
+<td>0.0214286</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.150472,\ 0.424764,\ 0.424764)$</td>
+<td>3</td>
+<td>0.1575624</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.130792,\ 0.130792,\ 0.738417)$</td>
+<td>3</td>
+<td>0.1011677</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER7POINT18.svg" alt="十八点七阶规则" style="width:52%;"/></div><span class="image-caption">十八点七阶规则</span></div>
+<h3 id="center-p-27-点-7-阶-p-center"><center><p>27 点 / 7 阶</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>0.0014852</td>
+</tr>
+<tr>
+<td>边中点</td>
+<td>$(0,\tfrac12,\tfrac12)$</td>
+<td>3</td>
+<td>0.0010458</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.104441,\ 0.895559)$</td>
+<td>6</td>
+<td>0.0115615</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.112461,\ 0.112461,\ 0.775077)$</td>
+<td>3</td>
+<td>0.0628617</td>
+</tr>
+<tr>
+<td>一般位置</td>
+<td>$(0.039646,\ 0.337341,\ 0.623013)$</td>
+<td>6</td>
+<td>0.0534103</td>
+</tr>
+<tr>
+<td>一般位置</td>
+<td>$(0.186857,\ 0.315658,\ 0.497485)$</td>
+<td>6</td>
+<td>0.0689985</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER7POINT27.svg" alt="二十七点七阶规则" style="width:52%;"/></div><span class="image-caption">二十七点七阶规则</span></div>
+<p>  <strong>注意</strong>：27 点与 18 点<strong>同为 7 阶</strong>，因为前者用了更内部（一般位置）的节点，精度没能再提——<strong>多加的点没有白费，但也没换来更高阶</strong>。</p>
+<h3 id="center-p-30-点-10-阶-p-center"><center><p>30 点 / 10 阶</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>0.0014188</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.132265,\ 0.867735)$</td>
+<td>6</td>
+<td>0.0069612</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.363298,\ 0.636702)$</td>
+<td>6</td>
+<td>0.0123811</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.057528,\ 0.057528,\ 0.884945)$</td>
+<td>3</td>
+<td>0.0232523</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.256859,\ 0.256859,\ 0.486282)$</td>
+<td>3</td>
+<td>0.0918025</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.084326,\ 0.457837,\ 0.457837)$</td>
+<td>3</td>
+<td>0.0690609</td>
+</tr>
+<tr>
+<td>一般位置</td>
+<td>$(0.078193,\ 0.221001,\ 0.700806)$</td>
+<td>6</td>
+<td>0.0545572</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER10POINT30.svg" alt="三十点十阶规则" style="width:52%;"/></div><span class="image-caption">三十点十阶规则</span></div>
+<h3 id="center-p-36-点-11-阶-p-center"><center><p>36 点 / 11 阶</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,1)$</td>
+<td>3</td>
+<td>0.0012165</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.090551,\ 0.909449)$</td>
+<td>6</td>
+<td>0.0057550</td>
+</tr>
+<tr>
+<td>边内点</td>
+<td>$(0,\ 0.306421,\ 0.693579)$</td>
+<td>6</td>
+<td>0.0097251</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.068776,\ 0.068776,\ 0.862449)$</td>
+<td>3</td>
+<td>0.0245976</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.045712,\ 0.477144,\ 0.477144)$</td>
+<td>3</td>
+<td>0.0484766</td>
+</tr>
+<tr>
+<td>中位线</td>
+<td>$(0.215042,\ 0.392479,\ 0.392479)$</td>
+<td>3</td>
+<td>0.0660516</td>
+</tr>
+<tr>
+<td>一般位置</td>
+<td>$(0.061894,\ 0.211572,\ 0.726534)$</td>
+<td>6</td>
+<td>0.0350896</td>
+</tr>
+<tr>
+<td>一般位置</td>
+<td>$(0.143756,\ 0.271209,\ 0.585035)$</td>
+<td>6</td>
+<td>0.0459259</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER11POINT36_v1.svg" alt="三十六点十一阶规则" style="width:52%;"/></div><span class="image-caption">三十六点十一阶规则</span></div>
+<p>  <strong>核对</strong>：$3+6+6+3+3+3+6+6=36$ ✓ 权重和 $=1$ ✓</p>
+<h3 id="center-p-演化的规律-p-center"><center><p>演化的规律</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>阶数</th>
+<th>节点数</th>
+<th>顶点</th>
+<th>边内点</th>
+<th>中位线</th>
+<th>一般位置</th>
+<th>轨道数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>3</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>7</td>
+<td>3</td>
+<td>3</td>
+<td>—</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>12</td>
+<td>3</td>
+<td>6</td>
+<td>3</td>
+<td>—</td>
+<td>3</td>
+</tr>
+<tr>
+<td>7</td>
+<td>18</td>
+<td>3</td>
+<td>9</td>
+<td>6</td>
+<td>—</td>
+<td>5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>27</td>
+<td>3</td>
+<td>9</td>
+<td>3</td>
+<td>12</td>
+<td>6</td>
+</tr>
+<tr>
+<td>10</td>
+<td>30</td>
+<td>3</td>
+<td>12</td>
+<td>9</td>
+<td>6</td>
+<td>7</td>
+</tr>
+<tr>
+<td>11</td>
+<td>36</td>
+<td>3</td>
+<td>12</td>
+<td>9</td>
+<td>12</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>  <strong>三条一眼可见的趋势</strong>：</p>
+<ol>
+<li><strong>顶点永远是 3 个</strong>，权重快速趋近于 0</li>
+<li><strong>边内点越来越密</strong>（每条边从 1 个到 3 个数不清）</li>
+<li><strong>一般位置的点只在 7 阶以后才出现</strong></li>
+</ol>
+<h2 id="center-p-关键一步：哪些规则能用于质量集中-p-center"><center><p>关键一步：哪些规则能用于质量集中</p></center></h2>
+<h3 id="center-p-判据只有一条-p-center"><center><p>判据只有一条</p></center></h3>
+<p>  插值要求<strong>节点数 = 空间维数</strong>。不多不少：</p>
+<p>$$N=\dim P_k$$</p>
+<p>  满足它，才能构造出插值基函数，进而用&quot;节点=积分点&quot;的技巧把质量矩阵对角化。</p>
+<h3 id="center-p-逐条对照-p-center"><center><p>逐条对照</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>阶数</th>
+<th>节点数 $N$</th>
+<th>最接近的 $\dim P_k$</th>
+<th>能质量集中？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>$\dim P_1=3$</td>
+<td><strong>✅ 可以</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>7</td>
+<td>$P_2{=}6$ 与 $P_3{=}10$ 之间</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>5</td>
+<td>12</td>
+<td>$P_3{=}10$ 与 $P_4{=}15$ 之间</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>7</td>
+<td>18</td>
+<td>$P_4{=}15$ 与 $P_5{=}21$ 之间</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>7</td>
+<td>27</td>
+<td>$P_5{=}21$ 与 $P_6{=}28$ 之间</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>10</td>
+<td>30</td>
+<td>$P_6{=}28$ 与 $P_7{=}36$ 之间</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>11</td>
+<td>36</td>
+<td>$\dim P_7=36$</td>
+<td><strong>✅ 可以</strong></td>
+</tr>
+</tbody>
+</table>
+<p>  <strong>七组规则里只有两组合格</strong>：3 点和 36 点。</p>
+<p>  其余五组<strong>积分精度再高也不能用来做质量集中</strong>——因为节点数对不上任何 $P_k$，插值本身就无法定义。</p>
+<div class="note warning flat"><p><strong>这个结论听起来反直觉，但很重要</strong></p>
+<p>  一个求积规则&quot;好不好&quot;，取决于用途：</p>
+<ul>
+<li><strong>纯积分</strong>：只看代数精度，节点数越少越好 → 18 点 7 阶是优秀的</li>
+<li><strong>质量集中</strong>：还要求 $N=\dim P_k$ → 18 点直接出局</li>
+</ul>
+<p><strong>这就是为什么两个领域（数值积分表 / 有限元单元构造）明明用同一批公式，却各自维护自己的规则库。</strong></p>
+</div>
+<h3 id="center-p-36-点为什么特别-p-center"><center><p>36 点为什么特别</p></center></h3>
+<p>  $36=\dim P_7$。所以它<strong>既是 11 阶积分规则，又是 7 次多项式的插值节点集</strong>。</p>
+<p>  <strong>验证插值可行性</strong>：构造 Vandermonde 矩阵 $V_{ij}=\phi_j(\mathbf{x}_i)$（$36\times36$），实测<strong>满秩</strong>——说明这 36 个点确实能唯一确定一个 7 次多项式。</p>
+<p>  <strong>这意味着</strong>：在三角形上，<strong>7 次质量集中单元是可行的</strong>，代价是每个单元 36 个自由度。</p>
+<h2 id="center-p-推广到四面体-p-center"><center><p>推广到四面体</p></center></h2>
+<h3 id="center-p-四面体的规则-p-center"><center><p>四面体的规则</p></center></h3>
+<p>  四面体数据用 $(l_1,l_2,l_3,w)$ 记，第四个坐标 $l_4=1-l_1-l_2-l_3$ 自动补足，权重和 $=1/6$（四面体体积）。</p>
+<p><strong>4 点 / 1 阶</strong>（四个顶点，各 $1/4$ 权重，对应 $1/6$ 体积）</p>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER1POINT4.svg" alt="四点规则" style="width:54%;"/></div><span class="image-caption">四点规则</span></div>
+<p><strong>23 点 / 4 阶</strong></p>
+<table>
+<thead>
+<tr>
+<th>轨道</th>
+<th>重心坐标</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点</td>
+<td>$(0,0,0,1)$</td>
+<td>4</td>
+<td>0.0002166</td>
+</tr>
+<tr>
+<td>棱中点</td>
+<td>$(0,0,\tfrac12,\tfrac12)$</td>
+<td>6</td>
+<td>0.0012522</td>
+</tr>
+<tr>
+<td>面内点</td>
+<td>$(0,\ 0.1886,\ 0.1886,\ 0.6228)$</td>
+<td>12</td>
+<td>0.0089578</td>
+</tr>
+<tr>
+<td>重心</td>
+<td>$(\tfrac14,\tfrac14,\tfrac14,\tfrac14)$</td>
+<td>1</td>
+<td>0.0507937</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER4POINT23.svg" alt="二十三点规则" style="width:54%;"/></div><span class="image-caption">二十三点规则</span></div>
+<p><strong>50 点 / 7 阶</strong>（两个不同解）</p>
+<table>
+<thead>
+<tr>
+<th>轨道（版本一）</th>
+<th>节点数</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顶点 $(0,0,0,1)$</td>
+<td>4</td>
+<td>0.0002144</td>
+</tr>
+<tr>
+<td>棱内点 $(0,0,\ 0.2928,\ 0.7072)$</td>
+<td>12</td>
+<td>0.0008268</td>
+</tr>
+<tr>
+<td>面内点 $(0,\ 0.1487,\ 0.4256,\ 0.4256)$</td>
+<td>12</td>
+<td>0.0018313</td>
+</tr>
+<tr>
+<td>面内点 $(0,\ 0.1973,\ 0.1973,\ 0.6054)$</td>
+<td>12</td>
+<td>0.0018402</td>
+</tr>
+<tr>
+<td>中位 $(0.0950,\ 0.0950,\ 0.0950,\ 0.7149)$</td>
+<td>4</td>
+<td>0.0075425</td>
+</tr>
+<tr>
+<td>中位 $(0.1252,\ 0.1252,\ 0.3748,\ 0.3748)$</td>
+<td>6</td>
+<td>0.0136099</td>
+</tr>
+</tbody>
+</table>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER7POINT50_v1.svg" alt="五十点规则版本一" style="width:54%;"/></div><span class="image-caption">五十点规则版本一</span></div>
+<div class="img-wrap"><div class="img-bg"><img class="img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/quad/ORDER7POINT50_v2.svg" alt="五十点规则版本二" style="width:54%;"/></div><span class="image-caption">五十点规则版本二</span></div>
+<p>  <strong>两个 50 点规则的轨道结构完全一样，但节点位置与权重不同</strong>——说明 <code>§构造</code> 里的非线性方程组有多个解，多个解都能达到 7 阶。</p>
+<h3 id="center-p-四面体上几乎做不了质量集中-p-center"><center><p>四面体上几乎做不了质量集中</p></center></h3>
+<table>
+<thead>
+<tr>
+<th>节点数</th>
+<th>最接近的 $\dim P_k$</th>
+<th>能质量集中？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>$\dim P_1=4$</td>
+<td><strong>✅</strong></td>
+</tr>
+<tr>
+<td>23</td>
+<td>$P_4{=}35$</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>50</td>
+<td>$P_6{=}84$</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<p>  <strong>只有 4 点规则合格</strong>。</p>
+<div class="note danger flat"><p><strong>为什么四面体格外难</strong></p>
+<p>$\dim P_k$ 在四面体上是 $\dfrac{(k+1)(k+2)(k+3)}{6}$，增长极快：4, 10, 20, 35, 56, 84, 120…</p>
+<p>而轨道大小只能是 4、6、12、24 的组合。</p>
+<p><strong>要凑出恰好等于 10、20、35 或 84 的组合，极为困难。</strong></p>
+<p>  这就是为什么<strong>三角形的高阶质量集中单元能找到（7、8、9 阶），四面体却停留在很低阶</strong>。实际工程需要高阶四面体时，常用替代方案：</p>
+<ul>
+<li>六面体 + 张量积 Gauss-Lobatto 点（一维的直接推广，成熟可靠）</li>
+<li>不连续 Galerkin（DG），质量矩阵本来就是块对角、无需组装</li>
+<li>接受非对角质量矩阵，改用迭代求解</li>
+</ul>
+<p><strong>没有免费的午餐：单纯形的几何统一性，是用&quot;高阶质量集中更难&quot;换来的。</strong></p>
+</div>
+<h2 id="center-p-这种方法的边界-center-p"><center><p>这种方法的边界</center></p></h2>
+<p>  <strong>能做到</strong>：在对角矩阵的前提下保持精度不降（只要 $N=\dim P_k$ 且求积精度够）。</p>
+<p>  <strong>做不到</strong>：</p>
+<ol>
+<li><strong>点数被锁死</strong>——必须恰好等于 $\dim P_k$，一点回旋余地都没有</li>
+<li><strong>四面体高阶极难</strong></li>
+<li><strong>零权/负权要丢弃</strong>——数学上有解不代表能用（权为零会让矩阵奇异）</li>
+<li><strong>规则依赖单元形状</strong>——换个区域形状（如四边形）规则完全不同</li>
+</ol>
+<p>  <strong>和&quot;把非对角元加起来塞到对角&quot;（row-sum lumping）不是一回事</strong>：那种做法会引入 $O(h^2)$ 误差，且高阶时退化严重。本文讲的是&quot;换求积规则，让矩阵在数学上自然对角&quot;。</p>
+<h2 id="center-p-参考文献-p-center"><center><p>参考文献</p></center></h2>
+<p>  <span class="hidden-anchor" id="referto_[1]"></span><sup class="reference"><a href="#referfrom_[1]">[1]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">Cui</span><span class="reference-title">参考资料</span></span></span>——三角形 7/8/9 阶质量集中单元、对称点集的可解性问题、计算程序。</p>
+<p>  <span class="hidden-anchor" id="referto_[2]"></span><sup class="reference"><a href="#referfrom_[2]">[2]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">Mulder</span><span class="reference-title">参考资料</span></span></span>——6 阶三角形质量集中单元。</p>
+<p>  <span class="hidden-anchor" id="referto_[3]"></span><sup class="reference"><a href="#referfrom_[3]">[3]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">Giraldo</span><span class="reference-title">参考资料</span></span></span>——三角形谱元与 cubature 点。</p>
+<p>  <span class="hidden-anchor" id="referto_[4]"></span><sup class="reference"><a href="#referfrom_[4]">[4]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">Zhang</span><span class="reference-title">参考资料</span></span></span>——三角形与四面体的对称求积规则表。</p>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[1]"></span><a class="reference-anchor" href="#referto_[1]">[1]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="/%20Zhang">Cui</a></div>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[2]"></span><a class="reference-anchor" href="#referto_[2]">[2]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="/%20W.%20A.%20New%20triangular%20mass-lumped%20finite%20elements%20of%20degree%20six%20for%20wave%20propagation.%20PIER">Mulder</a></div>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[3]"></span><a class="reference-anchor" href="#referto_[3]">[3]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="/%20F.%20X.%20and%20Taylor">Giraldo</a></div>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[4]"></span><a class="reference-anchor" href="#referto_[4]">[4]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="/%20L.%20B.">Zhang</a></div>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>扩展一：单纯形上的质量集中单元与对称求积</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="/posts/c0d3ecf8.html">/posts/c0d3ecf8.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Hatsusakuramiku</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2026-11-13</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2026-11-13</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>学习</a></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/f8869725.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/102673006_p2.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第 5 章 变分方法与有限元（七）：二维有限元与多重网格</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/3f4fb0df.html" title="第 1 章 定解问题"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2025-10-14</div><div class="title">第 1 章 定解问题</div></div></a></div><div><a href="/posts/ace8fd0f.html" title="第 1 章（续）：热传导方程的建立"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100886812_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：热传导方程的建立</div></div></a></div><div><a href="/posts/73d29eed.html" title="第 1 章（续）：拉普拉斯方程的建立与调和函数"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：拉普拉斯方程的建立与调和函数</div></div></a></div><div><a href="/posts/87cca0a4.html" title="第 1 章（续）：定解条件的提法与适定性"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-06</div><div class="title">第 1 章（续）：定解条件的提法与适定性</div></div></a></div><div><a href="/posts/4a6c68e2.html" title="第 1 章（续）：二阶线性偏微分方程的分类与标准型"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/102673006_p1.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-06</div><div class="title">第 1 章（续）：二阶线性偏微分方程的分类与标准型</div></div></a></div><div><a href="/posts/d26fe62d.html" title="第 2 章 分离变量法：从本征值问题到弦的自由振动"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-02</div><div class="title">第 2 章 分离变量法：从本征值问题到弦的自由振动</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E6%9C%AC%E6%96%87%E8%A6%81%E5%81%9A%E4%BB%80%E4%B9%88-p-center"><span class="toc-text">本文要做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-p-center"><span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%88%87%E5%85%A5%E7%82%B9%EF%BC%9A%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84-3-%E8%8A%82%E7%82%B9%E8%A7%84%E5%88%99-p-center"><span class="toc-text">切入点：最简单的 3 节点规则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%85%88%E7%9C%8B%E5%AE%83%E6%98%AF%E4%BB%80%E4%B9%88-p-center"><span class="toc-text">先看它是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E9%97%AE%E9%A2%98%E6%9D%A5%E4%BA%86%EF%BC%9A%E7%B2%BE%E5%BA%A6%E4%B8%8D%E5%A4%9F-p-center"><span class="toc-text">问题来了：精度不够</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E9%87%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-p-center"><span class="toc-text">为什么这里可以用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%AF%B9%E7%A7%B0%E6%80%A7%EF%BC%9A%E8%8A%82%E7%82%B9%E8%A2%AB%E9%94%81%E6%88%90-%E8%BD%A8%E9%81%93-p-center"><span class="toc-text">对称性：节点被锁成&quot;轨道&quot;</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AF%B9%E7%A7%B0-p-center"><span class="toc-text">为什么要对称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9A%84%E5%9B%9B%E7%B1%BB%E8%BD%A8%E9%81%93-p-center"><span class="toc-text">三角形的四类轨道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%9B%9B%E9%9D%A2%E4%BD%93%E7%9A%84%E8%BD%A8%E9%81%93-p-center"><span class="toc-text">四面体的轨道</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E6%9E%84%E9%80%A0%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A7-%E7%82%B9-3-%E9%98%B6%E8%A7%84%E5%88%99-p-center"><span class="toc-text">构造第一步：7 点 &#x2F; 3 阶规则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%AE%83%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7-p-center"><span class="toc-text">它长什么样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%AE%83%E6%98%AF%E6%80%8E%E4%B9%88%E7%AE%97%E5%87%BA%E6%9D%A5%E7%9A%84-p-center"><span class="toc-text">它是怎么算出来的</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E9%80%90%E6%AD%A5%E5%8D%87%E9%98%B6%EF%BC%9A%E7%BB%93%E6%9E%84%E5%A6%82%E4%BD%95%E6%BC%94%E5%8C%96-p-center"><span class="toc-text">逐步升阶：结构如何演化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E6%80%BB%E8%A7%88-p-center"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-12-%E7%82%B9-5-%E9%98%B6-p-center"><span class="toc-text">12 点 &#x2F; 5 阶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-18-%E7%82%B9-7-%E9%98%B6-p-center"><span class="toc-text">18 点 &#x2F; 7 阶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-27-%E7%82%B9-7-%E9%98%B6-p-center"><span class="toc-text">27 点 &#x2F; 7 阶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-30-%E7%82%B9-10-%E9%98%B6-p-center"><span class="toc-text">30 点 &#x2F; 10 阶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-36-%E7%82%B9-11-%E9%98%B6-p-center"><span class="toc-text">36 点 &#x2F; 11 阶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E6%BC%94%E5%8C%96%E7%9A%84%E8%A7%84%E5%BE%8B-p-center"><span class="toc-text">演化的规律</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%85%B3%E9%94%AE%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%93%AA%E4%BA%9B%E8%A7%84%E5%88%99%E8%83%BD%E7%94%A8%E4%BA%8E%E8%B4%A8%E9%87%8F%E9%9B%86%E4%B8%AD-p-center"><span class="toc-text">关键一步：哪些规则能用于质量集中</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%88%A4%E6%8D%AE%E5%8F%AA%E6%9C%89%E4%B8%80%E6%9D%A1-p-center"><span class="toc-text">判据只有一条</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E9%80%90%E6%9D%A1%E5%AF%B9%E7%85%A7-p-center"><span class="toc-text">逐条对照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-36-%E7%82%B9%E4%B8%BA%E4%BB%80%E4%B9%88%E7%89%B9%E5%88%AB-p-center"><span class="toc-text">36 点为什么特别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E6%8E%A8%E5%B9%BF%E5%88%B0%E5%9B%9B%E9%9D%A2%E4%BD%93-p-center"><span class="toc-text">推广到四面体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%9B%9B%E9%9D%A2%E4%BD%93%E7%9A%84%E8%A7%84%E5%88%99-p-center"><span class="toc-text">四面体的规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%9B%9B%E9%9D%A2%E4%BD%93%E4%B8%8A%E5%87%A0%E4%B9%8E%E5%81%9A%E4%B8%8D%E4%BA%86%E8%B4%A8%E9%87%8F%E9%9B%86%E4%B8%AD-p-center"><span class="toc-text">四面体上几乎做不了质量集中</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E8%BF%99%E7%A7%8D%E6%96%B9%E6%B3%95%E7%9A%84%E8%BE%B9%E7%95%8C-center-p"><span class="toc-text">这种方法的边界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE-p-center"><span class="toc-text">参考文献</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>再看看那个光点，它就在这里，这是家园，这是我们 —— 你所爱的每一个人，你认识的每一个人，你听说过的每一个人，曾经有过的每一个人，都在它上面度过他们的一生✨</div><div class="btn-xz-box"><a class="btn-xz" href="/box/astronomy/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/archives/">开源指南</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li><li><a href="/box/gallery/">我的画廊</a><a href="/site/time/">建设进程</a></li><li><a href="/site/census/">网站统计</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.com/" title="本站"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/" title="Hexo"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1036/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://butterfly.js.org/" title="Butterfly"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1039/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.org/" title="示例站点 A"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1044/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1015/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1016/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2026</b></span><span><b>&nbsp;&nbsp;By Hatsusakuramiku</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/jerryc127/hexo-theme-butterfly" style="margin-inline:5px" title="主题版本 Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/fomalhaut1998/hexo-theme-Fomalhaut" style="margin-inline:5px" title="本站主题美化基于Fomalhaut🥝的开源项目‘hexo-theme-Fomalhaut’修改"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%F0%9F%A5%9DFomalhaut-hexo--theme--Fomalhaut-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226403" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226403号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%E8%90%8CICP%E5%A4%87-20226403-ff69b4.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Source-GitHub-d021d6.svg" alt=""/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Copyright-BY--NC--SA--4.0-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，次线部署于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js?v=20261005-scroll1"></script><script src="/js/main.js?v=20261005-scroll1"></script><script src="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.umd.js"></script><script src="https://registry.npmmirror.com/instant.page/5.1.0/files/instantpage.js" type="module"></script><script src="https://registry.npmmirror.com/vanilla-lazyload/17.3.1/files/dist/lazyload.iife.min.js"></script><script>window.__SEARCH_LAZY__ = ["https://registry.npmmirror.com/algoliasearch/4.14.3/files/dist/algoliasearch-lite.umd.js","https://registry.npmmirror.com/instantsearch.js/4.49.2/files/dist/instantsearch.production.min.js","/js/search/algolia.js"]</script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://registry.npmmirror.com/mathjax/3.2.2/files/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script defer charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script><script defer src="https://sdk.51.la/perf/js-sdk-perf.min.js" crossorigin="anonymous"></script><script defer src="/js/51la.js"></script><script src="https://registry.npmmirror.com/jquery/3.6.0/files/dist/jquery.min.js"></script><script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script><script async src="https://registry.npmmirror.com/clipboard/2.0.10/files/dist/clipboard.min.js"></script><script async src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="/js/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_glcijzcpx7f.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_gkavascgf3n.js"></script><script async src="//at.alicdn.com/t/c/font_5239918_ta23cg9gek.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/notify.js"></script><script defer src="/js/lunar.js"></script><script defer src="/js/data/voyager1.js"></script><script defer src="/js/data/holidays.js"></script><script defer src="/js/modules/console-art.js"></script><script defer src="/js/modules/shell.js?v=20261011-stage3"></script><script defer src="/js/modules/snow.js?v=20261010-snow1"></script><script defer src="/js/modules/effects.js?v=20261010-snow1"></script><script defer src="/js/modules/reading.js?v=20261015-fps2"></script><script defer src="/js/modules/nav.js?v=20261005-scroll1"></script><script defer src="/js/modules/cursor.js?v=20261015-fps2"></script><script defer src="/js/modules/footer-time.js?v=20261006"></script><script defer src="/js/modules/appearance-fonts.js?v=20261010-preview1"></script><script defer src="/js/modules/appearance-backgrounds.js?v=20261011-bgflash1"></script><script defer src="/js/modules/fireflies.js?v=20261010-fireflies1"></script><script defer src="/js/modules/ripple.js?v=20261014-ripple1"></script><script defer src="/js/modules/settings.js?v=20261015-custom1"></script><script defer src="/js/fomal.js"></script><script defer src="/js/wechat-qr.js"></script><script defer src="/js/festival.js"></script><script defer src="/js/author-status.js"></script><script defer src="/js/stats.js?v=20261005"></script><script defer src="/js/footer-music.js?v=20261005"></script><script defer src="/js/pjax-guard.js?v=20261005"></script><script defer src="/js/inject/search-lazy.js?v=20261011b"></script><script src="/js/inject/scroll-gap-fix.js?v=20261011"></script><script src="/js/inject/webinfo-card.js"></script><script src="/js/inject/ft-ad-extra.js"></script><script src="/js/inject/pc-local-link.js"></script><script defer src="/js/inject/about-route-probe.js?v=20261006"></script><link rel="stylesheet" href="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js"></script><script src="https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  ;['tocScrollFn', 'scrollCollect'].forEach(name => {
+    const handler = window[name]
+    if (!handler) return
+    window.removeEventListener('scroll', handler)
+    if (typeof handler.cancel === 'function') handler.cancel()
+    window[name] = null
+  })
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//events.vercount.one/js"></script></div><!-- hexo injector body_end start --><script id="wow-pjax-rehook">
+(function () {
+  if (window.__wowPjaxRehook) return;
+  window.__wowPjaxRehook = true;
+
+  // 插件生成的加类脚本特征：调 classList.add 又写 data-wow-duration 的，就是它
+  function isWowInjector(code) {
+    return !!code && code.indexOf('classList.add') > -1 && code.indexOf('data-wow-duration') > -1;
+  }
+
+  // 把 .js-pjax 里哑火的加类脚本重放一遍（照抄 pjax.pug 的重放手法：换新节点才会执行）
+  function replayInjectors() {
+    var scripts = document.querySelectorAll('.js-pjax script');
+    for (var i = 0; i < scripts.length; i++) {
+      var old = scripts[i];
+      if (old.getAttribute('data-pjax') !== null) continue; // 主题自己会重放，别跑两遍
+      var code = old.text || old.textContent || old.innerHTML || '';
+      if (!isWowInjector(code)) continue;
+      var neu = document.createElement('script');
+      neu.setAttribute('data-wow-pjax-replay', '');
+      neu.appendChild(document.createTextNode(code));
+      old.parentNode.replaceChild(neu, old);
+    }
+  }
+
+  // wow 实例兜底 + 清理被 pjax 换掉的旧节点（否则 wow.boxes 会一直 accumulate）
+  function resyncBoxes() {
+    var wow = window.wow;
+    if (!wow && typeof window.WOW === 'function') {
+      // 等价于 node_modules/hexo-butterfly-wowjs/lib/wow_init.js
+      window.wow = new window.WOW({
+        boxClass: 'wow',
+        animateClass: 'animate__animated',
+        offset: 0,
+        mobile: false,
+        live: true
+      });
+      window.wow.init();
+      return;
+    }
+    if (!wow) return;
+    try {
+      if (wow.boxes && wow.boxes.length) {
+        wow.boxes = wow.boxes.filter(function (el) { return el && document.contains(el); });
+      }
+      // 关键一步：让 wow 自己把新插入的 .wow 卡片登记进 boxes（会顺手隐藏 + 置 scrolled）
+      if (typeof wow.doSync === 'function') {
+        wow.doSync(document.body);
+      } else if (wow.boxes && wow.applyStyle) {
+        // 老版本 wow.js 没有 doSync，手动补：从没被 wow 摸过的块（没有 inline visibility）收进来
+        var nodes = document.querySelectorAll('.wow');
+        for (var i = 0; i < nodes.length; i++) {
+          var el = nodes[i];
+          if (el.style.visibility) continue;
+          if (wow.all && wow.all.indexOf(el) > -1) continue;
+          wow.boxes.push(el);
+          if (wow.all) wow.all.push(el);
+          wow.applyStyle(el, true);
+        }
+        wow.scrolled = true;
+      }
+      // 再补一次 scroll 事件，保证 50ms 轮询这一拍立刻跑
+      window.dispatchEvent(new Event('scroll'));
+    } catch (e) {}
+  }
+
+  function run() {
+    try { replayInjectors(); } catch (e) {}
+    try { resyncBoxes(); } catch (e) {}
+  }
+
+  document.addEventListener('pjax:complete', function () {
+    // 主题的 pjax:complete 监听器（pjax.pug）先重放 script[data-pjax]（轮播/磁贴注入脚本在里面），
+    // 所以这里延后一拍，保证重放顺序在它之后；300ms 那次兜底给异步补内容的场景。
+    setTimeout(run, 0);
+    setTimeout(run, 300);
+  });
+
+  // 调试用：控制台里 window.__wowPjaxRehookNow() 可手动触发一次
+  window.__wowPjaxRehookNow = run;
+})();
+</script><script id="swiper-lazyload-fix">
+(function () {
+  if (window.__swiperLazyFix) return;
+  window.__swiperLazyFix = true;
+
+  function sync () {
+    try {
+      var inst = window.lazyLoadInstance;
+      if (inst && typeof inst.update === 'function') inst.update();
+    } catch (e) {}
+  }
+
+  function burst () {
+    [0, 120, 300, 700, 1500, 2600].forEach(function (d) { setTimeout(sync, d); });
+  }
+
+  // 1) 首次加载 + 站内 pjax 返回后：等异步的 data-pjax 脚本（swiper_init.js）跑完再补登记
+  document.addEventListener('pjax:complete', burst);
+  window.addEventListener('load', burst);
+  if (document.readyState !== 'loading') burst();
+  else document.addEventListener('DOMContentLoaded', burst);
+
+  // 2) Swiper 重建循环克隆时会增删 .blog-slider__wrp 的子节点（pjax 换页后容器会被替换，故持续重挂）
+  setTimeout(function watchWrp () {
+    var wrp = document.querySelector('.blog-slider__wrp');
+    if (wrp && wrp !== window.__swiperLazyWrp) {
+      try { if (window.__swiperLazyMo) window.__swiperLazyMo.disconnect(); } catch (e) {}
+      window.__swiperLazyWrp = wrp;
+      try {
+        window.__swiperLazyMo = new MutationObserver(function () {
+          clearTimeout(window.__swiperLazyTimer);
+          window.__swiperLazyTimer = setTimeout(sync, 100);
+        });
+        window.__swiperLazyMo.observe(wrp, { childList: true });
+      } catch (e) {}
+    }
+    setTimeout(watchWrp, 800);
+  }, 800);
+})();
+</script> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><a class="magnet_link_more"  href="/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="/js/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<container><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></container>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://cdn.jsdelivr.net/gh/yourname/gitcalendar-data@main/data.json",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'yourname')
+    }
+  </script><!-- hexo injector body_end end --></body></html>

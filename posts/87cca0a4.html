@@ -515,46 +515,7 @@ document.addEventListener('pjax:error', (e) => {
   if (e.request.status === 404) {
     pjax.loadUrl('/404.html')
   }
-})</script><script async data-pjax src="//events.vercount.one/js"></script></div><!-- hexo injector body_end start --><script id="swiper-lazyload-fix">
-(function () {
-  if (window.__swiperLazyFix) return;
-  window.__swiperLazyFix = true;
-
-  function sync () {
-    try {
-      var inst = window.lazyLoadInstance;
-      if (inst && typeof inst.update === 'function') inst.update();
-    } catch (e) {}
-  }
-
-  function burst () {
-    [0, 120, 300, 700, 1500, 2600].forEach(function (d) { setTimeout(sync, d); });
-  }
-
-  // 1) 首次加载 + 站内 pjax 返回后：等异步的 data-pjax 脚本（swiper_init.js）跑完再补登记
-  document.addEventListener('pjax:complete', burst);
-  window.addEventListener('load', burst);
-  if (document.readyState !== 'loading') burst();
-  else document.addEventListener('DOMContentLoaded', burst);
-
-  // 2) Swiper 重建循环克隆时会增删 .blog-slider__wrp 的子节点（pjax 换页后容器会被替换，故持续重挂）
-  setTimeout(function watchWrp () {
-    var wrp = document.querySelector('.blog-slider__wrp');
-    if (wrp && wrp !== window.__swiperLazyWrp) {
-      try { if (window.__swiperLazyMo) window.__swiperLazyMo.disconnect(); } catch (e) {}
-      window.__swiperLazyWrp = wrp;
-      try {
-        window.__swiperLazyMo = new MutationObserver(function () {
-          clearTimeout(window.__swiperLazyTimer);
-          window.__swiperLazyTimer = setTimeout(sync, 100);
-        });
-        window.__swiperLazyMo.observe(wrp, { childList: true });
-      } catch (e) {}
-    }
-    setTimeout(watchWrp, 800);
-  }, 800);
-})();
-</script><script id="wow-pjax-rehook">
+})</script><script async data-pjax src="//events.vercount.one/js"></script></div><!-- hexo injector body_end start --><script id="wow-pjax-rehook">
 (function () {
   if (window.__wowPjaxRehook) return;
   window.__wowPjaxRehook = true;
@@ -634,6 +595,45 @@ document.addEventListener('pjax:error', (e) => {
 
   // 调试用：控制台里 window.__wowPjaxRehookNow() 可手动触发一次
   window.__wowPjaxRehookNow = run;
+})();
+</script><script id="swiper-lazyload-fix">
+(function () {
+  if (window.__swiperLazyFix) return;
+  window.__swiperLazyFix = true;
+
+  function sync () {
+    try {
+      var inst = window.lazyLoadInstance;
+      if (inst && typeof inst.update === 'function') inst.update();
+    } catch (e) {}
+  }
+
+  function burst () {
+    [0, 120, 300, 700, 1500, 2600].forEach(function (d) { setTimeout(sync, d); });
+  }
+
+  // 1) 首次加载 + 站内 pjax 返回后：等异步的 data-pjax 脚本（swiper_init.js）跑完再补登记
+  document.addEventListener('pjax:complete', burst);
+  window.addEventListener('load', burst);
+  if (document.readyState !== 'loading') burst();
+  else document.addEventListener('DOMContentLoaded', burst);
+
+  // 2) Swiper 重建循环克隆时会增删 .blog-slider__wrp 的子节点（pjax 换页后容器会被替换，故持续重挂）
+  setTimeout(function watchWrp () {
+    var wrp = document.querySelector('.blog-slider__wrp');
+    if (wrp && wrp !== window.__swiperLazyWrp) {
+      try { if (window.__swiperLazyMo) window.__swiperLazyMo.disconnect(); } catch (e) {}
+      window.__swiperLazyWrp = wrp;
+      try {
+        window.__swiperLazyMo = new MutationObserver(function () {
+          clearTimeout(window.__swiperLazyTimer);
+          window.__swiperLazyTimer = setTimeout(sync, 100);
+        });
+        window.__swiperLazyMo.observe(wrp, { childList: true });
+      } catch (e) {}
+    }
+    setTimeout(watchWrp, 800);
+  }, 800);
 })();
 </script> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
     var parent = document.getElementById('recent-posts');
