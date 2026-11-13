@@ -1,0 +1,796 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><script>if ('serviceWorker' in navigator) {
+  var isLocalDev = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(location.hostname) !== -1
+  if (isLocalDev) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { r.unregister() })
+    })
+  } else {
+    navigator.serviceWorker.register('/sw.js').then(function () {
+      if (localStorage.getItem('install') !== 'true') {
+        localStorage.setItem('install', 'true')
+        location.reload()
+      }
+    })
+  }
+}
+</script><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>数学分析 1.4：导数与微分——切线到底是什么 | 初樱小站</title><meta name="keywords" content="学习"><meta name="author" content="Hatsusakuramiku"><meta name="copyright" content="Hatsusakuramiku"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="从“切线是割线的极限”讲起，说清导数与微分的区别、可导与连续的关系、求导法则的推导，以及无穷导数与不可导的几种典型情形">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数学分析 1.4：导数与微分——切线到底是什么">
+<meta property="og:url" content="https://hsmk.mikufans.date/posts/3a8afdfc.html">
+<meta property="og:site_name" content="初樱小站">
+<meta property="og:description" content="从“切线是割线的极限”讲起，说清导数与微分的区别、可导与连续的关系、求导法则的推导，以及无穷导数与不可导的几种典型情形">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://aws.mikufans.date/hexo/img/background/102673006_p1.webp">
+<meta property="article:published_time" content="2026-11-13T20:14:00.000Z">
+<meta property="article:modified_time" content="2026-11-13T20:14:00.000Z">
+<meta property="article:author" content="Hatsusakuramiku">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aws.mikufans.date/hexo/img/background/102673006_p1.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://hsmk.mikufans.date/posts/3a8afdfc"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//events.vercount.one"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://registry.npmmirror.com/@fortawesome/fontawesome-free/6.0.0/files/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"YOUR_ALGOLIA_APP_ID","apiKey":"YOUR_ALGOLIA_SEARCH_KEY","indexName":"your_index_name","hits":{"per_page":5},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '数学分析 1.4：导数与微分——切线到底是什么',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-14 04:14:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="preconnect" href="https://registry.npmmirror.com"><link rel="preconnect" href="https://registry.npmmirror.com" crossorigin><link rel="preconnect" href="https://npm.elemecdn.com"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="font" type="font/woff2" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-tc@5/files/lxgw-wenkai-tc-chinese-traditional-400-normal.woff2" crossorigin><link rel="preconnect" href="https://sdk.51.la"><link rel="preconnect" href="https://sdk.51.la" crossorigin><link rel="dns-prefetch" href="https://at.alicdn.com"><link rel="dns-prefetch" href="https://lib.baomitu.com"><link rel="stylesheet" href="/css/stats.css?v=20261005"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="bgFilterParam"></style><span id="fps" aria-hidden="true"></span><style id="defineBg">:root{--default-bg:url(https://aws.mikufans.date/hexo/img/background/100513742_p0.webp);--darkmode-bg:url(https://aws.mikufans.date/hexo/img/background/100723659_p0.webp);--mobileday-bg:url(https://aws.mikufans.date/hexo/img/background/100886812_p0.webp);--mobilenight-bg:url(https://aws.mikufans.date/hexo/img/background/100891310_p0.webp);}</style><style id="menu_shadow"></style><style id="nav-display"></style><style id="aside-show"></style><style id="aside-pos"></style><link rel="stylesheet" href="/css/site-inject.css?v=20261015-fps4"><link rel="stylesheet" href="/css/navigation.css?v=20261011-nav3"><link rel="stylesheet" href="/css/mobile-drawer.css?v=20261008"><link rel="stylesheet" href="/css/avatar-glow.css?v=20261004q"><link rel="stylesheet" href="/css/timeline-archive.css?v=20261011d"><script defer src="/js/timeline-archive.js?v=20261011b"></script><link rel="stylesheet" href="/css/about-page.css?v=20261006"><script src="/js/inject/ping-route-boot.js"></script><script src="/js/inject/ping-route.js"></script><script src="/js/inject/beauty-boot.js?v=20261015-solid3"></script><script src="/js/inject/right-menu-state-boot.js"></script><script>window.fomalNightConfig=window.fomalNightConfig||{enabled:true,latLng:null,themeKey:'theme'}</script><script src="/js/inject/daynight-boot.js?v=20261014-nightboot2"></script><script src="/js/inject/typewriter.js?v=20261004b"></script><link rel="stylesheet" href="/css/typewriter.css?v=20261004"><link rel="stylesheet" href="/css/paperclip.css?v=20261005-mobile1"><link rel="stylesheet" href="/css/archive-page.css?v=20261018-scrollfix"><script defer src="/js/inject/archive-page.js?v=20261018-scrollfix"></script><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="/css/gitcalendar.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="初樱小站" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">初樱小站</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--article"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1">                   </use></svg><span class="menu_word" style="font-size:17px"> 归档</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shujutongji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 文章统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:randomPost();"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zuji1">                   </use></svg><span class="menu_word" style="font-size:17px"> 随便逛逛</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xiangzi"></use></svg><span class="menu_word" style="font-size:17px"> 八宝箱</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/life/music/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-yinle">                   </use></svg><span class="menu_word" style="font-size:17px"> 八音盒</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/gallery/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-tubiaozhizuomoban">                   </use></svg><span class="menu_word" style="font-size:17px"> 画廊</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/astronomy/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangyuanjing">                   </use></svg><span class="menu_word" style="font-size:17px"> 天文馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/box/nav/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-zhifengche">                   </use></svg><span class="menu_word" style="font-size:17px"> 网址导航</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/social/fcircle/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-pengyouquan">                   </use></svg><span class="menu_word" style="font-size:17px"> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-wangye"></use></svg><span class="menu_word" style="font-size:17px"> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/site/census/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon--tongjibiao">                   </use></svg><span class="menu_word" style="font-size:17px"> 网站统计</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/site/time/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-xianxingshalou">                   </use></svg><span class="menu_word" style="font-size:17px"> 旧时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane">                   </use></svg><span class="menu_word" style="font-size:17px"> 关于</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-sousuo"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-huahua"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">数学分析 1.4：导数与微分——切线到底是什么</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2026-11-13T20:14:00.000Z" title="发表于 2026-11-14 04:14:00">2026-11-14</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-13T20:14:00.000Z" title="更新于 2026-11-14 04:14:00">2026-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/HSMK-ANALYSIS/">HSMK-ANALYSIS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">4319</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="数学分析 1.4：导数与微分——切线到底是什么"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv">—</span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><div class="note info flat"><p><strong>封面图片 PID：<a target="_blank" rel="noopener" href="https://www.pixiv.net/artworks/1628397182442">1628397182442</a></strong></p>
+</div>
+<blockquote>
+<blockquote>
+<p><strong>数学分析 导航栏</strong></p>
+</blockquote>
+<ul>
+<li><a href="/posts/cfe53629.html">系列总览与导航</a><br>
+第 1 章 实数与极限
+<ul>
+<li><a href="/posts/a4efc3f8.html">1.1 实数完备性：一切从这条公理开始</a></li>
+<li><a href="/posts/ac14083c.html">1.2 数列极限：ε-N 语言到底在说什么</a></li>
+<li><a href="/posts/6fe04a7.html">1.3 函数极限与连续性：闭区间三大定理</a></li>
+<li>1.4 导数与微分：切线到底是什么（本篇）</li>
+<li><a href="/posts/2f0bf545.html">1.5 中值定理：微分学的枢纽</a><br>
+第 2 章 连续</li>
+<li>（待写）<br>
+第 3 章 一元微分</li>
+<li>（待写）<br>
+第 4 章 一元积分</li>
+<li>（待写）<br>
+第 5 章 级数</li>
+<li>（待写）<br>
+第 6 章 多元微积分</li>
+<li>（待写）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="center-p-本文要做什么-p-center"><center><p>本文要做什么</p></center></h2>
+<p>  几乎所有人都学过&quot;导数是切线斜率&quot;。但如果你被追问下去：</p>
+<ul>
+<li><strong>切线到底是什么？</strong> 圆的切线还好办（垂直于半径），可一般曲线的切线怎么定义？</li>
+<li><strong>导数和微分有什么区别？</strong> 教材上都讲，但很多人只记住&quot;$\mathrm{d}y=f'(x)\mathrm{d}x$&quot;这个式子。</li>
+<li><strong>可导一定连续吗？连续一定可导吗？</strong></li>
+</ul>
+<p>  这些问题答不上来，后面学中值定理（1.5 节）、泰勒公式、甚至整个微分学，都会觉得是在背结论。</p>
+<p>  本文的路线：</p>
+<ol>
+<li>先从&quot;切线&quot;这个几何问题出发，看古希腊人卡在哪</li>
+<li>用极限给出导数的定义</li>
+<li>讲清<strong>导数与微分的区别</strong>——这是最容易混淆的一处</li>
+<li>补全求导法则的推导（很多人只会用不会证）</li>
+<li>弄清可导与连续的关系，给出三个不可导的经典例子</li>
+</ol>
+<h2 id="center-p-前置知识-p-center"><center><p>前置知识</p></center></h2>
+<details class="folding-tag" cyan><summary> 函数极限与连续（不熟可以展开） </summary>
+              <div class='content'>
+              <p><strong>函数极限</strong>：$\lim\limits_{x\to x_0}f(x)=L$ 指</p><p>$$\forall\varepsilon&gt;0,\ \exists\delta&gt;0,\ \forall x: 0&lt;|x-x_0|&lt;\delta\ \Rightarrow\ |f(x)-L|&lt;\varepsilon$$</p><p><strong>连续</strong>：$\lim\limits_{x\to x_0}f(x)=f(x_0)$。</p><p>详见 <a href="/posts/6fe04a7.html">1.3 函数极限与连续性</a>。</p><div class="note info flat"><p><strong>本文会反复用到一个事实</strong></p><p>  如果 $\lim\limits_{x\to x_0}g(x)$ 存在且等于 $L$，那么可以<strong>在极限号内做四则运算</strong>（分母非零时）。</p><p>  求导公式的推导全靠这个。</p></div>
+              </div>
+            </details>
+<details class="folding-tag" cyan><summary> 为什么"切线"不好定义（不熟可以展开） </summary>
+              <div class='content'>
+              <p>  <strong>圆的切线</strong>很简单：与圆只有一个交点的直线。</p><p>  但换成一般曲线就崩了：</p><p><strong>问题 1：可能不止一个交点。</strong><br>  曲线 $y=x^3$ 在原点处的切线是 $y=0$，但它与曲线在原点<strong>相交</strong>（不是相切）——交点是原点，但切线穿过了曲线。</p><p><strong>问题 2：可能有很多个交点，却仍是切线。</strong><br>  考虑 $y=\dfrac{x}{10}+\sin x$ 在原点处。切线斜率是 $f'(0)=\dfrac1{10}+1=1.1$，切线的方程是 $y=1.1x$。</p><p>  但这条切线 $y=1.1x$ 与曲线有无穷多个交点（因为 $\sin x$ 周期性摆动，会反复穿过这条直线）。</p><p>  <strong>所以&quot;切线只与曲线交于一点&quot;是错的。</strong></p><p><strong>问题 3：有些曲线根本没有&quot;自然的切线&quot;。</strong><br>  比如 $y=|x|$ 在原点。</p><p>  <strong>所以&quot;只有一个交点&quot;这个定义不行。</strong></p>
+              </div>
+            </details>
+<h2 id="center-p-切入点：割线的极限-p-center"><center><p>切入点：割线的极限</p></center></h2>
+<h3 id="center-p-古希腊人的困难-p-center"><center><p>古希腊人的困难</p></center></h3>
+<p>  切线问题困扰了数学家两千年。阿基米德会求圆的切线，也会求抛物线的切线，但<strong>每一条曲线都要单独想一个办法</strong>。</p>
+<p>  笛卡尔在 1637 年给出了一个&quot;代数化&quot;的思路：<strong>切线是&quot;与曲线相切的重根直线&quot;</strong>。对 $y=x^2$ 这类简单曲线有效，但一般化很麻烦。</p>
+<p>  <strong>真正的突破是&quot;割线的极限&quot;这个想法</strong>，费马、巴罗、牛顿、莱布尼茨都独立想到过。</p>
+<h3 id="center-p-割线-→-切线-p-center"><center><p>割线 → 切线</p></center></h3>
+<p>  在曲线 $y=f(x)$ 上取两点：</p>
+<p>$$P=(x_0,f(x_0)),\qquad Q=(x_0+\Delta x,\ f(x_0+\Delta x))$$</p>
+<p>  过这两点的<strong>割线</strong>斜率是</p>
+<p>$$k_{PQ}=\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$$</p>
+<p>  <strong>核心想法</strong>：让 $Q$ 沿着曲线滑向 $P$（$\Delta x\to0$），割线就&quot;转&quot;成了切线。</p>
+<p>  于是<strong>定义</strong>：切线斜率 $= \lim\limits_{\Delta x\to0}k_{PQ}$。</p>
+<div class="note info flat"><p><strong>这个想法妙在哪</strong></p>
+<p>  <strong>它把一个&quot;几何对象&quot;转化为&quot;极限过程&quot;。</strong></p>
+<p>  &quot;切线&quot;本身很难捕捉（它和曲线&quot;刚好接触&quot;这件事说不清），但&quot;割线&quot;非常容易计算——两点的斜率，中学公式。</p>
+<p>  所以：<strong>用可计算的东西去逼近不可直接捕捉的东西</strong>。</p>
+<p>  这和 1.1 节戴德金分割的思路是相通的——都是<strong>把&quot;无法直接定义的东西&quot;转化成&quot;一个过程&quot;</strong>。</p>
+</div>
+<h2 id="center-p-导数：定义与记号-p-center"><center><p>导数：定义与记号</p></center></h2>
+<blockquote>
+<p><strong>定义</strong>：若下列极限存在（有限），则称 $f$ 在 $x_0$ 处<strong>可导</strong>，该极限值为<strong>导数</strong>：<br>
+$$f'(x_0)=\lim_{\Delta x\to0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$$</p>
+</blockquote>
+<p>  <strong>等价的差商形式</strong>：</p>
+<p>$$f'(x_0)=\lim_{x\to x_0}\frac{f(x)-f(x_0)}{x-x_0}$$</p>
+<p>  <strong>各种记号</strong>：</p>
+<p>$$f'(x_0),\quad \frac{\mathrm{d}f}{\mathrm{d}x}(x_0),\quad \frac{\mathrm{d}y}{\mathrm{d}x}(x_0),\quad Df(x_0)$$</p>
+<p>  <strong>注意<code>d</code>要写成正体</strong> $\mathrm{d}$（这是排版规范，表示微分算子不是变量 $d$）。</p>
+<div class="note warning flat"><p><strong>&quot;导数存在&quot;的含义要严格</strong></p>
+<p>  定义里的&quot;极限存在&quot;特指<strong>存在且有限</strong>。</p>
+<p>  如果差商趋于 $\pm\infty$，我们<strong>不说可导</strong>，而说&quot;导数为无穷&quot;。这时曲线在几何上有<strong>垂直切线</strong>，但函数在该点<strong>不可导</strong>。</p>
+<p>  例：$f(x)=\sqrt[3]{x}$ 在 $x=0$ 处，差商是</p>
+<p>$$\frac{x^{1/3}-0}{x-0}=x^{-2/3}\to+\infty$$</p>
+<p>  所以有垂直切线（$y$ 轴），但<strong>不可导</strong>。</p>
+<p>  <strong>考试里&quot;求导&quot;时若算出 $\infty$，答案应写&quot;不可导&quot;。</strong></p>
+</div>
+<h3 id="center-p-左导数与右导数-p-center"><center><p>左导数与右导数</p></center></h3>
+<p>  和单侧极限一样：</p>
+<p>$$f_{\mathrm{L}}'(x_0)=\lim_{\Delta x\to0^{-}}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$$</p>
+<p>  用 $\lim\limits_{\Delta x\to0^{+}}$ 定义的是<strong>右导数</strong> $f_{\mathrm{R}}'(x_0)$。</p>
+<blockquote>
+<p><strong>定理</strong>：$f$ 在 $x_0$ 可导 $\iff$ 左右导数都存在且<strong>相等</strong>。</p>
+</blockquote>
+<p>  <strong>例</strong>：$f(x)=|x|$ 在 $x=0$。</p>
+<p>  $f_{\mathrm{L}}'(0)=\lim\limits_{\Delta x\to0^{-}}\dfrac{|\Delta x|}{\Delta x}=-1$</p>
+<p>  $f_{\mathrm{R}}'(0)=\lim\limits_{\Delta x\to0^{+}}\dfrac{|\Delta x|}{\Delta x}=1$</p>
+<p>  左右不等 → <strong>不可导</strong>。</p>
+<h2 id="center-p-可导与连续：一个是另一个的强化-p-center"><center><p>可导与连续：一个是另一个的强化</p></center></h2>
+<blockquote>
+<p><strong>定理</strong>：可导 $\Rightarrow$ 连续。（反之不成立）</p>
+</blockquote>
+<details class="folding-tag" cyan><summary> 证明（一行就够） </summary>
+              <div class='content'>
+              <p>要证 $\lim\limits_{x\to x_0}f(x)=f(x_0)$。考虑差：</p><p>$$f(x)-f(x_0)=\frac{f(x)-f(x_0)}{x-x_0}\cdot(x-x_0)$$</p><p>当 $x\to x_0$ 时，第一因子 $\to f'(x_0)$（可导的定义），第二因子 $\to0$。</p><p>所以</p><p>$$\lim_{x\to x_0}[f(x)-f(x_0)]=f'(x_0)\cdot0=0$$</p><p>即 $\lim\limits_{x\to x_0}f(x)=f(x_0)$。$\blacksquare$</p><p><strong>注意</strong>：这里<strong>必须</strong>用了&quot;$f'(x_0)$ 是有限数&quot;，否则 $0\cdot\infty$ 无意义。</p>
+              </div>
+            </details>
+<div class="note danger flat"><p><strong>反过来不成立：三个经典不可导例子</strong></p>
+<p><strong>1. 尖点</strong>：$f(x)=|x|$ 在 $0$ 处。<br>
+  连续，左右导数分别为 $-1$ 和 $1$，不相等。</p>
+<p><strong>2. 垂直切线</strong>：$f(x)=\sqrt[3]{x}$ 在 $0$ 处。<br>
+  连续，差商 $\to+\infty$。</p>
+<p><strong>3. 振荡</strong>：$f(x)=x\sin\dfrac1x$（$x\ne0$），$f(0)=0$。<br>
+  连续（因为 $|x\sin(1/x)|\le|x|\to0$），但差商是</p>
+<p>$$\frac{x\sin(1/x)-0}{x-0}=\sin\frac1x$$</p>
+<p>  当 $x\to0$ 时<strong>不收敛</strong>（在 $[-1,1]$ 里来回振荡）。</p>
+<p>  <strong>这个例子最反直觉</strong>——函数连续、有界、甚至被 $|x|$ 夹住，但依然不可导。</p>
+<p><strong>还有一个更狠的</strong>：Weierstrass 构造了一个<strong>处处连续、处处不可导</strong>的函数：</p>
+<p>$$W(x)=\sum_{n=0}^{\infty}a^n\cos(b^n\pi x)$$</p>
+<p>（$0&lt;a&lt;1$，$b$ 为奇数且 $ab&gt;1+\frac{3\pi}{2}$。）这个反例在当时震惊了数学界，因为它推翻了&quot;连续曲线一定（除了少数点）可导&quot;的直觉。</p>
+</div>
+<h2 id="center-p-微分：和导数不是一回事-p-center"><center><p>微分：和导数不是一回事</p></center></h2>
+<h3 id="center-p-先看定义-p-center"><center><p>先看定义</p></center></h3>
+<blockquote>
+<p><strong>定义</strong>：若存在常数 $A$，使<br>
+$$\Delta y=f(x_0+\Delta x)-f(x_0)=A\Delta x+o(\Delta x)$$<br>
+则称 $f$ 在 $x_0$ 处<strong>可微</strong>，$A\Delta x$ 称为<strong>微分</strong>，记作 $\mathrm{d}y=A\Delta x$。</p>
+</blockquote>
+<p>  这里 $o(\Delta x)$ 表示&quot;比 $\Delta x$ 高阶的无穷小&quot;，即 $\dfrac{o(\Delta x)}{\Delta x}\to0$。</p>
+<h3 id="center-p-导数与微分的关系-p-center"><center><p>导数与微分的关系</p></center></h3>
+<blockquote>
+<p><strong>定理</strong>：可微 $\iff$ 可导，且 $A=f'(x_0)$。</p>
+</blockquote>
+<p>  <strong>证明</strong>（两个方向）：</p>
+<p><strong>可导 → 可微</strong>：设 $f'(x_0)=A$。由导数定义，</p>
+<p>$$\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}=A$$</p>
+<p>所以 $\dfrac{\Delta y}{\Delta x}=A+\alpha$，其中 $\alpha\to0$。于是</p>
+<p>$$\Delta y=A\Delta x+\alpha\Delta x=A\Delta x+o(\Delta x)\quad\checkmark$$</p>
+<p><strong>可微 → 可导</strong>：由 $\Delta y=A\Delta x+o(\Delta x)$ 两边除以 $\Delta x$，</p>
+<p>$$\frac{\Delta y}{\Delta x}=A+\frac{o(\Delta x)}{\Delta x}\to A$$</p>
+<p>所以 $f'(x_0)=A$。$\blacksquare$</p>
+<h3 id="center-p-那区别到底在哪-p-center"><center><p>那区别到底在哪</p></center></h3>
+<p>  <strong>两者数值上等价</strong>（$A=f'(x_0)$），但<strong>概念上完全不同</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>导数 $f'(x_0)$</th>
+<th>微分 $\mathrm{d}y$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>是什么</strong></td>
+<td>一个<strong>数</strong>（切线的斜率）</td>
+<td>一个<strong>线性函数</strong>（$\Delta x\mapsto A\Delta x$）</td>
+</tr>
+<tr>
+<td><strong>几何意义</strong></td>
+<td>切线的倾斜程度</td>
+<td>切线上的<strong>增量</strong></td>
+</tr>
+<tr>
+<td><strong>作用</strong></td>
+<td>描述变化率</td>
+<td>做<strong>线性近似</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="note info flat"><p><strong>关键区别：微分是&quot;用切线代替曲线&quot;</strong></p>
+<p>  $\Delta y$ 是曲线上真实的增量；$\mathrm{d}y$ 是<strong>切线上的增量</strong>。</p>
+<p>  两者相差 $o(\Delta x)$——这就是&quot;用切线近似曲线&quot;的误差。</p>
+<p>  <strong>微分之所以重要</strong>，是因为它给出了<strong>线性近似</strong>：</p>
+<p>$$f(x_0+\Delta x)\approx f(x_0)+f'(x_0)\Delta x$$</p>
+<p>  这是所有数值方法（牛顿法、欧拉法、误差传播）的基础。<strong>&quot;以直代曲&quot;</strong>——把复杂函数换成一条直线，代价是一个高阶小量。</p>
+<p>  <strong>为什么写成 $\mathrm{d}y=f'(x)\mathrm{d}x$？</strong></p>
+<p>  因为当 $y=x$ 时，$f'=1$，所以 $\mathrm{d}x=\Delta x$。也就是说，<strong>自变量的微分就等于它的增量</strong>。代回去就得 $\mathrm{d}y=f'(x)\mathrm{d}x$。</p>
+<p>  这个式子常被拿来&quot;除来除去&quot;，但<strong>它本身是定义，不是推导</strong>。</p>
+</div>
+<h3 id="center-p-用微分做近似：一个具体例子-p-center"><center><p>用微分做近似：一个具体例子</p></center></h3>
+<p>  估计 $\sqrt{4.02}$。</p>
+<p>  取 $f(x)=\sqrt x$，$x_0=4$，$\Delta x=0.02$。</p>
+<p>  $f'(x)=\dfrac{1}{2\sqrt x}$，所以 $f'(4)=\dfrac14$。</p>
+<p>  于是</p>
+<p>$$\sqrt{4.02}\approx\sqrt4+\frac14\cdot0.02=2+0.005=2.005$$</p>
+<p>  真实值 $2.00499\dots$——<strong>四位有效数字准确</strong>。</p>
+<h2 id="center-p-求导法则的推导-p-center"><center><p>求导法则的推导</p></center></h2>
+<p>  很多人背下了 $(uv)'=u'v+uv'$，但<strong>不知道为什么</strong>。这里给出推导。</p>
+<h3 id="center-p-乘积法则-p-center"><center><p>乘积法则</p></center></h3>
+<p>$$(uv)'=\lim_{\Delta x\to0}\frac{u(x+\Delta x)v(x+\Delta x)-u(x)v(x)}{\Delta x}$$</p>
+<p>  <strong>关键技巧</strong>：加一项减一项。</p>
+<p>$$u(x+\Delta x)v(x+\Delta x)-u(x)v(x)=[u(x+\Delta x)-u(x)]v(x+\Delta x)+u(x)[v(x+\Delta x)-v(x)]$$</p>
+<p>  两边除以 $\Delta x$ 取极限：</p>
+<p>$$(uv)'=\left[\lim\frac{\Delta u}{\Delta x}\right]\cdot\left[\lim v(x+\Delta x)\right]+u\cdot\left[\lim\frac{\Delta v}{\Delta x}\right]$$</p>
+<p>  三个方括号里的极限依次是 $u'$、$v$、$v'$（第二个用到 $v$ 在 $x$ 处连续，由可导推出）。</p>
+<p>  <strong>所以 $(uv)'=u'v+uv'$。</strong>$\blacksquare$</p>
+<div class="note info flat"><p><strong>&quot;加一项减一项&quot;是分析里的万能技巧</strong></p>
+<p>  这个手法在这里叫&quot;拆项&quot;，在积分证明里叫&quot;插入中间项&quot;，在三角不等式里叫&quot;绕道&quot;。</p>
+<p>  <strong>共同点</strong>：把&quot;两个东西的差&quot;改写成&quot;两段差的和&quot;，从而分别利用已知信息。</p>
+</div>
+<h3 id="center-p-复合函数（链式法则）-p-center"><center><p>复合函数（链式法则）</p></center></h3>
+<p>  设 $y=f(u)$，$u=g(x)$，求 $\dfrac{\mathrm{d}y}{\mathrm{d}x}$。</p>
+<p>  <strong>看起来可以这样</strong>：</p>
+<p>$$\frac{\Delta y}{\Delta x}=\frac{\Delta y}{\Delta u}\cdot\frac{\Delta u}{\Delta x}\to f'(u_0)\cdot g'(x_0)$$</p>
+<p>  <strong>但这里有个陷阱</strong>：如果 $\Delta u=0$，$\dfrac{\Delta y}{\Delta u}$ 没有定义！</p>
+<details class="folding-tag" cyan><summary> 正确的证明（避开 Δu=0） </summary>
+              <div class='content'>
+              <p><strong>做法</strong>：定义辅助函数</p><p>$$\Phi(\Delta u)=\begin{cases}\dfrac{f(u_0+\Delta u)-f(u_0)}{\Delta u},&amp;\Delta u\ne0\ f'(u_0),&amp;\Delta u=0\end{cases}$$</p><p>由可导性，$\Phi$ 在 $\Delta u=0$ 处连续，且 $\Phi(\Delta u)\to f'(u_0)$。</p><p>于是对<strong>任何</strong> $\Delta u$ 都有</p><p>$$\Delta y=f(u_0+\Delta u)-f(u_0)=\Phi(\Delta u)\cdot\Delta u$$</p><p>（当 $\Delta u\ne0$ 时这是定义；当 $\Delta u=0$ 时两边都是 0。）</p><p>两边除以 $\Delta x$：</p><p>$$\frac{\Delta y}{\Delta x}=\Phi(\Delta u)\cdot\frac{\Delta u}{\Delta x}$$</p><p>取极限：$\Phi(\Delta u)\to f'(u_0)$（因为 $\Delta u\to0$ 且 $\Phi$ 连续），$\dfrac{\Delta u}{\Delta x}\to g'(x_0)$。</p><p>$$\frac{\mathrm{d}y}{\mathrm{d}x}=f'(u_0)\cdot g'(x_0)\quad\blacksquare$$</p><p><strong>这个&quot;补洞&quot;技巧</strong>（把函数在缺口处补上极限值，变成连续函数）在分析里非常常用。</p>
+              </div>
+            </details>
+<h3 id="center-p-反函数-p-center"><center><p>反函数</p></center></h3>
+<p>  设 $y=f(x)$ 严格单调可导且 $f'(x_0)\ne0$，则反函数 $x=f^{-1}(y)$ 在 $y_0=f(x_0)$ 处可导，且</p>
+<p>$$\left(f^{-1}\right)'(y_0)=\frac{1}{f'(x_0)}$$</p>
+<p>  <strong>直观理解</strong>：切线的斜率取倒数，就是反着看的斜率。</p>
+<p>  <strong>注意条件 $f'(x_0)\ne0$</strong>：若 $f'(x_0)=0$（水平切线），反函数对应<strong>垂直切线</strong>，斜率无穷，不可导。</p>
+<h2 id="center-p-高阶导数-p-center"><center><p>高阶导数</p></center></h2>
+<p>  $f''(x)=(f')'(x)$，依此类推。</p>
+<p>  <strong>物理意义</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>记号</th>
+<th>名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$s(t)$</td>
+<td>位置</td>
+<td>—</td>
+</tr>
+<tr>
+<td>$s'(t)$</td>
+<td>速度</td>
+<td>位置变化率</td>
+</tr>
+<tr>
+<td>$s''(t)$</td>
+<td>加速度</td>
+<td>速度变化率</td>
+</tr>
+<tr>
+<td>$s'''(t)$</td>
+<td>急动度（jerk）</td>
+<td>加速度变化率</td>
+</tr>
+</tbody>
+</table>
+<p>  <strong>几个常用高阶导数公式</strong>：</p>
+<p>$$(e^x)^{(n)}=e^x,\qquad (\sin x)^{(n)}=\sin\left(x+\frac{n\pi}{2}\right),\qquad (x^m)^{(n)}=\frac{m!}{(m-n)!}x^{m-n}$$</p>
+<p>  <strong>Leibniz 公式</strong>（乘积的高阶导数）：</p>
+<p>$$(uv)^{(n)}=\sum_{k=0}^{n}\binom{n}{k}u^{(n-k)}v^{(k)}$$</p>
+<p>  形式上完全类似二项式定理——这不是巧合，推导方式一样（归纳 + 组合数递推）。</p>
+<div class="note info flat"><p><strong>Darboux 定理：一个诡异的事实</strong></p>
+<p>  导数 $f'$ 虽然是&quot;逐点&quot;定义的，但它<strong>具有介值性</strong>——即使 $f'$ 不连续，也不能有跳跃间断。</p>
+<p>  也就是说：<strong>导数不能&quot;跳过&quot;某个值</strong>。</p>
+<p>  <strong>推论</strong>：若 $f'$ 在 $(a,b)$ 上连续，那它当然有介值性；但即使不连续，介值性依然成立。</p>
+<p>  <strong>这限制了什么</strong>：不存在一个函数，它的导数恰好是阶跃函数。</p>
+<p>  所以在一定意义上，<strong>&quot;导数&quot;这一类函数比&quot;任意函数&quot;要&quot;规矩&quot;得多</strong>。</p>
+</div>
+<h2 id="center-p-常见错误-p-center"><center><p>常见错误</p></center></h2>
+<div class="note danger flat"><p><strong>错误一：把 $\dfrac{\mathrm{d}y}{\mathrm{d}x}$ 当作分数</strong></p>
+<p>  虽然在链式法则里&quot;约分&quot;看起来成立（$\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\mathrm{d}y}{\mathrm{d}u}\cdot\frac{\mathrm{d}u}{\mathrm{d}x}$），但这是<strong>定理的结论</strong>，不是&quot;约分&quot;。</p>
+<p>  <strong>反例</strong>：二阶导数 $\dfrac{\mathrm{d}^2y}{\mathrm{d}x^2}$ <strong>不等于</strong> $\dfrac{\mathrm{d}^2y}{\mathrm{d}u^2}\left(\dfrac{\mathrm{d}u}{\mathrm{d}x}\right)^2$。正确公式是</p>
+<p>$$\frac{\mathrm{d}^2y}{\mathrm{d}x^2}=\frac{\mathrm{d}^2y}{\mathrm{d}u^2}\left(\frac{\mathrm{d}u}{\mathrm{d}x}\right)^2+\frac{\mathrm{d}y}{\mathrm{d}u}\cdot\frac{\mathrm{d}^2u}{\mathrm{d}x^2}$$</p>
+<p><strong>多出的第二项就是把记号当分数会导致的后果。</strong></p>
+<p><strong>错误二：认为&quot;可导&quot;就是&quot;能求导&quot;</strong></p>
+<p>  <strong>可导是一个点的性质</strong>。$f(x)=|x|$ 在 $x=1$ 处可导（$f'=1$），在 $x=0$ 处不可导。</p>
+<p>  <strong>&quot;$f$ 在区间上可导&quot;</strong> 才表示每一点都可导。</p>
+<p><strong>错误三：认为连续函数的和/差/积/商都连续，所以可导函数的复合一定可导</strong></p>
+<p>  <strong>前半对，后半对</strong>——但要知道<strong>为什么</strong>。可导的复合可导是因为链式法则；而<strong>连续的复合连续</strong>才是无条件的。</p>
+<p>  别搞混层次：连续是底线，可导是加码。</p>
+<p><strong>错误四：计算 $f(0)$ 时用错定义</strong></p>
+<p>  分段函数在分界点求导，<strong>必须用导数定义</strong>，不能直接用公式。</p>
+<p>  例：$f(x)=\begin{cases}x^2\sin(1/x),&amp;x\ne0\0,&amp;x=0\end{cases}$</p>
+<p>  这个函数<strong>在 $0$ 处可导</strong>（$f'(0)=0$，用定义可算），但<strong>导数 $f'$ 在 $0$ 处不连续</strong>——因为 $x\ne0$ 时 $f'(x)=2x\sin(1/x)-\cos(1/x)$，当 $x\to0$ 时不收敛。</p>
+<p>  **所以&quot;可导&quot;不保证&quot;导函数连续&quot;。**这样的函数叫 $C^1$ 类之外。</p>
+</div>
+<h2 id="center-p-小结-p-center"><center><p>小结</p></center></h2>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>切线</strong></td>
+<td>割线斜率的极限（古希腊人卡了两千年）</td>
+</tr>
+<tr>
+<td><strong>导数</strong></td>
+<td>$f'(x_0)=\lim\limits_{\Delta x\to0}\dfrac{\Delta y}{\Delta x}$，<strong>有限</strong>才算可导</td>
+</tr>
+<tr>
+<td><strong>左右导数</strong></td>
+<td>都存在且相等 ⟺ 可导</td>
+</tr>
+<tr>
+<td><strong>可导 ⟹ 连续</strong></td>
+<td>反之不然；三个反例：尖点、垂直切线、振荡</td>
+</tr>
+<tr>
+<td><strong>Weierstrass</strong></td>
+<td>处处连续、处处不可导的函数确实存在</td>
+</tr>
+<tr>
+<td><strong>微分</strong></td>
+<td>$\Delta y=A\Delta x+o(\Delta x)$——一个<strong>线性函数</strong></td>
+</tr>
+<tr>
+<td><strong>导数 vs 微分</strong></td>
+<td>前者是<strong>数</strong>，后者是<strong>线性逼近</strong></td>
+</tr>
+<tr>
+<td><strong>链式法则证明</strong></td>
+<td>需&quot;补洞&quot;技巧处理 $\Delta u=0$</td>
+</tr>
+<tr>
+<td><strong>Darboux 定理</strong></td>
+<td>导数不能有跳跃间断</td>
+</tr>
+</tbody>
+</table>
+<div class="note info flat"><p><strong>下一节预告</strong></p>
+<p>有了导数，<strong>最难的部分才刚开始</strong>：导数只是&quot;局部&quot;信息，怎么从中得到&quot;整体&quot;结论？</p>
+<p>答案是<strong>中值定理</strong>：</p>
+<blockquote>
+<p>在 $[a,b]$ 上，至少存在一点 $\xi$，使 $f'(\xi)=\dfrac{f(b)-f(a)}{b-a}$。</p>
+</blockquote>
+<p>它把&quot;某一点的导数&quot;和&quot;两点的函数值差&quot;联系起来——<strong>这是微分学的枢纽</strong>。洛必达法则、泰勒公式、单调性判定、极值判别，全部从它推出。</p>
+<p>下一节会先讲<strong>费马引理、罗尔定理、拉格朗日中值定理</strong>的完整证明，再看它们的应用。</p>
+</div>
+<h2 id="center-p-参考文献-p-center"><center><p>参考文献</p></center></h2>
+<p>  <span class="hidden-anchor" id="referto_[1]"></span><sup class="reference"><a href="#referfrom_[1]">[1]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">华东师范大学数学科学学院. 数学分析: 上册[M]. 5版. 北京: 高等教育出版社, 2019.</span><span class="reference-title">参考资料</span></span></span>——第五章导数与微分。</p>
+<p>  <span class="hidden-anchor" id="referto_[2]"></span><sup class="reference"><a href="#referfrom_[2]">[2]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">RUDIN W. Principles of Mathematical Analysis[M]. 3rd ed. New York: McGraw-Hill, 1976.</span><span class="reference-title">参考资料</span></span></span>——第 5 章微分。</p>
+<p>  <span class="hidden-anchor" id="referto_[3]"></span><sup class="reference"><a href="#referfrom_[3]">[3]</a></sup><span class="reference-bubble"><span class="reference-item"><span class="reference-literature">WEIERSTRASS K. Über continuirliche Functionen eines reellen Arguments, die für keinen Werth des letzteren einen bestimmten Differentialquotienten besitzen[C]//Mathematische Werke, Band II. Berlin: Mayer und Müller, 1895: 71-74.</span><span class="reference-title">参考资料</span></span></span>——处处连续处处不可导函数的原始文献。</p>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[1]"></span><a class="reference-anchor" href="#referto_[1]">[1]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="https://abook.hep.com.cn/1210369" target="_blank" rel="noopener">华东师范大学数学科学学院. 数学分析: 上册[M]. 5版. 北京: 高等教育出版社, 2019.</a></div>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[2]"></span><a class="reference-anchor" href="#referto_[2]">[2]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="https://openlibrary.org/books/OL5195991M" target="_blank" rel="noopener">RUDIN W. Principles of Mathematical Analysis[M]. 3rd ed. New York: McGraw-Hill, 1976.</a></div>
+<div class="reference-source"><span class="hidden-anchor" id="referfrom_[3]"></span><a class="reference-anchor" href="#referto_[3]">[3]<div class="reference-anchor-up fa-solid fa-angles-up"></div></a><a class="reference-link" href="https://archive.org/details/mathematischewer02weieuoft" target="_blank" rel="noopener">WEIERSTRASS K. Über continuirliche Functionen eines reellen Arguments, die für keinen Werth des letzteren einen bestimmten Differentialquotienten besitzen[M]//Mathematische Werke, Band II. Berlin: Mayer und Müller, 1895: 71-74.</a></div>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>数学分析 1.4：导数与微分——切线到底是什么</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="/posts/3a8afdfc.html">/posts/3a8afdfc.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Hatsusakuramiku</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2026-11-14</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2026-11-14</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>学习</a></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/2f0bf545.html"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/102673006_p2.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">数学分析 1.5：中值定理——微分学的枢纽</div></div></a></div><div class="next-post pull-right"><a href="/posts/6fe04a7.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">数学分析 1.3：函数极限与连续性——从 ε-δ 到闭区间上的三大定理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/cfe53629.html" title="数学分析（系列总览）"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100513742_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-13</div><div class="title">数学分析（系列总览）</div></div></a></div><div><a href="/posts/a4efc3f8.html" title="数学分析 1.1：实数完备性——一切从这条公理开始"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100723659_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-13</div><div class="title">数学分析 1.1：实数完备性——一切从这条公理开始</div></div></a></div><div><a href="/posts/ac14083c.html" title="数学分析 1.2：数列极限——ε-N 语言到底在说什么"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100886812_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-14</div><div class="title">数学分析 1.2：数列极限——ε-N 语言到底在说什么</div></div></a></div><div><a href="/posts/6fe04a7.html" title="数学分析 1.3：函数极限与连续性——从 ε-δ 到闭区间上的三大定理"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100891310_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-14</div><div class="title">数学分析 1.3：函数极限与连续性——从 ε-δ 到闭区间上的三大定理</div></div></a></div><div><a href="/posts/2f0bf545.html" title="数学分析 1.5：中值定理——微分学的枢纽"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/102673006_p2.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-14</div><div class="title">数学分析 1.5：中值定理——微分学的枢纽</div></div></a></div><div><a href="/posts/ace8fd0f.html" title="第 1 章（续）：热传导方程的建立"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://aws.mikufans.date/hexo/img/background/100886812_p0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2026-11-05</div><div class="title">第 1 章（续）：热传导方程的建立</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E6%9C%AC%E6%96%87%E8%A6%81%E5%81%9A%E4%BB%80%E4%B9%88-p-center"><span class="toc-text">本文要做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-p-center"><span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%88%87%E5%85%A5%E7%82%B9%EF%BC%9A%E5%89%B2%E7%BA%BF%E7%9A%84%E6%9E%81%E9%99%90-p-center"><span class="toc-text">切入点：割线的极限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%8F%A4%E5%B8%8C%E8%85%8A%E4%BA%BA%E7%9A%84%E5%9B%B0%E9%9A%BE-p-center"><span class="toc-text">古希腊人的困难</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%89%B2%E7%BA%BF-%E2%86%92-%E5%88%87%E7%BA%BF-p-center"><span class="toc-text">割线 → 切线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%AF%BC%E6%95%B0%EF%BC%9A%E5%AE%9A%E4%B9%89%E4%B8%8E%E8%AE%B0%E5%8F%B7-p-center"><span class="toc-text">导数：定义与记号</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%B7%A6%E5%AF%BC%E6%95%B0%E4%B8%8E%E5%8F%B3%E5%AF%BC%E6%95%B0-p-center"><span class="toc-text">左导数与右导数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%8F%AF%E5%AF%BC%E4%B8%8E%E8%BF%9E%E7%BB%AD%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%98%AF%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%9A%84%E5%BC%BA%E5%8C%96-p-center"><span class="toc-text">可导与连续：一个是另一个的强化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%BE%AE%E5%88%86%EF%BC%9A%E5%92%8C%E5%AF%BC%E6%95%B0%E4%B8%8D%E6%98%AF%E4%B8%80%E5%9B%9E%E4%BA%8B-p-center"><span class="toc-text">微分：和导数不是一回事</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%85%88%E7%9C%8B%E5%AE%9A%E4%B9%89-p-center"><span class="toc-text">先看定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%AF%BC%E6%95%B0%E4%B8%8E%E5%BE%AE%E5%88%86%E7%9A%84%E5%85%B3%E7%B3%BB-p-center"><span class="toc-text">导数与微分的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E9%82%A3%E5%8C%BA%E5%88%AB%E5%88%B0%E5%BA%95%E5%9C%A8%E5%93%AA-p-center"><span class="toc-text">那区别到底在哪</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E7%94%A8%E5%BE%AE%E5%88%86%E5%81%9A%E8%BF%91%E4%BC%BC%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%85%B7%E4%BD%93%E4%BE%8B%E5%AD%90-p-center"><span class="toc-text">用微分做近似：一个具体例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E6%B1%82%E5%AF%BC%E6%B3%95%E5%88%99%E7%9A%84%E6%8E%A8%E5%AF%BC-p-center"><span class="toc-text">求导法则的推导</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E4%B9%98%E7%A7%AF%E6%B3%95%E5%88%99-p-center"><span class="toc-text">乘积法则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%A4%8D%E5%90%88%E5%87%BD%E6%95%B0%EF%BC%88%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99%EF%BC%89-p-center"><span class="toc-text">复合函数（链式法则）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#center-p-%E5%8F%8D%E5%87%BD%E6%95%B0-p-center"><span class="toc-text">反函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E9%AB%98%E9%98%B6%E5%AF%BC%E6%95%B0-p-center"><span class="toc-text">高阶导数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF-p-center"><span class="toc-text">常见错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%B0%8F%E7%BB%93-p-center"><span class="toc-text">小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#center-p-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE-p-center"><span class="toc-text">参考文献</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>再看看那个光点，它就在这里，这是家园，这是我们 —— 你所爱的每一个人，你认识的每一个人，你听说过的每一个人，曾经有过的每一个人，都在它上面度过他们的一生✨</div><div class="btn-xz-box"><a class="btn-xz" href="/box/astronomy/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/archives/">开源指南</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li><li><a href="/box/gallery/">我的画廊</a><a href="/site/time/">建设进程</a></li><li><a href="/site/census/">网站统计</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.com/" title="本站"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/avatar.webp" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/" title="Hexo"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1036/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://butterfly.js.org/" title="Butterfly"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1039/100/100" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://example.org/" title="示例站点 A"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1044/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1015/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1016/100/100" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://picsum.photos/id/1018/100/100" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2026</b></span><span><b>&nbsp;&nbsp;By Hatsusakuramiku</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/jerryc127/hexo-theme-butterfly" style="margin-inline:5px" title="主题版本 Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/fomalhaut1998/hexo-theme-Fomalhaut" style="margin-inline:5px" title="本站主题美化基于Fomalhaut🥝的开源项目‘hexo-theme-Fomalhaut’修改"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%F0%9F%A5%9DFomalhaut-hexo--theme--Fomalhaut-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226403" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226403号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/%E8%90%8CICP%E5%A4%87-20226403-ff69b4.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Source-GitHub-d021d6.svg" alt=""/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Copyright-BY--NC--SA--4.0-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，次线部署于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js?v=20261005-scroll1"></script><script src="/js/main.js?v=20261005-scroll1"></script><script src="https://registry.npmmirror.com/@fancyapps/ui/4.0.31/files/dist/fancybox.umd.js"></script><script src="https://registry.npmmirror.com/instant.page/5.1.0/files/instantpage.js" type="module"></script><script src="https://registry.npmmirror.com/vanilla-lazyload/17.3.1/files/dist/lazyload.iife.min.js"></script><script>window.__SEARCH_LAZY__ = ["https://registry.npmmirror.com/algoliasearch/4.14.3/files/dist/algoliasearch-lite.umd.js","https://registry.npmmirror.com/instantsearch.js/4.49.2/files/dist/instantsearch.production.min.js","/js/search/algolia.js"]</script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://registry.npmmirror.com/mathjax/3.2.2/files/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script defer charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script><script defer src="https://sdk.51.la/perf/js-sdk-perf.min.js" crossorigin="anonymous"></script><script defer src="/js/51la.js"></script><script src="https://registry.npmmirror.com/jquery/3.6.0/files/dist/jquery.min.js"></script><script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script><script async src="https://registry.npmmirror.com/clipboard/2.0.10/files/dist/clipboard.min.js"></script><script async src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="/js/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_glcijzcpx7f.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_gkavascgf3n.js"></script><script async src="//at.alicdn.com/t/c/font_5239918_ta23cg9gek.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/notify.js"></script><script defer src="/js/lunar.js"></script><script defer src="/js/data/voyager1.js"></script><script defer src="/js/data/holidays.js"></script><script defer src="/js/modules/console-art.js"></script><script defer src="/js/modules/shell.js?v=20261011-stage3"></script><script defer src="/js/modules/snow.js?v=20261010-snow1"></script><script defer src="/js/modules/effects.js?v=20261010-snow1"></script><script defer src="/js/modules/reading.js?v=20261015-fps2"></script><script defer src="/js/modules/nav.js?v=20261005-scroll1"></script><script defer src="/js/modules/cursor.js?v=20261015-fps2"></script><script defer src="/js/modules/footer-time.js?v=20261006"></script><script defer src="/js/modules/appearance-fonts.js?v=20261010-preview1"></script><script defer src="/js/modules/appearance-backgrounds.js?v=20261011-bgflash1"></script><script defer src="/js/modules/fireflies.js?v=20261010-fireflies1"></script><script defer src="/js/modules/ripple.js?v=20261014-ripple1"></script><script defer src="/js/modules/settings.js?v=20261015-custom1"></script><script defer src="/js/fomal.js"></script><script defer src="/js/wechat-qr.js"></script><script defer src="/js/festival.js"></script><script defer src="/js/author-status.js"></script><script defer src="/js/stats.js?v=20261005"></script><script defer src="/js/footer-music.js?v=20261005"></script><script defer src="/js/pjax-guard.js?v=20261005"></script><script defer src="/js/inject/search-lazy.js?v=20261011b"></script><script src="/js/inject/scroll-gap-fix.js?v=20261011"></script><script src="/js/inject/webinfo-card.js"></script><script src="/js/inject/ft-ad-extra.js"></script><script src="/js/inject/pc-local-link.js"></script><script defer src="/js/inject/about-route-probe.js?v=20261006"></script><link rel="stylesheet" href="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://registry.npmmirror.com/aplayer/1.10.1/files/dist/APlayer.min.js"></script><script src="https://npm.elemecdn.com/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  ;['tocScrollFn', 'scrollCollect'].forEach(name => {
+    const handler = window[name]
+    if (!handler) return
+    window.removeEventListener('scroll', handler)
+    if (typeof handler.cancel === 'function') handler.cancel()
+    window[name] = null
+  })
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//events.vercount.one/js"></script></div><!-- hexo injector body_end start --><script id="wow-pjax-rehook">
+(function () {
+  if (window.__wowPjaxRehook) return;
+  window.__wowPjaxRehook = true;
+
+  // 插件生成的加类脚本特征：调 classList.add 又写 data-wow-duration 的，就是它
+  function isWowInjector(code) {
+    return !!code && code.indexOf('classList.add') > -1 && code.indexOf('data-wow-duration') > -1;
+  }
+
+  // 把 .js-pjax 里哑火的加类脚本重放一遍（照抄 pjax.pug 的重放手法：换新节点才会执行）
+  function replayInjectors() {
+    var scripts = document.querySelectorAll('.js-pjax script');
+    for (var i = 0; i < scripts.length; i++) {
+      var old = scripts[i];
+      if (old.getAttribute('data-pjax') !== null) continue; // 主题自己会重放，别跑两遍
+      var code = old.text || old.textContent || old.innerHTML || '';
+      if (!isWowInjector(code)) continue;
+      var neu = document.createElement('script');
+      neu.setAttribute('data-wow-pjax-replay', '');
+      neu.appendChild(document.createTextNode(code));
+      old.parentNode.replaceChild(neu, old);
+    }
+  }
+
+  // wow 实例兜底 + 清理被 pjax 换掉的旧节点（否则 wow.boxes 会一直 accumulate）
+  function resyncBoxes() {
+    var wow = window.wow;
+    if (!wow && typeof window.WOW === 'function') {
+      // 等价于 node_modules/hexo-butterfly-wowjs/lib/wow_init.js
+      window.wow = new window.WOW({
+        boxClass: 'wow',
+        animateClass: 'animate__animated',
+        offset: 0,
+        mobile: false,
+        live: true
+      });
+      window.wow.init();
+      return;
+    }
+    if (!wow) return;
+    try {
+      if (wow.boxes && wow.boxes.length) {
+        wow.boxes = wow.boxes.filter(function (el) { return el && document.contains(el); });
+      }
+      // 关键一步：让 wow 自己把新插入的 .wow 卡片登记进 boxes（会顺手隐藏 + 置 scrolled）
+      if (typeof wow.doSync === 'function') {
+        wow.doSync(document.body);
+      } else if (wow.boxes && wow.applyStyle) {
+        // 老版本 wow.js 没有 doSync，手动补：从没被 wow 摸过的块（没有 inline visibility）收进来
+        var nodes = document.querySelectorAll('.wow');
+        for (var i = 0; i < nodes.length; i++) {
+          var el = nodes[i];
+          if (el.style.visibility) continue;
+          if (wow.all && wow.all.indexOf(el) > -1) continue;
+          wow.boxes.push(el);
+          if (wow.all) wow.all.push(el);
+          wow.applyStyle(el, true);
+        }
+        wow.scrolled = true;
+      }
+      // 再补一次 scroll 事件，保证 50ms 轮询这一拍立刻跑
+      window.dispatchEvent(new Event('scroll'));
+    } catch (e) {}
+  }
+
+  function run() {
+    try { replayInjectors(); } catch (e) {}
+    try { resyncBoxes(); } catch (e) {}
+  }
+
+  document.addEventListener('pjax:complete', function () {
+    // 主题的 pjax:complete 监听器（pjax.pug）先重放 script[data-pjax]（轮播/磁贴注入脚本在里面），
+    // 所以这里延后一拍，保证重放顺序在它之后；300ms 那次兜底给异步补内容的场景。
+    setTimeout(run, 0);
+    setTimeout(run, 300);
+  });
+
+  // 调试用：控制台里 window.__wowPjaxRehookNow() 可手动触发一次
+  window.__wowPjaxRehookNow = run;
+})();
+</script><script id="swiper-lazyload-fix">
+(function () {
+  if (window.__swiperLazyFix) return;
+  window.__swiperLazyFix = true;
+
+  function sync () {
+    try {
+      var inst = window.lazyLoadInstance;
+      if (inst && typeof inst.update === 'function') inst.update();
+    } catch (e) {}
+  }
+
+  function burst () {
+    [0, 120, 300, 700, 1500, 2600].forEach(function (d) { setTimeout(sync, d); });
+  }
+
+  // 1) 首次加载 + 站内 pjax 返回后：等异步的 data-pjax 脚本（swiper_init.js）跑完再补登记
+  document.addEventListener('pjax:complete', burst);
+  window.addEventListener('load', burst);
+  if (document.readyState !== 'loading') burst();
+  else document.addEventListener('DOMContentLoaded', burst);
+
+  // 2) Swiper 重建循环克隆时会增删 .blog-slider__wrp 的子节点（pjax 换页后容器会被替换，故持续重挂）
+  setTimeout(function watchWrp () {
+    var wrp = document.querySelector('.blog-slider__wrp');
+    if (wrp && wrp !== window.__swiperLazyWrp) {
+      try { if (window.__swiperLazyMo) window.__swiperLazyMo.disconnect(); } catch (e) {}
+      window.__swiperLazyWrp = wrp;
+      try {
+        window.__swiperLazyMo = new MutationObserver(function () {
+          clearTimeout(window.__swiperLazyTimer);
+          window.__swiperLazyTimer = setTimeout(sync, 100);
+        });
+        window.__swiperLazyMo.observe(wrp, { childList: true });
+      } catch (e) {}
+    }
+    setTimeout(watchWrp, 800);
+  }, 800);
+})();
+</script> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><a class="magnet_link_more"  href="/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__fadeIn');
+    arr[i].setAttribute('data-wow-duration', '700ms');
+    arr[i].setAttribute('data-wow-delay', '0');
+    arr[i].setAttribute('data-wow-offset', '0');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="/js/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<container><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></container>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://cdn.jsdelivr.net/gh/yourname/gitcalendar-data@main/data.json",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'yourname')
+    }
+  </script><!-- hexo injector body_end end --></body></html>
