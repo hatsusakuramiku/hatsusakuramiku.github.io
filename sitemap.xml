@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hsmk.mikufans.date/posts/c5d9aa8a.html</loc>
+    
+    <lastmod>2026-11-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hsmk.mikufans.date/posts/75523d8c.html</loc>
+    
+    <lastmod>2026-11-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/posts/23318654.html</loc>
     
     <lastmod>2026-11-16</lastmod>
@@ -623,6 +641,15 @@
   </url>
   
   <url>
+    <loc>https://hsmk.mikufans.date/site/time/index.html</loc>
+    
+    <lastmod>2026-11-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/social/fcircle/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
@@ -641,15 +668,6 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/time/index.html</loc>
-    
-    <lastmod>2026-11-01</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://hsmk.mikufans.date/manifest.json</loc>
     
     <lastmod>2026-11-01</lastmod>
@@ -659,7 +677,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/life/music/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/census/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -668,7 +686,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/census/index.html</loc>
+    <loc>https://hsmk.mikufans.date/life/music/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
