@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hsmk.mikufans.date/posts/aa220344.html</loc>
+    
+    <lastmod>2026-11-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/posts/9f286131.html</loc>
     
     <lastmod>2026-11-16</lastmod>
@@ -659,7 +668,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/box/gallery/index.html</loc>
+    <loc>https://hsmk.mikufans.date/box/astronomy/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -668,7 +677,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/box/astronomy/index.html</loc>
+    <loc>https://hsmk.mikufans.date/box/gallery/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -779,14 +788,14 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/HSMK-MATH-LIB/</loc>
+    <loc>https://hsmk.mikufans.date/categories/HSMK-HEXO/</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
