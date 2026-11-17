@@ -515,7 +515,10 @@ window.addEventListener('load',preloader.endLoading())
 setTimeout(function(){preloader.endLoading();}, 5000);
 document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
   window.MathJax = {
+    __dshExtraMacrosInjected: true,
     tex: {
+      macros: {"oiint":"{\\enclose{circle}{\\iint}}","oiiint":"{\\enclose{circle}{\\iiint}}","oint":"{\\enclose{circle}{\\int}}"},
+
       inlineMath: [ ['$','$'], ["\\(","\\)"]],
       tags: 'ams'
     },
