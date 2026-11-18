@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hsmk.mikufans.date/posts/69d93dfd.html</loc>
+    
+    <lastmod>2026-11-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hsmk.mikufans.date/posts/b2a8135e.html</loc>
     
     <lastmod>2026-11-18</lastmod>
@@ -713,7 +722,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/life/music/index.html</loc>
+    <loc>https://hsmk.mikufans.date/site/census/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -722,7 +731,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/site/census/index.html</loc>
+    <loc>https://hsmk.mikufans.date/life/music/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -740,7 +749,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/box/astronomy/index.html</loc>
+    <loc>https://hsmk.mikufans.date/box/gallery/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -749,7 +758,7 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/box/gallery/index.html</loc>
+    <loc>https://hsmk.mikufans.date/box/astronomy/index.html</loc>
     
     <lastmod>2026-11-01</lastmod>
     
@@ -860,13 +869,6 @@
   </url>
   
   <url>
-    <loc>https://hsmk.mikufans.date/categories/Hexo-%E4%BD%BF%E7%94%A8/</loc>
-    <lastmod>2026-11-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://hsmk.mikufans.date/categories/zhenxun-bot/</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -875,6 +877,13 @@
   
   <url>
     <loc>https://hsmk.mikufans.date/categories/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://hsmk.mikufans.date/categories/Hexo-%E4%BD%BF%E7%94%A8/</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
